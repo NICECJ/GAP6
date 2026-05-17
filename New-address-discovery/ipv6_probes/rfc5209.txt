@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc5209.txt
+Generated at: 2026-03-08 06:43:13
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: PA
+--------------------------------------------------------------------------------
+Mechanism Name: PA Request and Response
+
+Protocol: PA
+
+Condition: The NEA Server sends a PA message with Request Attributes to the NEA Client
+
+Packet Flow: NEA Server -> NEA Client -> NEA Server
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP/UDP (as defined by the PT protocol)
+
+Application Layer Protocol: PA
+
+Template Base: PA message template
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["Destination Port"], "application_layer": ["Request Attributes"]}
+
+Receive Filter: PA message with Posture Attributes or Assertion Attributes
+
+Success Condition: Reception of a PA message with Posture Attributes or Assertion Attributes
+
+Failure Condition: No response or reception of a PA message with an error code
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The response from the Posture Collector may include: - Posture Attributes collected for the requested functionality. - Assertion Attributes that indicate the compliance result from a prior assessment.
+
+================================================================================
+

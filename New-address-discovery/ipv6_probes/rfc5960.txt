@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc5960.txt
+Generated at: 2026-03-08 07:03:03
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: G-ACh
+--------------------------------------------------------------------------------
+Mechanism Name: G-ACh Label (GAL) Probing
+
+Protocol: G-ACh
+
+Condition: When the TTL of an LSP label expires and the label at the bottom of the stack is a GAL (value 13)
+
+Packet Flow: Prober -> Target (TTL expiry) -> Prober
+
+Network Layer Protocol: MPLS
+
+Transport Layer Protocol: None
+
+Application Layer Protocol: G-ACh
+
+Template Base: MPLS packet with GAL
+
+Fields To Modify: {"network_layer": ["TTL", "Label Stack (Bottom label set to GAL)"], "transport_layer": [], "application_layer": ["ACH (to specify G-ACh traffic type)"]}
+
+Receive Filter: MPLS packet with GAL and ACH
+
+Success Condition: Reception of a G-ACh packet with a valid ACH
+
+Failure Condition: No response or an error message is received
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: When the TTL has expired, the label stack may be inspected for a GAL, and if a GAL is found, it indicates that the payload begins with an ACH.
+
+================================================================================
+

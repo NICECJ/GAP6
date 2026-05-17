@@ -1,0 +1,179 @@
+RFC Document: RFC/rfc6926.txt
+Generated at: 2026-03-08 05:23:50
+================================================================================
+
+Analysis Summary:
+Found 5 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: DHCPv4
+--------------------------------------------------------------------------------
+Mechanism Name: Bulk Leasequery by MAC Address
+
+Protocol: DHCPv4
+
+Condition: The target DHCPv4 server has a current binding to a client with the specified MAC address
+
+Packet Flow: Requestor -> Server -> Requestor
+
+Network Layer Protocol: IPv4
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: DHCPv4
+
+Template Base: DHCPBULKLEASEQUERY
+
+Fields To Modify: {"network_layer": ["Destination IPv4 Address"], "transport_layer": ["TCP Destination Port", "TCP Source Port", "TCP Sequence Number", "TCP Acknowledgment Number"], "application_layer": ["chaddr", "htype", "hlen"]}
+
+Receive Filter: DHCPLEASEACTIVE with matching MAC address
+
+Success Condition: Reception of DHCPLEASEACTIVE message with the specified MAC address
+
+Failure Condition: No DHCPLEASEACTIVE message received or DHCPLEASEQUERYDONE message received without matching DHCPLEASEACTIVE
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: Every IP address that has a current binding to a DHCPv4 client matching the chaddr, htype, and hlen in the DHCPBULKLEASEQUERY request MUST be returned in a DHCPLEASEACTIVE message.
+
+================================================================================
+
+Mechanism 2: DHCPv4
+--------------------------------------------------------------------------------
+Mechanism Name: Bulk Leasequery by Client-identifier
+
+Protocol: DHCPv4
+
+Condition: The target DHCPv4 server has a current binding to a client with the specified Client-identifier
+
+Packet Flow: Requestor -> Server -> Requestor
+
+Network Layer Protocol: IPv4
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: DHCPv4
+
+Template Base: DHCPBULKLEASEQUERY
+
+Fields To Modify: {"network_layer": ["Destination IPv4 Address"], "transport_layer": ["TCP Destination Port", "TCP Source Port", "TCP Sequence Number", "TCP Acknowledgment Number"], "application_layer": ["Client-identifier option"]}
+
+Receive Filter: DHCPLEASEACTIVE with matching Client-identifier
+
+Success Condition: Reception of DHCPLEASEACTIVE message with the specified Client-identifier
+
+Failure Condition: No DHCPLEASEACTIVE message received or DHCPLEASEQUERYDONE message received without matching DHCPLEASEACTIVE
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: Every IP address that has a current binding to a DHCPv4 client matching the Client-identifier option in the DHCPBULKLEASEQUERY request MUST be returned in a DHCPLEASEACTIVE message.
+
+================================================================================
+
+Mechanism 3: DHCPv4
+--------------------------------------------------------------------------------
+Mechanism Name: Bulk Leasequery by Remote ID
+
+Protocol: DHCPv4
+
+Condition: The target DHCPv4 server has a current binding to a client with the specified Remote ID
+
+Packet Flow: Requestor -> Server -> Requestor
+
+Network Layer Protocol: IPv4
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: DHCPv4
+
+Template Base: DHCPBULKLEASEQUERY
+
+Fields To Modify: {"network_layer": ["Destination IPv4 Address"], "transport_layer": ["TCP Destination Port", "TCP Source Port", "TCP Sequence Number", "TCP Acknowledgment Number"], "application_layer": ["Remote ID sub-option of relay-agent-information option"]}
+
+Receive Filter: DHCPLEASEACTIVE with matching Remote ID
+
+Success Condition: Reception of DHCPLEASEACTIVE message with the specified Remote ID
+
+Failure Condition: No DHCPLEASEACTIVE message received or DHCPLEASEQUERYDONE message received without matching DHCPLEASEACTIVE
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: Every IP address that has a current binding to a DHCPv4 client matching the Remote ID sub-option of the relay-agent-information option in the DHCPBULKLEASEQUERY request MUST be returned in a DHCPLEASEACTIVE message.
+
+================================================================================
+
+Mechanism 4: DHCPv4
+--------------------------------------------------------------------------------
+Mechanism Name: Bulk Leasequery by Relay-ID
+
+Protocol: DHCPv4
+
+Condition: The target DHCPv4 server has a current binding to a client with the specified Relay-ID
+
+Packet Flow: Requestor -> Server -> Requestor
+
+Network Layer Protocol: IPv4
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: DHCPv4
+
+Template Base: DHCPBULKLEASEQUERY
+
+Fields To Modify: {"network_layer": ["Destination IPv4 Address"], "transport_layer": ["TCP Destination Port", "TCP Source Port", "TCP Sequence Number", "TCP Acknowledgment Number"], "application_layer": ["Relay-ID sub-option of relay-agent-information option"]}
+
+Receive Filter: DHCPLEASEACTIVE with matching Relay-ID
+
+Success Condition: Reception of DHCPLEASEACTIVE message with the specified Relay-ID
+
+Failure Condition: No DHCPLEASEACTIVE message received or DHCPLEASEQUERYDONE message received without matching DHCPLEASEACTIVE
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: Every IP address that has a current binding to a DHCPv4 client matching the Relay-ID sub-option of the relay-agent-information option in the DHCPBULKLEASEQUERY request MUST be returned in a DHCPLEASEACTIVE message.
+
+================================================================================
+
+Mechanism 5: DHCPv4
+--------------------------------------------------------------------------------
+Mechanism Name: Bulk Leasequery for All Configured IP Addresses
+
+Protocol: DHCPv4
+
+Condition: The target DHCPv4 server has configured IP addresses
+
+Packet Flow: Requestor -> Server -> Requestor
+
+Network Layer Protocol: IPv4
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: DHCPv4
+
+Template Base: DHCPBULKLEASEQUERY
+
+Fields To Modify: {"network_layer": ["Destination IPv4 Address"], "transport_layer": ["TCP Destination Port", "TCP Source Port", "TCP Sequence Number", "TCP Acknowledgment Number"], "application_layer": []}
+
+Receive Filter: DHCPLEASEACTIVE, DHCPLEASEUNASSIGNED, DHCPLEASEQUERYDONE
+
+Success Condition: Reception of DHCPLEASEACTIVE or DHCPLEASEUNASSIGNED messages followed by a DHCPLEASEQUERYDONE message
+
+Failure Condition: No DHCPLEASEACTIVE, DHCPLEASEUNASSIGNED, or DHCPLEASEQUERYDONE messages received
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If there is no value in the chaddr, hlen, htype, no Client-identifier option, and no Remote ID sub-option or Relay-ID sub-option of the relay-agent-information option, then the request is a query for information concerning all configured IP addresses. In this case, every configured IP address that has a current binding to a DHCPv4 client MUST be returned in a DHCPLEASEACTIVE message. In addition, every configured IP address that does not have a current binding to a DHCPv4 client MUST be returned in a DHCPLEASEUNASSIGNED message.
+
+================================================================================
+

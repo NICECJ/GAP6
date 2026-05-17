@@ -1,0 +1,77 @@
+RFC Document: RFC/rfc6820.txt
+Generated at: 2026-03-08 10:28:59
+================================================================================
+
+Analysis Summary:
+Found 2 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: Neighbor Discovery
+--------------------------------------------------------------------------------
+Mechanism Name: IPv6 Neighbor Discovery for Address Resolution
+
+Protocol: Neighbor Discovery
+
+Condition: When a node needs to resolve the link-layer address of a target IPv6 address
+
+Packet Flow: Unicast from prober to target, unicast from target to prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: ICMPv6
+
+Application Layer Protocol: Neighbor Discovery
+
+Template Base: RFC4861
+
+Fields To Modify: {"network_layer": ["Target Address", "Source Address"], "transport_layer": ["ICMPv6 Type", "ICMPv6 Code"], "application_layer": ["Solicited Flag"]}
+
+Receive Filter: ICMPv6 Type == 136 (Neighbor Advertisement) and Target Address == probed address
+
+Success Condition: Reception of a Neighbor Advertisement (NA) message from the target address
+
+Failure Condition: No Neighbor Advertisement (NA) message received within a specified timeout period
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: When querying for a target IP address, ND maps the target address into an IPv6 Solicited Node multicast address. Using multicast rather than broadcast has the benefit that the multicast frames do not necessarily need to be sent to all parts of the network, i.e., the frames can be sent only to segments where listeners for the Solicited Node multicast address reside.
+
+================================================================================
+
+Mechanism 2: Neighbor Discovery
+--------------------------------------------------------------------------------
+Mechanism Name: IPv6 Neighbor Discovery Reachability Probe
+
+Protocol: Neighbor Discovery
+
+Condition: The ND entry is in the STALE state and needs to be revalidated
+
+Packet Flow: Prober sends NS to target, target responds with NA
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: ICMPv6
+
+Application Layer Protocol: Neighbor Discovery
+
+Template Base: ICMPv6 Neighbor Solicitation
+
+Fields To Modify: {"network_layer": ["Target Address"], "transport_layer": ["ICMPv6 Type", "ICMPv6 Code"], "application_layer": ["Source Link-Layer Address"]}
+
+Receive Filter: ICMPv6 Type == 136 (Neighbor Advertisement) and Target Address == probed address
+
+Success Condition: Receives a valid NA message with the Target Address matching the probed address
+
+Failure Condition: No NA message received or received NA message is invalid
+
+Prerequisites: ["ND entry in STALE state"]
+
+Confidence: High
+
+RFC Sentence: Section 7.2 of the document describes that ND requires that nodes periodically revalidate any entries they are using, to ensure that bad entries are timed out quickly enough that TCP does not terminate a connection. Consequently, some implementations will send out 'probe' ND queries to validate in-use ND entries as frequently as every 35 seconds [RFC4861].
+
+================================================================================
+

@@ -1,0 +1,111 @@
+RFC Document: RFC/rfc6045.txt
+Generated at: 2026-03-08 07:39:17
+================================================================================
+
+Analysis Summary:
+Found 3 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: IODEF-RID
+--------------------------------------------------------------------------------
+Mechanism Name: TraceRequest_Probing
+
+Protocol: IODEF-RID
+
+Condition: The prober sends a TraceRequest message to the target NP
+
+Packet Flow: Prober -> Target NP -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: IODEF-RID
+
+Template Base: IODEF-TraceRequest
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": ["Source Port", "Destination Port"], "application_layer": ["MsgType", "MsgDestination", "IncidentID", "TrafficType"]}
+
+Receive Filter: RequestAuthorization
+
+Success Condition: Receives a RequestAuthorization message with AuthorizationStatus set to 'Approved'
+
+Failure Condition: Receives a RequestAuthorization message with AuthorizationStatus set to 'Denied' or no response is received
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The proper response to a TraceRequest is a RequestAuthorization message. If a TraceRequest is denied, a downstream peer receiving this message may choose to take action to stop or mitigate the traffic at that point in the network, as close to the source as possible. If the downstream peer chooses this option, it would send a Result message to the trace originator.
+
+================================================================================
+
+Mechanism 2: IODEF-RID
+--------------------------------------------------------------------------------
+Mechanism Name: IncidentQuery
+
+Protocol: IODEF-RID
+
+Condition: The prober sends an IncidentQuery message to a target RID system
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: IODEF-RID
+
+Template Base: IncidentQuery template
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": ["Source Port", "Destination Port"], "application_layer": ["IncidentID", "MsgType", "MsgDestination", "TrafficType"]}
+
+Receive Filter: Report message
+
+Success Condition: A non-empty Report message is received
+
+Failure Condition: A Report message is received but it is empty, or a RequestAuthorization message is received with AuthorizationStatus='Denied'
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The IncidentQuery message communication receives a response of a Report message. If the Report message is empty, the responding host did not have information available to share with the requestor.
+
+================================================================================
+
+Mechanism 3: IODEF-RID
+--------------------------------------------------------------------------------
+Mechanism Name: InvestigationRequest_Probing
+
+Protocol: IODEF-RID
+
+Condition: The prober sends an Investigation request to the target NP
+
+Packet Flow: Prober -> Target NP -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: IODEF-RID
+
+Template Base: IODEF-Investigation
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": ["Source Port", "Destination Port"], "application_layer": ["MsgType", "MsgDestination", "IncidentID", "TrafficType"]}
+
+Receive Filter: Result
+
+Success Condition: Receives a Result message indicating the source of the attack and actions taken
+
+Failure Condition: Receives a RequestAuthorization message with a reason for failure or no response is received
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The proper response to an Investigation request is a Result message. If there is a problem with the request, such as a failure to validate the digital signature or decrypt the request, a RequestAuthorization message is sent to the requestor.
+
+================================================================================
+

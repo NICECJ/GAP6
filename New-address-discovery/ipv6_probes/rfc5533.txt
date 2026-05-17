@@ -1,0 +1,247 @@
+RFC Document: RFC/rfc5533.txt
+Generated at: 2026-03-08 07:00:01
+================================================================================
+
+Analysis Summary:
+Found 7 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: Shim6
+--------------------------------------------------------------------------------
+Mechanism Name: Shim6 Keepalive
+
+Protocol: Shim6
+
+Condition: When a host has received packets from its peer but has not yet sent any packets from its ULP to the peer
+
+Packet Flow: A -> B, B -> A
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: Shim6
+
+Application Layer Protocol: None
+
+Template Base: Shim6 Control Message
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Type", "Checksum"], "application_layer": []}
+
+Receive Filter: Type == 66 (Keepalive)
+
+Success Condition: Reception of a Keepalive message from the peer
+
+Failure Condition: No Keepalive message received within a certain timeout period
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: FBD uses a Keepalive message which is sent when a host has received packets from its peer but has not yet sent any packets from its ULP to the peer.
+
+================================================================================
+
+Mechanism 2: Shim6
+--------------------------------------------------------------------------------
+Mechanism Name: Shim6 Probe Message
+
+Protocol: Shim6
+
+Condition: When there is a subsequent failure after the context is established
+
+Packet Flow: A -> B, B -> A
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: Shim6
+
+Application Layer Protocol: None
+
+Template Base: Shim6 Control Message
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": ["Type", "Checksum"], "application_layer": []}
+
+Receive Filter: Type == 67 (Probe Reply)
+
+Success Condition: Reception of a Probe Reply message from the peer
+
+Failure Condition: No Probe Reply message received within a certain timeout period
+
+Prerequisites: ["Context is established"]
+
+Confidence: High
+
+RFC Sentence: When the context is established and there is a subsequent failure, there needs to be a way to probe the set of locator pairs to efficiently find a working pair. This document reserves a Probe message type, with the packet format and processing rules specified in [4].
+
+================================================================================
+
+Mechanism 3: Shim6
+--------------------------------------------------------------------------------
+Mechanism Name: Shim6 I1-R1 Exchange
+
+Protocol: Shim6
+
+Condition: Target has no existing context with the initiator
+
+Packet Flow: Initiator -> Responder -> Initiator
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: Shim6
+
+Application Layer Protocol: None
+
+Template Base: Shim6 I1 Message
+
+Fields To Modify: {"network_layer": ["IPv6 Source Address", "IPv6 Destination Address"], "transport_layer": ["Initiator Context Tag", "Initiator Nonce"], "application_layer": []}
+
+Receive Filter: Type == 2 (R1)
+
+Success Condition: R1 message received with Initiator Nonce matching the one sent in I1
+
+Failure Condition: No R1 message received or Initiator Nonce does not match
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The responder sends this in response to an I1 message, without creating any state specific to the initiator.
+
+================================================================================
+
+Mechanism 4: Shim6
+--------------------------------------------------------------------------------
+Mechanism Name: Shim6 R1bis-I2bis Exchange
+
+Protocol: Shim6
+
+Condition: Target does not have context state for the received Context Tag
+
+Packet Flow: Responder -> Initiator -> Responder
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: Shim6
+
+Application Layer Protocol: None
+
+Template Base: Shim6 R1bis Message
+
+Fields To Modify: {"network_layer": ["IPv6 Source Address", "IPv6 Destination Address"], "transport_layer": ["Packet Context Tag", "Responder Nonce"], "application_layer": []}
+
+Receive Filter: Type == 6 (I2bis)
+
+Success Condition: I2bis message received with Responder Nonce matching the one sent in R1bis
+
+Failure Condition: No I2bis message received or Responder Nonce does not match
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: Should a host receive a packet with a Shim6 Payload Extension header or Shim6 control message with type code 64-127 (such as an Update or Probe message), and the host does not have any context state for the received Context Tag, then it will generate a R1bis message.
+
+================================================================================
+
+Mechanism 5: Shim6
+--------------------------------------------------------------------------------
+Mechanism Name: Shim6 Update Request-Update Acknowledgement Exchange
+
+Protocol: Shim6
+
+Condition: Target has an existing context with the initiator
+
+Packet Flow: Initiator -> Responder -> Initiator
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: Shim6
+
+Application Layer Protocol: None
+
+Template Base: Shim6 Update Request Message
+
+Fields To Modify: {"network_layer": ["IPv6 Source Address", "IPv6 Destination Address"], "transport_layer": ["Receiver Context Tag", "Request Nonce"], "application_layer": []}
+
+Receive Filter: Type == 65 (Update Acknowledgement)
+
+Success Condition: Update Acknowledgement message received with Request Nonce matching the one sent in Update Request
+
+Failure Condition: No Update Acknowledgement message received or Request Nonce does not match
+
+Prerequisites: ["Context is established"]
+
+Confidence: High
+
+RFC Sentence: This message is sent in response to an Update Request message. It implies that the Update Request has been received and that any new locators in the Update Request can now be used as the source locators of packets.
+
+================================================================================
+
+Mechanism 6: Shim6
+--------------------------------------------------------------------------------
+Mechanism Name: Shim6 Error Response (Unknown Message Type)
+
+Protocol: Shim6
+
+Condition: The target receives a shim control message with an unknown message type
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: None
+
+Application Layer Protocol: Shim6
+
+Template Base: Shim6 control message
+
+Fields To Modify: {"network_layer": ["IPv6 Destination Address"], "transport_layer": [], "application_layer": ["Shim6 Message Type"]}
+
+Receive Filter: Type == 68 (Error) and Error Code == 0
+
+Success Condition: Receiving a Shim6 Error message with Error Code=0
+
+Failure Condition: No response or receiving a different type of message
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If the packet contains a shim message type that is unknown to the receiver, then a Shim6 Error message with Error Code=0 is generated and sent back.
+
+================================================================================
+
+Mechanism 7: Shim6
+--------------------------------------------------------------------------------
+Mechanism Name: Shim6 Error Response (Unknown Critical Option)
+
+Protocol: Shim6
+
+Condition: The target receives a control message with an unknown option marked as critical (C=1)
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: None
+
+Application Layer Protocol: Shim6
+
+Template Base: Shim6 control message
+
+Fields To Modify: {"network_layer": ["IPv6 Destination Address"], "transport_layer": [], "application_layer": ["Shim6 Message Type", "Shim6 Option Type", "C flag"]}
+
+Receive Filter: Type == 68 (Error) and Error Code == 1
+
+Success Condition: Receiving a Shim6 Error message with Error Code=1
+
+Failure Condition: No response or receiving a different type of message
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If there is any option in the message with C=1 that isn't known to the host, then the host MUST send a Shim6 Error message with Error Code=1 with the Pointer field referencing the first octet of the Option Type.
+
+================================================================================
+

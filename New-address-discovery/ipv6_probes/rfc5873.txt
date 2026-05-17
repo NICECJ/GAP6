@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc5873.txt
+Generated at: 2026-03-08 05:33:54
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: PANA
+--------------------------------------------------------------------------------
+Mechanism Name: PANA Pre-Authentication Initiation
+
+Protocol: PANA
+
+Condition: PaC initiates pre-authentication
+
+Packet Flow: PaC -> CPAA
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: PANA
+
+Template Base: PANA PCI message
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["Flags (set 'E' bit)"]}
+
+Receive Filter: PANA PAR message with 'S' and 'E' bits set
+
+Success Condition: Reception of PAR message with 'S' and 'E' bits set
+
+Failure Condition: Reception of PAR message with 'E' bit cleared or no response
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: When a PaC initiates pre-authentication, it sends a PANA-Client-Initiation (PCI) message with the 'E' (prE-authentication) bit set. The CPAA responds with a PANA-Auth-Request (PAR) message with the 'S' (Start) and 'E' (prE-authentication) bits set only if it supports pre-authentication.
+
+================================================================================
+

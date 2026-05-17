@@ -1,0 +1,77 @@
+RFC Document: RFC/rfc5296.txt
+Generated at: 2026-03-08 05:40:32
+================================================================================
+
+Analysis Summary:
+Found 2 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: EAP
+--------------------------------------------------------------------------------
+Mechanism Name: EAP-Initiate/Re-auth
+
+Protocol: EAP
+
+Condition: Peer has valid, unexpired key material from a previous EAP authentication
+
+Packet Flow: Peer -> Authenticator -> ER Server -> Authenticator -> Peer
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: EAP
+
+Template Base: EAP-Initiate/Re-auth
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["keyName-NAI", "Sequence Number"]}
+
+Receive Filter: EAP-Finish/Re-auth message with matching keyName-NAI and sequence number
+
+Success Condition: Reception of an EAP-Finish/Re-auth message with a valid integrity check using rIK
+
+Failure Condition: No response or invalid integrity check in the EAP-Finish/Re-auth message
+
+Prerequisites: ["Valid and unexpired key material from a previous EAP authentication"]
+
+Confidence: High
+
+RFC Sentence: The peer sends an EAP-Initiate/Re-auth message that contains the keyName-NAI to identify the ER server's domain and the rIK used to protect the message, and a sequence number for replay protection. In response to the EAP-Initiate/Re-auth message, the server sends an EAP-Finish/Re-auth message; this message is integrity protected with the rIK.
+
+================================================================================
+
+Mechanism 2: EAP
+--------------------------------------------------------------------------------
+Mechanism Name: EAP-Initiate/Re-auth-Start
+
+Protocol: EAP
+
+Condition: The target has not already initiated an ERP exchange and does not have the domain information
+
+Packet Flow: Prober (Authenticator) -> Target (Peer) -> Prober (Authenticator)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: EAP
+
+Template Base: EAP-Initiate/Re-auth-Start
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["Domain Name"]}
+
+Receive Filter: EAP-Initiate/Re-auth
+
+Success Condition: Reception of an EAP-Initiate/Re-auth message
+
+Failure Condition: No response or silent discard of the EAP-Initiate/Re-auth-Start message
+
+Prerequisites: ["Target has not already initiated an ERP exchange", "Target does not have the domain information"]
+
+Confidence: High
+
+RFC Sentence: The peer SHOULD send the EAP-Initiate/Re-auth message in response to the EAP-Initiate/Re-auth-Start message from the authenticator.
+
+================================================================================
+

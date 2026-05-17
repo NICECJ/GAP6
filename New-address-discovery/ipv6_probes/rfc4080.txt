@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc4080.txt
+Generated at: 2026-03-08 04:46:23
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: NSIS signaling protocol
+--------------------------------------------------------------------------------
+Mechanism Name: End-to-End Addressing for Route Change Detection
+
+Protocol: NSIS signaling protocol
+
+Condition: Route change has occurred and needs to be detected
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP or TCP
+
+Application Layer Protocol: NSIS signaling protocol
+
+Template Base: NSIS signaling packet
+
+Fields To Modify: {"network_layer": ["destination IP address", "source IP address"], "transport_layer": ["source port", "destination port"], "application_layer": ["flow identifier"]}
+
+Receive Filter: ICMP error messages or signaling packet responses
+
+Success Condition: Receiving a response packet with the same flow identifier
+
+Failure Condition: No response packet received or receiving an ICMP error message indicating unreachable destination
+
+Prerequisites: []
+
+Confidence: Medium
+
+RFC Sentence: If signaling packets are given source and destination addresses identical to data packets, signaling and data may still diverge because of layer-4 load balancing (based on protocol or port). Such techniques would also cause ICMP errors to be misdirected to the source of the data because of source address spoofing. If signaling packets are made identical in the complete 5-tuple, divergence may still occur because of the presence of router alert options. The same ICMP misdirection applies, and it becomes difficult for the end systems to distinguish between data and signaling packets.
+
+================================================================================
+

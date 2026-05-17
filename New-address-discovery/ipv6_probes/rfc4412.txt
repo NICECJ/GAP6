@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc4412.txt
+Generated at: 2026-03-08 09:43:56
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: SIP
+--------------------------------------------------------------------------------
+Mechanism Name: OPTIONS with Resource-Priority
+
+Protocol: SIP
+
+Condition: The target SIP element is a compliant implementation
+
+Packet Flow: UAC -> UAS/Proxy -> UAC
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: SIP
+
+Template Base: SIP OPTIONS request
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["Destination Port"], "application_layer": ["Resource-Priority"]}
+
+Receive Filter: SIP 200 OK response
+
+Success Condition: Response contains Accept-Resource-Priority header
+
+Failure Condition: Response does not contain Accept-Resource-Priority header or returns 420 (Bad Extension) with Unsupported header
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: A compliant implementation SHOULD return an 'Accept-Resource-Priority' header field in OPTIONS responses enumerating all valid resource values, but an RP actor MAY be configured not to return such values or only to return them to authorized requestors.
+
+================================================================================
+

@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc6612.txt
+Generated at: 2026-03-08 05:24:37
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: MIPv6
+--------------------------------------------------------------------------------
+Mechanism Name: MIPv6 Binding Update
+
+Protocol: MIPv6
+
+Condition: MN has moved to a non-PMIPv6 domain and has an active MIPv6 session
+
+Packet Flow: MN -> HA
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: MIPv6
+
+Template Base: MIPv6 Binding Update
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": ["Source Port", "Destination Port"], "application_layer": ["Home Address", "Care-of Address", "R bit"]}
+
+Receive Filter: MIPv6 Binding Acknowledgment
+
+Success Condition: Reception of MIPv6 Binding Acknowledgment with status code indicating success
+
+Failure Condition: Reception of MIPv6 Binding Acknowledgment with status code indicating failure or no response
+
+Prerequisites: ["Active MIPv6 session", "MN has moved to a non-PMIPv6 domain"]
+
+Confidence: High
+
+RFC Sentence: When the MN hands over to an access network that does not support Proxy Mobile IPv6, it sends a Binding Update to the HA. The MN may set the R bit defined in the Network Mobility (NEMO) specification (implicit mode) [RFC3963] in order to indicate that the entire HNP is moved to the new CoA.
+
+================================================================================
+

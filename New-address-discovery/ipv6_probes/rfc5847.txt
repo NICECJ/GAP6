@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc5847.txt
+Generated at: 2026-03-08 04:54:37
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: Mobility Header (MH Type 13)
+--------------------------------------------------------------------------------
+Mechanism Name: Heartbeat Request-Response
+
+Protocol: Mobility Header (MH Type 13)
+
+Condition: MAG has at least one proxy Binding Cache entry at the LMA for a mobile node attached to the MAG
+
+Packet Flow: MAG -> LMA -> MAG
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: Mobility Header (MH Type 13)
+
+Template Base: RFC3775 Section 6.1
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["MH Type", "Sequence Number", "R flag"]}
+
+Receive Filter: MH Type 13, R flag set to 1
+
+Success Condition: Heartbeat Response message received with matching Sequence Number
+
+Failure Condition: No Heartbeat Response message received within MISSING_HEARTBEATS_ALLOWED intervals
+
+Prerequisites: ["MAG and LMA must be configured with appropriate addresses and ports", "Mobile node must be attached to the MAG"]
+
+Confidence: High
+
+RFC Sentence: A PMIPv6 node MUST respond to a Heartbeat Request message with a Heartbeat Response message, irrespective of whether there is an active Binding Cache entry.
+
+================================================================================
+

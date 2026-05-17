@@ -1,0 +1,179 @@
+RFC Document: RFC/rfc4678.txt
+Generated at: 2026-03-08 05:10:33
+================================================================================
+
+Analysis Summary:
+Found 5 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: SASP
+--------------------------------------------------------------------------------
+Mechanism Name: Registration Request and Reply
+
+Protocol: SASP
+
+Condition: The target is a Group Workload Manager (GWM) and the prober is either a load balancer or an application
+
+Packet Flow: Prober -> Target (Registration Request) -> Target -> Prober (Registration Reply)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: SASP
+
+Template Base: SASP Registration Request
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["Flag Field", "Group of Member Data Count", "Array of Group of Member Data Components"]}
+
+Receive Filter: SASP Registration Reply
+
+Success Condition: Return Code == 0x00 (Successful)
+
+Failure Condition: Return Code != 0x00
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: All SASP requests sent to the GWM will be acknowledged with a reply. The reply contains information requested as well as a single-byte response code describing the success of the request.
+
+================================================================================
+
+Mechanism 2: SASP
+--------------------------------------------------------------------------------
+Mechanism Name: DeRegistration Request and Reply
+
+Protocol: SASP
+
+Condition: The target is a Group Workload Manager (GWM) and the prober is either a load balancer or an application
+
+Packet Flow: Prober -> Target (DeRegistration Request) -> Target -> Prober (DeRegistration Reply)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: SASP
+
+Template Base: SASP DeRegistration Request
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["Flag Field", "Reason", "Group of Member Data Count", "Array of Group of Member Data Components"]}
+
+Receive Filter: SASP DeRegistration Reply
+
+Success Condition: Return Code == 0x00 (Successful)
+
+Failure Condition: Return Code != 0x00
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: All SASP requests sent to the GWM will be acknowledged with a reply. The reply contains information requested as well as a single-byte response code describing the success of the request.
+
+================================================================================
+
+Mechanism 3: SASP
+--------------------------------------------------------------------------------
+Mechanism Name: Get Weights Request and Reply
+
+Protocol: SASP
+
+Condition: The target is a Group Workload Manager (GWM) and the prober is a load balancer
+
+Packet Flow: Prober -> Target (Get Weights Request) -> Target -> Prober (Get Weights Reply)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: SASP
+
+Template Base: SASP Get Weights Request
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["Group Data Count", "Array of Group Data Components"]}
+
+Receive Filter: SASP Get Weights Reply
+
+Success Condition: Return Code == 0x00 (Successful)
+
+Failure Condition: Return Code != 0x00
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: All SASP requests sent to the GWM will be acknowledged with a reply. The reply contains information requested as well as a single-byte response code describing the success of the request.
+
+================================================================================
+
+Mechanism 4: SASP
+--------------------------------------------------------------------------------
+Mechanism Name: Set Member State Request and Reply
+
+Protocol: SASP
+
+Condition: The target is a Group Workload Manager (GWM) and the prober is a load balancer or an application
+
+Packet Flow: Prober (LB/Application) -> Target (GWM) -> Prober (LB/Application)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: SASP
+
+Template Base: SASP_SetMemberStateRequest
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["SetMemberState Req.Type", "Flag Field", "Group of Member State Data Count", "Array of Group of Member State Data Components"]}
+
+Receive Filter: SASP_SetMemberStateReply
+
+Success Condition: Return Code == 0x00 (Successful)
+
+Failure Condition: Return Code != 0x00 (e.g., 0x10, 0x11, 0x41, 0x42, 0x43, 0x44, 0x46, 0x61)
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The target is required to send a Set Member State Reply with a Return Code indicating the status of the action taken.
+
+================================================================================
+
+Mechanism 5: SASP
+--------------------------------------------------------------------------------
+Mechanism Name: Set LB State Request and Reply
+
+Protocol: SASP
+
+Condition: The target is a Group Workload Manager (GWM) and the prober is a load balancer
+
+Packet Flow: Prober (LB) -> Target (GWM) -> Prober (LB)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: SASP
+
+Template Base: SASP_SetLBStateRequest
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["Health", "Flags"]}
+
+Receive Filter: SASP_SetLBStateReply
+
+Success Condition: Return Code == 0x00 (Successful)
+
+Failure Condition: Return Code != 0x00 (e.g., 0x10, 0x11, 0x51)
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The LB sets its state with the Set LB State message and the following parameters. Health: 0x7F Flags: 0000 0011
+
+================================================================================
+

@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc4930.txt
+Generated at: 2026-03-08 07:30:26
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: EPP
+--------------------------------------------------------------------------------
+Mechanism Name: EPP_Hello
+
+Protocol: EPP
+
+Condition: Client sends a <hello> element after a successful <login> command and before a <logout> command
+
+Packet Flow: Client sends <hello>, Server responds with <greeting>
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: EPP
+
+Template Base: EPP_Hello
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": []}
+
+Receive Filter: EPP response containing <greeting> element
+
+Success Condition: Reception of a <greeting> element from the server
+
+Failure Condition: No response or an error response from the server
+
+Prerequisites: ["Successful TCP connection to the EPP server", "Successful <login> command"]
+
+Confidence: High
+
+RFC Sentence: An EPP server responds to a successful connection and <hello> element by returning a <greeting> element to the client.
+
+================================================================================
+

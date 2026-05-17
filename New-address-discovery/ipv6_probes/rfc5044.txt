@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc5044.txt
+Generated at: 2026-03-08 05:04:50
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: TCP
+--------------------------------------------------------------------------------
+Mechanism Name: TCP_SYN_ACK
+
+Protocol: TCP
+
+Condition: The target IPv6 address and port are configured to accept TCP connections
+
+Packet Flow: Initiator -> Responder
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: None
+
+Template Base: TCP SYN
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Source Port", "Destination Port", "Sequence Number"], "application_layer": []}
+
+Receive Filter: TCP SYN-ACK
+
+Success Condition: Receiving a TCP SYN-ACK packet
+
+Failure Condition: Receiving a TCP RST packet or no response
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The Initiating Consumer would initiate a TCP connection to the destination port. Acceptance/rejection of the connection would proceed as per normal TCP connection establishment.
+
+================================================================================
+

@@ -4,7 +4,7 @@ __pycache__/
 *.pyo
 *.pyd
 
-# Virtual environments
+# Python env
 venv/
 .venv/
 env/
@@ -13,7 +13,7 @@ env/
 .vscode/
 .idea/
 
-# System files
+# System
 .DS_Store
 Thumbs.db
 
@@ -24,7 +24,7 @@ outputs/
 results/
 logs/
 
-# Large generated files
+# Large / generated files
 *.pkl
 *.pt
 *.pth
@@ -36,8 +36,28 @@ logs/
 *.tar.gz
 *.rar
 
+# C/C++ build artifacts
+*.o
+*.so
+*.a
+*.out
+*.exe
+
+# New-address-discovery generated files
+New-address-discovery/build/
+New-address-discovery/bin/
+New-address-discovery/output/
+New-address-discovery/outputs/
+New-address-discovery/results/
+New-address-discovery/logs/
+New-address-discovery/**/*.log
+New-address-discovery/**/*.o
+New-address-discovery/**/*.so
+New-address-discovery/**/*.a
+New-address-discovery/**/*.pcap
+New-address-discovery/**/*.pkl
+
 # Old or unused modules
 DINT/
 DINT2/
 6Genos_original/
-New-address-discovery/

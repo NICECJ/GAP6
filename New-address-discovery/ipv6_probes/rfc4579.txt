@@ -1,0 +1,145 @@
+RFC Document: RFC/rfc4579.txt
+Generated at: 2026-03-08 08:12:26
+================================================================================
+
+Analysis Summary:
+Found 4 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: SIP
+--------------------------------------------------------------------------------
+Mechanism Name: SIP_OPTIONS_Probing
+
+Protocol: SIP
+
+Condition: The prober sends an OPTIONS request to a target URI
+
+Packet Flow: Prober -> Target: OPTIONS, Target -> Prober: 200 OK
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: SIP
+
+Template Base: SIP_OPTIONS
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["Request-URI", "To", "From", "Call-ID", "CSeq"]}
+
+Receive Filter: SIP/2.0 200 OK
+
+Success Condition: The 200 OK response contains the 'isfocus' feature parameter in the Contact header field
+
+Failure Condition: The 200 OK response does not contain the 'isfocus' feature parameter, or no response is received
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: A focus MUST include the 'isfocus' feature parameter in a 200 OK response to an OPTIONS unless the focus wishes to hide the fact that it is a focus.
+
+================================================================================
+
+Mechanism 2: SIP
+--------------------------------------------------------------------------------
+Mechanism Name: SIP_INVITE_to_Conference_URI
+
+Protocol: SIP
+
+Condition: The target SIP UA is invited to join a conference using a conference URI
+
+Packet Flow: Prober (Focus) -> Target (SIP UA) -> Prober (Focus)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: SIP
+
+Template Base: SIP_INVITE
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["Request-URI", "Contact", "To", "From", "Call-ID", "CSeq"]}
+
+Receive Filter: SIP/2.0 200 OK
+
+Success Condition: Receives a 200 OK response
+
+Failure Condition: Receives a non-200 response or no response
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The focus invites Carol to the conference by sending an INVITE. After the session is established, Carol subscribes to the conference URI. It is important to note that there is no dependency on Carol's SUBSCRIBE (F11) and the NOTIFY to Alice (F15) -- they occur asynchronously and independently.
+
+================================================================================
+
+Mechanism 3: SIP
+--------------------------------------------------------------------------------
+Mechanism Name: SIP_REFER_to_Conference_URI
+
+Protocol: SIP
+
+Condition: The target SIP UA is referred to the conference URI by another participant
+
+Packet Flow: Prober (Participant) -> Target (Focus) -> Prober (Participant)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: SIP
+
+Template Base: SIP_REFER
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["Request-URI", "Refer-To", "To", "From", "Call-ID", "CSeq"]}
+
+Receive Filter: SIP/2.0 202 Accepted
+
+Success Condition: Receives a 202 Accepted response
+
+Failure Condition: Receives a non-202 response or no response
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: A UA wishing to add a new participant SHOULD send a REFER request to the participant with a Refer-To header containing the conference URI.
+
+================================================================================
+
+Mechanism 4: SIP
+--------------------------------------------------------------------------------
+Mechanism Name: REFER_to_BYE
+
+Protocol: SIP
+
+Condition: Prober is authorized to remove participants from the conference
+
+Packet Flow: Prober -> Focus -> Target -> Focus -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: SIP
+
+Template Base: SIP_REFER
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Port"], "application_layer": ["To", "From", "Call-ID", "Refer-To"]}
+
+Receive Filter: SIP 202 Accepted
+
+Success Condition: Receives 202 Accepted response from the focus
+
+Failure Condition: Does not receive 202 Accepted response or receives an error response
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The focus sends a 202 Accepted response to the REFER request with the method set to BYE.
+
+================================================================================
+

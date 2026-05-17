@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc5734.txt
+Generated at: 2026-03-08 06:12:36
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: EPP
+--------------------------------------------------------------------------------
+Mechanism Name: EPP_Greeting
+
+Protocol: EPP
+
+Condition: TCP connection is established between EPP client and server.
+
+Packet Flow: Client initiates TCP connection -> Server responds with EPP <greeting>.
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: EPP
+
+Template Base: TCP connection establishment followed by EPP <greeting>.
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": []}
+
+Receive Filter: EPP <greeting> message
+
+Success Condition: EPP <greeting> message is received.
+
+Failure Condition: No EPP <greeting> message is received within a reasonable time.
+
+Prerequisites: ["TCP connection established"]
+
+Confidence: High
+
+RFC Sentence: The EPP server MUST return an EPP <greeting> to the client after the TCP session has been established.
+
+================================================================================
+

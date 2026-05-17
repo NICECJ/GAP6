@@ -1,0 +1,179 @@
+RFC Document: RFC/rfc5061.txt
+Generated at: 2026-03-08 04:52:40
+================================================================================
+
+Analysis Summary:
+Found 5 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: N/A
+--------------------------------------------------------------------------------
+Mechanism Name: ASCONF Chunk for Address Addition
+
+Protocol: N/A
+
+Condition: The target SCTP endpoint is part of an existing association and the prober has a new IP address to add
+
+Packet Flow: Prober sends ASCONF -> Target sends ASCONF-ACK
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: SCTP
+
+Application Layer Protocol: N/A
+
+Template Base: ASCONF Chunk
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": ["Sequence Number", "ASCONF-Request Correlation ID", "Address Parameter"], "application_layer": []}
+
+Receive Filter: ASCONF-ACK Chunk with matching Sequence Number and ASCONF-Request Correlation ID
+
+Success Condition: Reception of ASCONF-ACK Chunk with Success Indication
+
+Failure Condition: Reception of ASCONF-ACK Chunk with Error Cause Indication or no response
+
+Prerequisites: ["Existing SCTP association"]
+
+Confidence: High
+
+RFC Sentence: The Add IP Address parameter may only appear in the ASCONF Chunk type. This field contains an IPv4 or IPv6 address parameter as described in Section 3.3.2.1 of [RFC4960]. It informs the receiver that the address specified is to be added to the existing association.
+
+================================================================================
+
+Mechanism 2: N/A
+--------------------------------------------------------------------------------
+Mechanism Name: ASCONF Chunk for Address Deletion
+
+Protocol: N/A
+
+Condition: The target SCTP endpoint is part of an existing association and the prober has an IP address to delete
+
+Packet Flow: Prober sends ASCONF -> Target sends ASCONF-ACK
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: SCTP
+
+Application Layer Protocol: N/A
+
+Template Base: ASCONF Chunk
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": ["Sequence Number", "ASCONF-Request Correlation ID", "Address Parameter"], "application_layer": []}
+
+Receive Filter: ASCONF-ACK Chunk with matching Sequence Number and ASCONF-Request Correlation ID
+
+Success Condition: Reception of ASCONF-ACK Chunk with Success Indication
+
+Failure Condition: Reception of ASCONF-ACK Chunk with Error Cause Indication or no response
+
+Prerequisites: ["Existing SCTP association"]
+
+Confidence: High
+
+RFC Sentence: The Delete IP Address parameter may only appear in the ASCONF Chunk type. This field contains an IPv4 or IPv6 address parameter, as described in Section 3.3.2.1 of [RFC4960]. It informs the receiver that the address specified is to be removed from the existing association.
+
+================================================================================
+
+Mechanism 3: N/A
+--------------------------------------------------------------------------------
+Mechanism Name: ASCONF Chunk for Setting Primary Address
+
+Protocol: N/A
+
+Condition: The target SCTP endpoint is part of an existing association and the prober has a new primary IP address to set
+
+Packet Flow: Prober sends ASCONF -> Target sends ASCONF-ACK
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: SCTP
+
+Application Layer Protocol: N/A
+
+Template Base: ASCONF Chunk
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": ["Sequence Number", "ASCONF-Request Correlation ID", "Address Parameter"], "application_layer": []}
+
+Receive Filter: ASCONF-ACK Chunk with matching Sequence Number and ASCONF-Request Correlation ID
+
+Success Condition: Reception of ASCONF-ACK Chunk with Success Indication
+
+Failure Condition: Reception of ASCONF-ACK Chunk with Error Cause Indication or no response
+
+Prerequisites: ["Existing SCTP association"]
+
+Confidence: High
+
+RFC Sentence: The Set Primary IP Address parameter may appear in the ASCONF, the INIT, or the INIT-ACK Chunk Type. It requests the receiver to mark the specified address as the primary address to send data to (see Section 5.1.2 of [RFC4960]).
+
+================================================================================
+
+Mechanism 4: SCTP
+--------------------------------------------------------------------------------
+Mechanism Name: Error Response for Deleting Last IP Address
+
+Protocol: SCTP
+
+Condition: The prober sends an ASCONF Chunk with a Delete IP Address request for the last IP address in the association
+
+Packet Flow: ASCONF[DEL-IP:X] -> Error Cause TLV
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: SCTP
+
+Application Layer Protocol: None
+
+Template Base: SCTP_ASCI
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["ASCONF Chunk", "Delete IP Address parameter"], "application_layer": []}
+
+Receive Filter: SCTP Chunk Type == Error Cause TLV
+
+Success Condition: Reception of an Error Cause TLV with the error code 'Request to Delete Last Remaining IP Address'
+
+Failure Condition: Reception of ASCONF-ACK Chunk or no response within the expected time frame
+
+Prerequisites: ["Existing SCTP association"]
+
+Confidence: High
+
+RFC Sentence: If a request is received to delete the last remaining IP address of a peer endpoint, the receiver MUST send an Error Cause TLV with the Error Cause set to the new error code 'Request to Delete Last Remaining IP Address'.
+
+================================================================================
+
+Mechanism 5: SCTP
+--------------------------------------------------------------------------------
+Mechanism Name: Error Response for Deleting Source IP Address
+
+Protocol: SCTP
+
+Condition: The prober sends an ASCONF Chunk with a Delete IP Address request for the source IP address of the packet
+
+Packet Flow: ASCONF[DEL-IP:X] -> Error Cause TLV
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: SCTP
+
+Application Layer Protocol: None
+
+Template Base: SCTP_ASCI
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["ASCONF Chunk", "Delete IP Address parameter"], "application_layer": []}
+
+Receive Filter: SCTP Chunk Type == Error Cause TLV
+
+Success Condition: Reception of an Error Cause TLV with the error code 'Request to Delete Source IP Address'
+
+Failure Condition: Reception of ASCONF-ACK Chunk or no response within the expected time frame
+
+Prerequisites: ["Existing SCTP association"]
+
+Confidence: High
+
+RFC Sentence: If an endpoint receives an ADD IP Address request and does not have the local resources to add this new address to the association, it MUST return an Error Cause TLV set to the new error code 'Operation Refused Due to Resource Shortage'.
+
+================================================================================
+

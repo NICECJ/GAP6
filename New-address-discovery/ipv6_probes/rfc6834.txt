@@ -1,0 +1,77 @@
+RFC Document: RFC/rfc6834.txt
+Generated at: 2026-03-08 07:19:36
+================================================================================
+
+Analysis Summary:
+Found 2 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: LISP
+--------------------------------------------------------------------------------
+Mechanism Name: LISP_Map_Versioning_Response
+
+Protocol: LISP
+
+Condition: The ITR sends a LISP-encapsulated packet with a Destination Map-Version number older than the one stored in the ETR's EID-to-RLOC Database
+
+Packet Flow: ITR -> ETR -> ITR
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: LISP
+
+Template Base: LISP-encapsulated packet
+
+Fields To Modify: {"network_layer": ["Source Address (RLOC)", "Destination Address (RLOC)"], "transport_layer": ["Source Port", "Destination Port"], "application_layer": ["V-bit", "Destination Map-Version number"]}
+
+Receive Filter: Map-Request message from the target ETR
+
+Success Condition: Receiving a Map-Request message with the updated mapping
+
+Failure Condition: No response or receiving a packet with the same or newer Destination Map-Version number
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If the packet arrives with a Destination Map-Version number smaller (i.e., older) than the one stored in the EID-to-RLOC Database, this means that the ITR sending the packet has an old mapping in its EID-to-RLOC Cache containing stale information. The ETR MAY choose to normally process the encapsulated datagram according to [RFC6830]; however, the ITR sending the packet has to be informed that a newer mapping is available. This is done with a Map-Request message sent back to the ITR.
+
+================================================================================
+
+Mechanism 2: LISP
+--------------------------------------------------------------------------------
+Mechanism Name: LISP_Map_Versioning_Update
+
+Protocol: LISP
+
+Condition: The ETR receives a packet with a Source Map-Version number greater than the one stored in its EID-to-RLOC Cache
+
+Packet Flow: Prober (ITR) -> Target (ETR) -> Prober (ITR)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: LISP
+
+Template Base: LISP-encapsulated packet
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": ["Source Port", "Destination Port"], "application_layer": ["V-bit", "Source Map-Version number"]}
+
+Receive Filter: LISP-encapsulated packet with Map-Request message
+
+Success Condition: Map-Request message received with the correct Source EID
+
+Failure Condition: No Map-Request message received or received with incorrect Source EID
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If the ETR has an entry in its EID-to-RLOC Cache for the source EID, and the packet arrives with a Source Map-Version number greater (i.e., newer) than the one stored in the local EID-to-RLOC Cache, a Map-Request SHOULD be sent to get the new mapping for the source EID.
+
+================================================================================
+

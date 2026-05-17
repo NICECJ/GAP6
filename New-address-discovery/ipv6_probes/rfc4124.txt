@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc4124.txt
+Generated at: 2026-03-08 06:27:48
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: RSVP-TE
+--------------------------------------------------------------------------------
+Mechanism Name: CLASSTYPE Object Error Handling
+
+Protocol: RSVP-TE
+
+Condition: The target LSR does not support the particular Class-Type or the CLASSTYPE object is invalid
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: RSVP
+
+Application Layer Protocol: RSVP-TE
+
+Template Base: RSVP Path message template
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Session Type", "LABEL_REQUEST object"], "application_layer": ["CLASSTYPE object with specific Class-Type"]}
+
+Receive Filter: RSVP PathErr message with error code 28 (Diffserv-aware TE Error)
+
+Success Condition: Receiving a PathErr message with an error value indicating a specific reason (e.g., Unsupported Class-Type, Invalid Class-Type value, etc.)
+
+Failure Condition: No response or receiving a PathErr message with a different error code
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: An LSR receiving a Path message with the CLASSTYPE object that: recognizes the CLASSTYPE object, but does not support the particular Class-Type, MUST send a PathErr towards the sender with the error code "Diffserv-aware TE Error" and an error value of "Unsupported Class-Type".
+
+================================================================================
+

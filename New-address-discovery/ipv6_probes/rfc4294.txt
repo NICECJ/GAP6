@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc4294.txt
+Generated at: 2026-03-08 10:40:29
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: ICMPv6
+--------------------------------------------------------------------------------
+Mechanism Name: Neighbor Solicitation and Advertisement
+
+Protocol: ICMPv6
+
+Condition: The target is a neighboring node and the prober sends a unicast Neighbor Solicitation (NS) message
+
+Packet Flow: Prober -> Target (NS), Target -> Prober (NA)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: ICMPv6
+
+Application Layer Protocol: None
+
+Template Base: ICMPv6 Neighbor Discovery
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Target Address"], "application_layer": []}
+
+Receive Filter: ICMPv6 Neighbor Advertisement with Target Address matching the probed address
+
+Success Condition: Reception of a Neighbor Advertisement (NA) message from the target
+
+Failure Condition: No Neighbor Advertisement (NA) message received within a specified timeout
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: However, when a node receives a unicast Neighbor Solicitation (NS) message (that may be a NUD's NS), the node MUST respond to it (i.e., send a unicast Neighbor Advertisement).
+
+================================================================================
+

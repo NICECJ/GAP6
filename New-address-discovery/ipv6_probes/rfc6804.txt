@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc6804.txt
+Generated at: 2026-03-08 04:52:57
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: DNS
+--------------------------------------------------------------------------------
+Mechanism Name: DISCOVER_Query
+
+Protocol: DNS
+
+Condition: QDCOUNT is not equal to 0
+
+Packet Flow: Requester (unicast) -> Multicast destination -> Responder (unicast)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: DNS
+
+Template Base: DNS_Query
+
+Fields To Modify: {"network_layer": ["destination_address"], "transport_layer": ["destination_port"], "application_layer": ["opcode", "QNAME", "QTYPE", "QDCOUNT"]}
+
+Receive Filter: DNS response with RA set or authoritative answers
+
+Success Condition: Receiving a DNS response with RA set or authoritative answers
+
+Failure Condition: No response received or receiving a DNS response with no answers and RA not set
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: Hence, replies to DISCOVER queries will always be authoritative or else have RA (Recursion Available) set.
+
+================================================================================
+

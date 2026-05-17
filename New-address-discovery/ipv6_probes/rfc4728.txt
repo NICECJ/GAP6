@@ -1,0 +1,213 @@
+RFC Document: RFC/rfc4728.txt
+Generated at: 2026-03-08 10:19:12
+================================================================================
+
+Analysis Summary:
+Found 6 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: DSR
+--------------------------------------------------------------------------------
+Mechanism Name: Route Discovery
+
+Protocol: DSR
+
+Condition: When a node does not have a route to the target IPv6 address
+
+Packet Flow: Initiator (A) -> Intermediate Nodes (B, C, D) -> Target (E) -> Initiator (A)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: None
+
+Application Layer Protocol: DSR
+
+Template Base: DSR Route Discovery
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": [], "application_layer": ["Initiator Address", "Target Address", "Request Identification", "Route Record"]}
+
+Receive Filter: Route Reply with matching Request Identification
+
+Success Condition: Route Reply received with a valid route to the target
+
+Failure Condition: No Route Reply received within a specified timeout period
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: When another node receives this Route Request (such as node B in this example), if it is the target of the Route Discovery, it returns a 'Route Reply' to the initiator of the Route Discovery, giving a copy of the accumulated route record from the Route Request.
+
+================================================================================
+
+Mechanism 2: DSR
+--------------------------------------------------------------------------------
+Mechanism Name: Route Request to Target
+
+Protocol: DSR
+
+Condition: The target address is the node's own IP address
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: None
+
+Application Layer Protocol: DSR
+
+Template Base: DSR Route Request
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": [], "application_layer": ["Option Type", "Opt Data Len", "Identification", "Target Address"]}
+
+Receive Filter: DSR Route Reply option in the DSR Options header
+
+Success Condition: Reception of a Route Reply packet with a valid source route
+
+Failure Condition: No Route Reply packet received within a reasonable time
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If the Target Address field in the Route Request matches this node's own IP address, then the node SHOULD return a Route Reply to the initiator of this Route Request (the Source Address in the IP header of the packet), as described in Section 8.2.4.
+
+================================================================================
+
+Mechanism 3: DSR
+--------------------------------------------------------------------------------
+Mechanism Name: DSR Acknowledgement Request
+
+Protocol: DSR
+
+Condition: The target node must understand and support the DSR Acknowledgement Request option
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: None
+
+Application Layer Protocol: DSR
+
+Template Base: DSR Acknowledgement Request
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": ["Option Type", "Opt Data Len", "Identification"], "application_layer": []}
+
+Receive Filter: DSR Options header with Acknowledgement option and matching Identification
+
+Success Condition: Reception of an Acknowledgement option with the same Identification value as the Acknowledgement Request
+
+Failure Condition: No response or a Route Error option is received
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If a node receives a packet with an Acknowledgement Request option, the node MUST process the Acknowledgement Request option as described in Section 8.3.3.
+
+================================================================================
+
+Mechanism 4: DSR
+--------------------------------------------------------------------------------
+Mechanism Name: Route Error for Unknown DSR Option
+
+Protocol: DSR
+
+Condition: The most significant bit of the Option Type is set and the packet does not contain a Route Request option
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: None
+
+Application Layer Protocol: DSR
+
+Template Base: DSR Unknown Option
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Option Type", "Opt Data Len"], "application_layer": []}
+
+Receive Filter: Route Error message with Error Type set to OPTION_NOT_SUPPORTED
+
+Success Condition: Receiving a Route Error message with Error Type set to OPTION_NOT_SUPPORTED
+
+Failure Condition: No Route Error message received within a timeout period
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If the most significant bit of the Option Type is set (that is, Option Type & 0x80 is nonzero), and this packet does not contain a Route Request option, a node SHOULD return a Route Error to the IP Source Address, following the steps described in Section 8.3.4, except that the Error Type MUST be set to OPTION_NOT_SUPPORTED and the Unsupported Opt field MUST be set to the Option Type triggering the Route Error.
+
+================================================================================
+
+Mechanism 5: DSR
+--------------------------------------------------------------------------------
+Mechanism Name: DSR_Unknown_Flow_Probing
+
+Protocol: DSR
+
+Condition: The target node does not have an entry for the Flow ID in its Flow Table
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: None
+
+Application Layer Protocol: DSR
+
+Template Base: DSR packet template
+
+Fields To Modify: {"network_layer": ["IP Destination Address"], "transport_layer": [], "application_layer": ["Flow ID in DSR Options header"]}
+
+Receive Filter: DSR Route Error packet with type UNKNOWN_FLOW
+
+Success Condition: Reception of a Route Error packet of type UNKNOWN_FLOW
+
+Failure Condition: No response or a different type of Route Error packet
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If a node receives a packet with a Flow ID that indicates a flow not currently in the node's Flow Table, it returns a Route Error of type UNKNOWN_FLOW with Error Destination and IP Destination addresses copied from the IP Source of the packet triggering the error.
+
+================================================================================
+
+Mechanism 6: DSR
+--------------------------------------------------------------------------------
+Mechanism Name: DSR_Default_Flow_Unknown_Probing
+
+Protocol: DSR
+
+Condition: The target node does not have a matching entry in its Default Flow Table
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: None
+
+Application Layer Protocol: DSR
+
+Template Base: DSR packet template
+
+Fields To Modify: {"network_layer": ["IP Destination Address"], "transport_layer": [], "application_layer": []}
+
+Receive Filter: DSR Route Error packet with type DEFAULT_FLOW_UNKNOWN
+
+Success Condition: Reception of a Route Error packet of type DEFAULT_FLOW_UNKNOWN
+
+Failure Condition: No response or a different type of Route Error packet
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If a node receives a packet with no DSR Options header and no DSR Flow State header, it checks the Default Flow Table. If there is a matching entry, it forwards to the next hop indicated in the Flow Table for the default flow. Otherwise, it returns a Route Error of type DEFAULT_FLOW_UNKNOWN with Error Destination and IP Destination addresses copied from the IP Source Address of the packet triggering the error.
+
+================================================================================
+

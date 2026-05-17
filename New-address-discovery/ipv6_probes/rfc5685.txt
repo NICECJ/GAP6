@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc5685.txt
+Generated at: 2026-03-08 07:07:57
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: IKEv2
+--------------------------------------------------------------------------------
+Mechanism Name: IKEv2 Redirect during IKE_SA_INIT
+
+Protocol: IKEv2
+
+Condition: The target is a VPN gateway that supports IKEv2 and the redirect mechanism
+
+Packet Flow: Initiator -> Responder (initial VPN GW) -> Initiator -> Responder (selected VPN GW)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: IKEv2
+
+Template Base: IKEv2 Redirect Mechanism
+
+Fields To Modify: {"network_layer": ["Source IPv6 Address", "Destination IPv6 Address"], "transport_layer": ["Source Port", "Destination Port"], "application_layer": ["HDR", "SAi1", "KEi", "Ni", "N(REDIRECT_SUPPORTED)"]}
+
+Receive Filter: HDR(A,0), N(REDIRECT, New_GW_ID, Ni_data)
+
+Success Condition: The response packet contains a valid REDIRECT notification with matching nonce data
+
+Failure Condition: The response packet does not contain a REDIRECT notification or the nonce data does not match
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: To redirect an IKEv2 session to another VPN gateway, the VPN gateway that initially received the IKE_SA_INIT request selects another VPN gateway and replies with an IKE_SA_INIT response containing a REDIRECT notification message (see Section 9.2).
+
+================================================================================
+

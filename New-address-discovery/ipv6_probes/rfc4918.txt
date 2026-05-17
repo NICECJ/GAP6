@@ -1,0 +1,213 @@
+RFC Document: RFC/rfc4918.txt
+Generated at: 2026-03-08 06:39:54
+================================================================================
+
+Analysis Summary:
+Found 6 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: HTTP/1.1
+--------------------------------------------------------------------------------
+Mechanism Name: PROPFIND
+
+Protocol: HTTP/1.1
+
+Condition: The resource or collection is WebDAV-compliant and the server supports the PROPFIND method.
+
+Packet Flow: Client sends PROPFIND -> Server responds with 207 Multi-Status
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: HTTP/1.1
+
+Template Base: HTTP/1.1 PROPFIND request
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["Destination Port"], "application_layer": ["Request-URI", "Depth", "XML body (optional)"]}
+
+Receive Filter: HTTP/1.1 207 Multi-Status
+
+Success Condition: The response contains a 200 OK status for the requested properties.
+
+Failure Condition: The response contains a 404 Not Found status for the requested properties or a 403 Forbidden status.
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: All DAV-compliant resources MUST support the PROPFIND method and the propfind XML element (Section 14.20) along with all XML elements defined for use with that element.
+
+================================================================================
+
+Mechanism 2: HTTP
+--------------------------------------------------------------------------------
+Mechanism Name: MKCOL
+
+Protocol: HTTP
+
+Condition: The Request-URI is not mapped to any existing resource
+
+Packet Flow: Client -> Server (MKCOL Request), Server -> Client (201 Created Response)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: HTTP
+
+Template Base: HTTP_METHOD
+
+Fields To Modify: {"network_layer": ["Destination IPv6 address"], "transport_layer": ["Destination port"], "application_layer": ["Request-URI"]}
+
+Receive Filter: HTTP/1.1 201 Created
+
+Success Condition: Receives HTTP/1.1 201 Created response
+
+Failure Condition: Receives any other HTTP status code or no response
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: When MKCOL is invoked without a request body, the newly created collection SHOULD have no members.
+
+================================================================================
+
+Mechanism 3: HTTP
+--------------------------------------------------------------------------------
+Mechanism Name: COPY
+
+Protocol: HTTP
+
+Condition: The source resource exists and the destination is an unmapped URL
+
+Packet Flow: Client -> Server (COPY Request), Server -> Client (204 No Content Response)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: HTTP
+
+Template Base: HTTP_METHOD
+
+Fields To Modify: {"network_layer": ["Destination IPv6 address"], "transport_layer": ["Destination port"], "application_layer": ["Request-URI", "Destination"]}
+
+Receive Filter: HTTP/1.1 204 No Content
+
+Success Condition: Receives HTTP/1.1 204 No Content response
+
+Failure Condition: Receives any other HTTP status code or no response
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If the server decides to reject the request based on the presence of an entity or the type of an entity, it should use the 415 (Unsupported Media Type) status code.
+
+================================================================================
+
+Mechanism 4: HTTP
+--------------------------------------------------------------------------------
+Mechanism Name: COPY with No Overwrite
+
+Protocol: HTTP
+
+Condition: The source resource exists and the destination URL is mapped to a resource
+
+Packet Flow: Client -> Server (COPY Request), Server -> Client (412 Precondition Failed Response)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: HTTP
+
+Template Base: HTTP_METHOD
+
+Fields To Modify: {"network_layer": ["Destination IPv6 address"], "transport_layer": ["Destination port"], "application_layer": ["Request-URI", "Destination", "Overwrite"]}
+
+Receive Filter: HTTP/1.1 412 Precondition Failed
+
+Success Condition: Receives HTTP/1.1 412 Precondition Failed response
+
+Failure Condition: Receives any other HTTP status code or no response
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If a COPY request has an Overwrite header with a value of 'F', and a resource exists at the Destination URL, the server MUST fail the request.
+
+================================================================================
+
+Mechanism 5: HTTP
+--------------------------------------------------------------------------------
+Mechanism Name: OPTIONS Method with DAV Header
+
+Protocol: HTTP
+
+Condition: The target is a DAV-compliant resource
+
+Packet Flow: Prober sends OPTIONS request with DAV header, Target responds with DAV header
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: HTTP
+
+Template Base: HTTP_OPTIONS
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["Destination Port"], "application_layer": ["Host", "DAV"]}
+
+Receive Filter: HTTP/1.1 200 OK
+
+Success Condition: Response contains DAV header with compliance-class '1'
+
+Failure Condition: Response does not contain DAV header or returns a 404 (Not Found) or 405 (Method Not Allowed) status code
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: All DAV-compliant resources MUST return the DAV header with compliance-class '1' on all OPTIONS responses.
+
+================================================================================
+
+Mechanism 6: HTTP/1.1
+--------------------------------------------------------------------------------
+Mechanism Name: supportedlock_property_retrieval
+
+Protocol: HTTP/1.1
+
+Condition: The target resource supports the DAV:supportedlock property
+
+Packet Flow: Client sends PROPFIND -> Server responds with 207 Multi-Status
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: HTTP/1.1
+
+Template Base: PROPFIND
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["Destination Port"], "application_layer": ["Host", "Content-Type", "Content-Length", "XML body with DAV:supportedlock"]}
+
+Receive Filter: HTTP/1.1 207 Multi-Status
+
+Success Condition: Response contains the DAV:supportedlock property with lock entries
+
+Failure Condition: Response does not contain the DAV:supportedlock property or returns an error status
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: Returns a listing of the combinations of scope and access types that may be specified in a lock request on the resource.
+
+================================================================================
+

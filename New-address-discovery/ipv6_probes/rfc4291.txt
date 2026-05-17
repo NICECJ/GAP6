@@ -1,0 +1,77 @@
+RFC Document: RFC/rfc4291.txt
+Generated at: 2026-03-08 08:14:27
+================================================================================
+
+Analysis Summary:
+Found 2 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: ICMPv6
+--------------------------------------------------------------------------------
+Mechanism Name: Subnet-Router Anycast Probing
+
+Protocol: ICMPv6
+
+Condition: The prober has the subnet prefix of the target subnet
+
+Packet Flow: Prober -> Router (on the subnet) -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: ICMPv6
+
+Application Layer Protocol: None
+
+Template Base: ICMPv6 Echo Request
+
+Fields To Modify: {"network_layer": ["destination address"], "transport_layer": ["ICMPv6 type", "ICMPv6 code", "ICMPv6 identifier", "ICMPv6 sequence number"], "application_layer": []}
+
+Receive Filter: ICMPv6 type = 129 (Echo Reply) AND source address = Subnet-Router anycast address
+
+Success Condition: Reception of an ICMPv6 Echo Reply from the Subnet-Router anycast address
+
+Failure Condition: No ICMPv6 Echo Reply received within a specified timeout
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: Packets sent to the Subnet-Router anycast address will be delivered to one router on the subnet. All routers are required to support the Subnet-Router anycast addresses for the subnets to which they have interfaces.
+
+================================================================================
+
+Mechanism 2: ICMPv6
+--------------------------------------------------------------------------------
+Mechanism Name: Solicited-Node Multicast Probing
+
+Protocol: ICMPv6
+
+Condition: The target node has a unicast or anycast address configured
+
+Packet Flow: Prober -> Target (Solicited-Node Multicast Address) -> Prober (NA)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: None
+
+Application Layer Protocol: ICMPv6
+
+Template Base: ICMPv6 Neighbor Solicitation (NS)
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": [], "application_layer": ["Target Address"]}
+
+Receive Filter: ICMPv6 Neighbor Advertisement (NA) with Target Address matching the probed unicast or anycast address
+
+Success Condition: Reception of a valid NA message from the target node
+
+Failure Condition: No NA message received within a specified timeout
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: A node is required to compute and join (on the appropriate interface) the associated Solicited-Node multicast addresses for all unicast and anycast addresses that have been configured for the node's interfaces (manually or automatically).
+
+================================================================================
+

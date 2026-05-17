@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc5425.txt
+Generated at: 2026-03-08 06:05:31
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: TLS
+--------------------------------------------------------------------------------
+Mechanism Name: TLS_Client_Hello
+
+Protocol: TLS
+
+Condition: The prober (acting as a TLS client) initiates a connection to the target (acting as a TLS server).
+
+Packet Flow: Prober (Client) -> Target (Server) -> Prober (Client)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: TLS
+
+Template Base: TLS handshake initiation
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["Client Hello parameters"]}
+
+Receive Filter: TLS Server Hello
+
+Success Condition: Reception of a TLS Server Hello message from the target.
+
+Failure Condition: No response or a TLS alert message is received.
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The transport sender should initiate a connection to the transport receiver and then send the TLS Client Hello to begin the TLS handshake.
+
+================================================================================
+

@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc5919.txt
+Generated at: 2026-03-08 05:49:19
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: LDP
+--------------------------------------------------------------------------------
+Mechanism Name: End-of-LIB Notification
+
+Protocol: LDP
+
+Condition: Peer has advertised the Unrecognized Notification capability during session establishment
+
+Packet Flow: Prober sends LDP Notification -> Target responds with LDP Notification
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: LDP
+
+Template Base: LDP Notification
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["Status TLV (Status Code 0x0000002F)", "FEC TLV (Typed Wildcard FEC Element)"]}
+
+Receive Filter: LDP Notification message with Status Code 0x0000002F
+
+Success Condition: Reception of LDP Notification message with Status Code 0x0000002F
+
+Failure Condition: No response or response with a different Status Code
+
+Prerequisites: ["LDP session established with peer", "Peer has advertised Unrecognized Notification capability"]
+
+Confidence: High
+
+RFC Sentence: An LDP speaker that conforms to this specification SHOULD signal completion of its label advertisements to a peer by means of a Notification message, if its peer has advertised the Unrecognized Notification capability during session establishment.
+
+================================================================================
+

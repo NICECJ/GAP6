@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc6669.txt
+Generated at: 2026-03-08 09:13:28
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: BFD
+--------------------------------------------------------------------------------
+Mechanism Name: BFD Control Packet for RDI
+
+Protocol: BFD
+
+Condition: An end point (MEP) detects a signal failure condition
+
+Packet Flow: Unidirectional from the detecting MEP to the peer MEP
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: BFD
+
+Template Base: BFD control packet template
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["Diagnostic Field", "Failure Flag"]}
+
+Receive Filter: BFD control packet with the failure flag set
+
+Success Condition: Reception of a BFD control packet with the failure flag up
+
+Failure Condition: No response or response with the failure flag not set
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: When an end point (MEP) detects a signal failure condition, it sets the flag up by setting the diagnostic field of the BFD control packet to a particular value to indicate the failure condition on the associated PW, LSP, or Section. Additionally, the BFD control packet is transmitted with the failure flag up to the other end point (its peer MEP).
+
+================================================================================
+

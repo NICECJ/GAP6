@@ -1,0 +1,111 @@
+RFC Document: RFC/rfc8986.txt
+Generated at: 2026-03-07 17:22:11
+================================================================================
+
+Analysis Summary:
+Found 3 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: ICMPv6
+--------------------------------------------------------------------------------
+Mechanism Name: End_ICMPv6_Time_Exceeded
+
+Protocol: ICMPv6
+
+Condition: IPv6 Hop Limit <= 1
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: None
+
+Application Layer Protocol: ICMPv6
+
+Template Base: ICMPv6_Time_Exceeded_Template
+
+Fields To Modify: {"network_layer": ["DA", "Hop Limit"], "transport_layer": [], "application_layer": []}
+
+Receive Filter: ICMPv6 Type == 3 and Code == 0
+
+Success Condition: Receiving an ICMPv6 Time Exceeded message with Code 0
+
+Failure Condition: No response or receiving a different ICMPv6 message
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If (IPv6 Hop Limit <= 1) { Send an ICMP Time Exceeded message to the Source Address with Code 0 (Hop limit exceeded in transit), interrupt packet processing, and discard the packet. }
+
+================================================================================
+
+Mechanism 2: ICMPv6
+--------------------------------------------------------------------------------
+Mechanism Name: End_ICMPv6_Parameter_Problem
+
+Protocol: ICMPv6
+
+Condition: Upper-Layer header type is not allowed by local configuration or SRH parameters out of range
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: None
+
+Application Layer Protocol: ICMPv6
+
+Template Base: ICMPv6_Parameter_Problem_Template
+
+Fields To Modify: {"network_layer": ["DA"], "transport_layer": [], "application_layer": ["Upper-Layer header type", "Code", "Pointer"]}
+
+Receive Filter: ICMPv6 Type == 4 and (Code == 0 or Code == 4)
+
+Success Condition: Receiving an ICMPv6 Parameter Problem message with Code 0 or Code 4
+
+Failure Condition: No response or receiving a different ICMPv6 message
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If (Upper-Layer header type is not allowed by local configuration) { Send an ICMP Parameter Problem to the Source Address with Code 4 (SR Upper-layer Header Error) and Pointer set to the offset of the Upper-Layer header, interrupt packet processing, and discard the packet. }
+
+================================================================================
+
+Mechanism 3: ICMPv6
+--------------------------------------------------------------------------------
+Mechanism Name: End.B6.Encaps_ICMP_Parameter_Problem
+
+Protocol: ICMPv6
+
+Condition: Last Entry > max_LE or Segments Left > Last Entry + 1
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: None
+
+Application Layer Protocol: ICMPv6
+
+Template Base: ICMPv6_Parameter_Problem_Template
+
+Fields To Modify: {"network_layer": ["DA", "Last Entry", "Segments Left"], "transport_layer": [], "application_layer": ["Code", "Pointer"]}
+
+Receive Filter: ICMPv6 Type == 4 and Code == 0 and Pointer set to the Segments Left field
+
+Success Condition: Receiving an ICMPv6 Parameter Problem message with Code 0 and Pointer set to the Segments Left field
+
+Failure Condition: No response or receiving a different ICMPv6 message
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If ((Last Entry > max_LE) or (Segments Left > Last Entry+1)) { Send an ICMP Parameter Problem to the Source Address with Code 0 (Erroneous header field encountered) and Pointer set to the Segments Left field, interrupt packet processing, and discard the packet. }
+
+================================================================================
+

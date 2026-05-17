@@ -1,0 +1,112 @@
+RFC Document: RFC/rfc6407.txt
+Generated at: 2026-03-08 08:52:01
+================================================================================
+
+Analysis Summary:
+Found 3 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: ISAKMP/GDOI
+--------------------------------------------------------------------------------
+Mechanism Name: GROUPKEY-PULL Exchange
+
+Protocol: ISAKMP/GDOI
+
+Condition: Group member initiates the GROUPKEY-PULL exchange with a GCKS
+
+Packet Flow: GM -> GCKS -> GM
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: ISAKMP/GDOI
+
+Template Base: ISAKMP/GDOI
+
+Fields To Modify: {"network_layer": ["Source IPv6 Address", "Destination IPv6 Address"], "transport_layer": ["Source Port", "Destination Port", "Message ID"], "application_layer": ["Ni", "ID"]}
+
+Receive Filter: HDR*, HASH(2), Nr, SA
+
+Success Condition: Valid HASH(2) and SA payload received
+
+Failure Condition: Invalid HASH(2) or no response received
+
+Prerequisites: ["Group member must have a valid nonce (Ni) and identifier (ID)"]
+
+Confidence: High
+
+RFC Sentence: Upon receipt of the second GDOI message, the GM validates HASH(2), extracts the nonce Nr, and interprets the SA payload (including its SA Attribute payloads).
+
+================================================================================
+
+Mechanism 2: ISAKMP/GDOI
+--------------------------------------------------------------------------------
+Mechanism Name: GROUPKEY-PULL Acknowledgement
+
+Protocol: ISAKMP/GDOI
+
+Condition: Group member receives the second message of GROUPKEY-PULL exchange from GCKS
+
+Packet Flow: GM -> GCKS -> GM
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: ISAKMP/GDOI
+
+Template Base: ISAKMP/GDOI
+
+Fields To Modify: {"network_layer": ["Source IPv6 Address", "Destination IPv6 Address"], "transport_layer": ["Source Port", "Destination Port", "Message ID"], "application_layer": ["HASH(3)", "GAP"]}
+
+Receive Filter: HDR*, HASH(4), [SEQ,] KD
+
+Success Condition: Valid HASH(4) and KD payload received
+
+Failure Condition: Invalid HASH(4) or no response received
+
+Prerequisites: ["Group member must have a valid nonce (Nr) and group policy (GAP)"]
+
+Confidence: High
+
+RFC Sentence: Upon receipt of the fourth GDOI message, the GM validates HASH(4).
+
+================================================================================
+
+Mechanism 3: GDOI
+--------------------------------------------------------------------------------
+Mechanism Name: GROUPKEY-PULL Exchange for SID Request
+
+Protocol: GDOI
+
+Condition: A group member is a sender and does not hold a current SID value
+
+Packet Flow: GM -> GCKS: GROUPKEY-PULL (GAP)
+GCKS -> GM: GROUPKEY-PUSH (KD with SIDs)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: GDOI
+
+Template Base: GROUPKEY-PULL
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["GAP payload with SID request"]}
+
+Receive Filter: GROUPKEY-PUSH message with a KD payload
+
+Success Condition: Reception of a GROUPKEY-PUSH message with the requested SID values in the KD payload
+
+Failure Condition: No response or an error message is received
+
+Prerequisites: ["Group member must be a sender and not hold a current SID value"]
+
+Confidence: High
+
+RFC Sentence: A group member MAY initiate a GROUPKEY-PULL exchange to the GCKS in order to obtain a SID value (along with current group policy).
+
+================================================================================
+

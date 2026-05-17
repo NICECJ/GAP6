@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc5009.txt
+Generated at: 2026-03-08 06:35:38
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: SIP
+--------------------------------------------------------------------------------
+Mechanism Name: P-Early-Media INVITE Request
+
+Protocol: SIP
+
+Condition: The UAC sends an INVITE request with the P-Early-Media header field containing the 'supported' parameter
+
+Packet Flow: UAC -> UAS -> UAC
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: SIP
+
+Template Base: SIP INVITE request
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["P-Early-Media"]}
+
+Receive Filter: SIP 18x or 2xx response with P-Early-Media header field
+
+Success Condition: The UAS responds with a 18x or 2xx response containing the P-Early-Media header field
+
+Failure Condition: The UAS responds with a 18x or 2xx response without the P-Early-Media header field, or no response is received
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: A User Agent Client MAY include the P-Early-Media header field with the 'supported' parameter in an INVITE request to indicate that it recognizes the header field.
+
+================================================================================
+

@@ -1,0 +1,77 @@
+RFC Document: RFC/rfc6455.txt
+Generated at: 2026-03-08 07:06:28
+================================================================================
+
+Analysis Summary:
+Found 2 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: HTTP/1.1
+--------------------------------------------------------------------------------
+Mechanism Name: WebSocket_Upgrade_Handshake
+
+Protocol: HTTP/1.1
+
+Condition: The target IPv6 address is reachable and the server is configured to accept WebSocket connections
+
+Packet Flow: Client -> Server: HTTP Upgrade request, Server -> Client: HTTP 101 Switching Protocols response
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: HTTP/1.1
+
+Template Base: HTTP Upgrade Request
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["Request-URI", "Host", "Upgrade", "Connection", "Sec-WebSocket-Key", "Sec-WebSocket-Version"]}
+
+Receive Filter: HTTP response with status code 101
+
+Success Condition: The server responds with an HTTP 101 Switching Protocols response and the required header fields are present and valid
+
+Failure Condition: The server responds with a status code other than 101, or the required header fields are missing or invalid
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: Once the client's opening handshake has been sent, the client MUST wait for a response from the server before sending any further data. If the status code received from the server is not 101, the client handles the response per HTTP [RFC2616] procedures. If the server's response is validated as provided for above, it is said that _The WebSocket Connection is Established_ and that the WebSocket Connection is in the OPEN state.
+
+================================================================================
+
+Mechanism 2: WebSocket
+--------------------------------------------------------------------------------
+Mechanism Name: WebSocket_Ping_Pong
+
+Protocol: WebSocket
+
+Condition: WebSocket connection is established and not closed
+
+Packet Flow: Client -> Server -> Client
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: WebSocket
+
+Template Base: WebSocket Ping Frame
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Source Port", "Destination Port"], "application_layer": ["Opcode", "Payload Length", "Masking Key", "Payload Data"]}
+
+Receive Filter: WebSocket Pong Frame with matching Payload Data
+
+Success Condition: Pong frame received with identical Payload Data as the Ping frame
+
+Failure Condition: No Pong frame received or Pong frame received with different Payload Data
+
+Prerequisites: ["WebSocket connection must be established"]
+
+Confidence: High
+
+RFC Sentence: Upon receipt of a Ping frame, an endpoint MUST send a Pong frame in response, unless it already received a Close frame. It SHOULD respond with Pong frame as soon as is practical.
+
+================================================================================
+

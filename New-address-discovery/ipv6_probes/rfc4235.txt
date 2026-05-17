@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc4235.txt
+Generated at: 2026-03-08 08:27:28
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: SIP
+--------------------------------------------------------------------------------
+Mechanism Name: SIP_INVITE_Probing
+
+Protocol: SIP
+
+Condition: The UAC sends an INVITE request to a target SIP URI
+
+Packet Flow: UAC -> Target -> UAC
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: SIP
+
+Template Base: SIP_INVITE
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["To", "From", "Call-ID", "CSeq", "Contact"]}
+
+Receive Filter: SIP/2.0 180 Ringing
+
+Success Condition: Receives a 180 Ringing response
+
+Failure Condition: No response or receives a non-180 response
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If the following 180 response is received: SIP/2.0 180 Ringing
+
+================================================================================
+

@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc4739.txt
+Generated at: 2026-03-08 09:06:35
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: IKEv2
+--------------------------------------------------------------------------------
+Mechanism Name: IKEv2_MULTIPLE_AUTH_SUPPORTED
+
+Protocol: IKEv2
+
+Condition: The prober and target both support IKEv2 and the MULTIPLE_AUTH extension
+
+Packet Flow: Initiator -> Responder -> Initiator
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: IKEv2
+
+Template Base: IKEv2_IKE_SA_INIT
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["SA", "KE", "Ni"]}
+
+Receive Filter: IKEv2 Notify Payload Type == MULTIPLE_AUTH_SUPPORTED
+
+Success Condition: Response contains MULTIPLE_AUTH_SUPPORTED notification
+
+Failure Condition: Response does not contain MULTIPLE_AUTH_SUPPORTED notification
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The MULTIPLE_AUTH_SUPPORTED notification is included in the IKE_SA_INIT response or the first IKE_AUTH request to indicate that the peer supports this specification.
+
+================================================================================
+

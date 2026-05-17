@@ -1,0 +1,77 @@
+RFC Document: RFC/rfc4821.txt
+Generated at: 2026-03-08 08:17:11
+================================================================================
+
+Analysis Summary:
+Found 2 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: TCP
+--------------------------------------------------------------------------------
+Mechanism Name: TCP_Probe
+
+Protocol: TCP
+
+Condition: The flow has no outstanding probes or losses, the last probe timeout has expired, and the available window is greater than the probe size
+
+Packet Flow: Prober sends a TCP probe packet to the target, and the target responds with a TCP ACK
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: None
+
+Template Base: TCP_segment
+
+Fields To Modify: {"network_layer": ["IPv6 Destination Address"], "transport_layer": ["TCP Sequence Number", "TCP Segment Length"], "application_layer": []}
+
+Receive Filter: TCP ACK segment with acknowledgment number matching the probe packet's sequence number + length
+
+Success Condition: Reception of a TCP ACK segment acknowledging the probe packet
+
+Failure Condition: No TCP ACK segment received or only the probe packet is lost
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: To do so, it creates a probe packet such that its size, including the outermost IP headers, is equal to the probe size. After sending the probe it awaits a response, which will have one of the following results: Success: The probe is acknowledged as having been received by the remote host.
+
+================================================================================
+
+Mechanism 2: SCTP
+--------------------------------------------------------------------------------
+Mechanism Name: SCTP_HEARTBEAT
+
+Protocol: SCTP
+
+Condition: The target supports SCTP and is expected to respond to HEARTBEAT chunks
+
+Packet Flow: Prober -> Target (SCTP HEARTBEAT) -> Prober (SCTP HEARTBEAT ACK)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: SCTP
+
+Application Layer Protocol: None
+
+Template Base: SCTP_HEARTBEAT
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Verification Tag", "Destination Port", "Source Port"], "application_layer": ["HEARTBEAT Chunk"]}
+
+Receive Filter: SCTP packet with HEARTBEAT ACK chunk
+
+Success Condition: Reception of an SCTP packet with a HEARTBEAT ACK chunk
+
+Failure Condition: No response or reception of an error packet
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The RECOMMENDED method for generating probes is to add a chunk consisting only of padding to an SCTP message. The PAD chunk defined in [RFC4820] SHOULD be attached to a minimum length HEARTBEAT (HB) chunk to build a probe packet.
+
+================================================================================
+

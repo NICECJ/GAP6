@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc5845.txt
+Generated at: 2026-03-08 05:32:39
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: Proxy Mobile IPv6
+--------------------------------------------------------------------------------
+Mechanism Name: GRE_Key_Exchange
+
+Protocol: Proxy Mobile IPv6
+
+Condition: The MAG determines that GRE encapsulation and keys are required for a specific mobile node's session
+
+Packet Flow: MAG -> LMA -> MAG
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: Proxy Mobile IPv6
+
+Template Base: Proxy Binding Update
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Source Port", "Destination Port"], "application_layer": ["GRE Key option", "GRE Key Identifier field"]}
+
+Receive Filter: Proxy Binding Acknowledgement with GRE Key option
+
+Success Condition: The Proxy Binding Acknowledgement message is received with the GRE Key option and the uplink GRE key included
+
+Failure Condition: The Proxy Binding Acknowledgement message is received without the GRE Key option or with a status code indicating rejection
+
+Prerequisites: ["GRE encapsulation and keys are required for a specific mobile node's session"]
+
+Confidence: High
+
+RFC Sentence: If the local mobility anchor successfully processes the initial Proxy Binding Update and accepts the GRE encapsulation request and the downlink GRE key based on a policy check, the local mobility anchor MUST include the GRE Key option with the uplink GRE key in the GRE Key Identifier field in a successful Proxy Binding Acknowledgement and send it to the mobile access gateway.
+
+================================================================================
+

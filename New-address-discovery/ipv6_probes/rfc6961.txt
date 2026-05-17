@@ -1,0 +1,44 @@
+RFC Document: RFC/rfc6961.txt
+Generated at: 2026-03-08 10:36:04
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: TLS
+--------------------------------------------------------------------------------
+Mechanism Name: TLS_OCSP_Status_Request_v2
+
+Protocol: TLS
+
+Condition: Client supports multiple certificate status request methods and server supports OCSP stapling
+
+Packet Flow: Client -> Server: ClientHello
+Server -> Client: CertificateStatus
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: TLS
+
+Template Base: TLS_ClientHello
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["extensions.status_request_v2.certificate_status_req_list"]}
+
+Receive Filter: TLS_CertificateStatus
+
+Success Condition: Receiving a CertificateStatus message with a non-zero length OCSPResponse or OCSPResponseList
+
+Failure Condition: No CertificateStatus message received or receiving a CertificateStatus message with a zero-length OCSP response for all certificates
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: A server that receives a client hello containing the 'status_request_v2' extension MAY return a suitable certificate status response message to the client along with the server's certificate message.
+
+================================================================================
+

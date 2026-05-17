@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc5614.txt
+Generated at: 2026-03-08 06:08:58
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: OSPFv3
+--------------------------------------------------------------------------------
+Mechanism Name: HelloReceived
+
+Protocol: OSPFv3
+
+Condition: The target is a router with a MANET interface and is configured to send Hello packets.
+
+Packet Flow: Prober sends an OSPF Hello packet -> Target responds with an OSPF Hello packet
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: None (OSPF uses raw IP)
+
+Application Layer Protocol: OSPFv3
+
+Template Base: OSPF Hello packet
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": [], "application_layer": ["Router ID", "HelloInterval", "RouterDeadInterval", "Options (L bit set)", "MDR-Hello TLV"]}
+
+Receive Filter: OSPF Hello packet with the L bit set and an MDR-Hello TLV
+
+Success Condition: The prober receives an OSPF Hello packet with the L bit set and an MDR-Hello TLV, and the target's Router ID is present in the neighbor ID list.
+
+Failure Condition: The prober does not receive an OSPF Hello packet within the RouterDeadInterval, or the received packet does not have the L bit set or lacks an MDR-Hello TLV.
+
+Prerequisites: ["Target is a router with a MANET interface", "Target is configured to send Hello packets"]
+
+Confidence: High
+
+RFC Sentence: If the LLS contains an MDR-Hello TLV, the neighbor state machine is executed with the event HelloReceived.  Otherwise, an error has occurred and the Hello is discarded.
+
+================================================================================
+

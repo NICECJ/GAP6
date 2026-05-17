@@ -1,0 +1,111 @@
+RFC Document: RFC/rfc4165.txt
+Generated at: 2026-03-08 04:44:29
+================================================================================
+
+Analysis Summary:
+Found 3 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: M2PA
+--------------------------------------------------------------------------------
+Mechanism Name: User Data Message Probing
+
+Protocol: M2PA
+
+Condition: The target IPSP is configured to receive and process User Data messages
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: SCTP
+
+Application Layer Protocol: M2PA
+
+Template Base: M2PA User Data message
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Stream Identifier"], "application_layer": ["BSN", "FSN"]}
+
+Receive Filter: M2PA User Data message with a BSN that matches the FSN of the probe packet
+
+Success Condition: Reception of a User Data message with a BSN that matches the FSN of the probe packet
+
+Failure Condition: No response received or a User Data message with a BSN that does not match the FSN of the probe packet
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: M2PA passes these messages from MTP3 to SCTP as data for transport across a link. These are called User Data messages in M2PA.
+
+================================================================================
+
+Mechanism 2: M2PA
+--------------------------------------------------------------------------------
+Mechanism Name: Link Status Message Probing
+
+Protocol: M2PA
+
+Condition: The target IPSP is configured to receive and process Link Status messages
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: SCTP
+
+Application Layer Protocol: M2PA
+
+Template Base: M2PA Link Status message
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Stream Identifier"], "application_layer": ["BSN", "FSN"]}
+
+Receive Filter: M2PA Link Status message with a BSN that matches the FSN of the probe packet
+
+Success Condition: Reception of a Link Status message with a BSN that matches the FSN of the probe packet and indicates the link is active
+
+Failure Condition: No response received or a Link Status message with a BSN that does not match the FSN of the probe packet or indicates the link is not active
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The Link Status message serves this purpose in M2PA, allowing peer M2PA layers to exchange status information.
+
+================================================================================
+
+Mechanism 3: M2PA
+--------------------------------------------------------------------------------
+Mechanism Name: Link Status Processor Recovery
+
+Protocol: M2PA
+
+Condition: Local processor outage has ended
+
+Packet Flow: A -> B -> A
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: SCTP
+
+Application Layer Protocol: M2PA
+
+Template Base: M2PA Link Status Message
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Stream Identifier"], "application_layer": ["FSN", "BSN", "Status Type"]}
+
+Receive Filter: M2PA Link Status Ready message
+
+Success Condition: Reception of Link Status Ready message
+
+Failure Condition: No response or reception of Link Status message with Processor Outage
+
+Prerequisites: ["Local processor outage has ended"]
+
+Confidence: High
+
+RFC Sentence: A sends a Link Status message with Processor Recovered to B. B notifies A of this using the Link Status Ready message setting BSN=5, the last message that was processed at B.
+
+================================================================================
+

@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc4988.txt
+Generated at: 2026-03-08 06:53:56
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: ICMPv6
+--------------------------------------------------------------------------------
+Mechanism Name: RtSolPr to PrRtAdv
+
+Protocol: ICMPv6
+
+Condition: The target IPv6 address is an access router that has received a Router Solicitation for Proxy Advertisement (RtSolPr) message.
+
+Packet Flow: Prober sends RtSolPr to target, target responds with PrRtAdv
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: ICMPv6
+
+Application Layer Protocol: None
+
+Template Base: ICMPv6 Router Solicitation for Proxy Advertisement
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": ["Type", "Code", "Checksum", "Identifier"], "application_layer": []}
+
+Receive Filter: ICMPv6 Type 41, Subtype 7
+
+Success Condition: Receiving a PrRtAdv message with a valid Identifier and options including New Access Point Link-layer Address and New Router's Link-layer Address.
+
+Failure Condition: No response received or receiving a PrRtAdv message with an error code or missing required options.
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: Access routers send out a Proxy Router Advertisement message gratuitously if the handover is network-initiated or as a response to RtSolPr message from a mobile node, providing the link-layer address, IP address, and subnet prefixes of neighboring access routers.
+
+================================================================================
+

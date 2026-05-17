@@ -1,0 +1,77 @@
+RFC Document: RFC\rfc8990.txt
+Generated at: 2026-03-07 23:51:52
+================================================================================
+
+Analysis Summary:
+Found 2 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: GRASP
+--------------------------------------------------------------------------------
+Mechanism Name: Discovery
+
+Protocol: GRASP
+
+Condition: The prober (Discovery Initiator) sends a Discovery message to a target IPv6 address
+
+Packet Flow: Prober -> Target: M_DISCOVERY, Target -> Prober: M_RESPONSE
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: GRASP
+
+Template Base: discovery-message
+
+Fields To Modify: {"network_layer": ["ipv6-address"], "transport_layer": ["port-number"], "application_layer": ["objective-name", "objective-flags", "loop-count"]}
+
+Receive Filter: M_RESPONSE
+
+Success Condition: Receiving a M_RESPONSE message with the same session-id and a valid ttl
+
+Failure Condition: No M_RESPONSE message received within the expected time or receiving an M_INVALID message
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: It sends a Discovery Response, as described later.
+
+================================================================================
+
+Mechanism 2: GRASP
+--------------------------------------------------------------------------------
+Mechanism Name: Synchronization Request
+
+Protocol: GRASP
+
+Condition: The prober (Synchronization Initiator) sends a Synchronization Request message to a target IPv6 address
+
+Packet Flow: Prober -> Target: M_REQ_SYN, Target -> Prober: M_SYNCH
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: GRASP
+
+Template Base: request-synchronization-message
+
+Fields To Modify: {"network_layer": ["ipv6-address"], "transport_layer": ["port-number"], "application_layer": ["objective-name", "objective-flags", "loop-count"]}
+
+Receive Filter: M_SYNCH
+
+Success Condition: Receiving a M_SYNCH message with the same session-id and a valid objective value
+
+Failure Condition: No M_SYNCH message received within the expected time or receiving an M_INVALID message
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: With this, there is a corresponding response function (M_SYNCH) for an ASA that wishes to respond to synchronization requests.
+
+================================================================================
+

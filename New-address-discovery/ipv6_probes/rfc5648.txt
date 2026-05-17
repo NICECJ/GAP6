@@ -1,0 +1,77 @@
+RFC Document: RFC/rfc5648.txt
+Generated at: 2026-03-08 07:28:55
+================================================================================
+
+Analysis Summary:
+Found 2 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: Mobility Header
+--------------------------------------------------------------------------------
+Mechanism Name: Binding Update with Binding Identifier Mobility Option
+
+Protocol: Mobility Header
+
+Condition: The target has an existing binding or is a home agent
+
+Packet Flow: Prober (Mobile Node) -> Target (Home Agent or Correspondent Node) -> Prober (Mobile Node)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: Mobility Header
+
+Template Base: RFC3775
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": ["Source Port", "Destination Port"], "application_layer": ["Binding Identifier mobility option", "Lifetime field", "Status field"]}
+
+Receive Filter: IPv6 and UDP and Mobility Header and Binding Acknowledgement and Binding Identifier mobility option
+
+Success Condition: Binding Acknowledgement with status set to 0 [Binding Update accepted]
+
+Failure Condition: Binding Acknowledgement with status set to [MCOA MALFORMED], [MCOA BULK REGISTRATION PROHIBITED], [MCOA UNKNOWN], or [not home agent for this mobile node], or no response
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If the Lifetime field is not set to zero, the receiving node registers a binding with the specified BID as a mobile node's binding. The care-of address is obtained from the Binding Update packet as follows: If the length value of the Binding Identifier mobility option is 20, the care-of address is the IPv6 address copied from the Care-of Address field in the Binding Identifier mobility option. If the 'O' flag is set in the Binding Update, the receiving node removes all the existing bindings and registers the received binding(s). If the receiver already has a binding with the same BID but different care-of address, it MUST update the binding and respond with a Binding Acknowledgement with status set to 0 [Binding Update accepted]. If the receiver does not have a binding entry for the BID, it registers a new binding for the BID and responds with a Binding Acknowledgement with status set to 0 [Binding Update accepted].
+
+================================================================================
+
+Mechanism 2: Mobility Header
+--------------------------------------------------------------------------------
+Mechanism Name: Binding Update with Zero Lifetime
+
+Protocol: Mobility Header
+
+Condition: The target has an existing binding
+
+Packet Flow: Prober (Mobile Node) -> Target (Home Agent or Correspondent Node) -> Prober (Mobile Node)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: Mobility Header
+
+Template Base: RFC3775
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": ["Source Port", "Destination Port"], "application_layer": ["Lifetime field", "Status field"]}
+
+Receive Filter: IPv6 and UDP and Mobility Header and Binding Acknowledgement
+
+Success Condition: Binding Acknowledgement with status set to 133 [not home agent for this mobile node] if the target does not have an appropriate binding for the BID
+
+Failure Condition: Binding Acknowledgement with status set to 0 [Binding Update accepted] if the target has an appropriate binding for the BID, or no response
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If the Lifetime field in the Binding Update is set to zero, the receiving node deletes the binding entry that corresponds to the BID in the Binding Identifier mobility option. If the receiving node does not have an appropriate binding for the BID, it MUST reject the Binding Update and send a Binding Acknowledgement with status set to 133 [not home agent for this mobile node].
+
+================================================================================
+

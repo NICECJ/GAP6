@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc5578.txt
+Generated at: 2026-03-08 10:42:22
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: PPPoE Discovery
+--------------------------------------------------------------------------------
+Mechanism Name: PPPoE Active Discovery Session-Grant (PADG) and Session-Credit Response (PADC)
+
+Protocol: PPPoE Discovery
+
+Condition: The target must be in an established PPPoE session and support credit flow control
+
+Packet Flow: Prober (Client/Server) -> Target (Server/Client) -> Prober (Client/Server)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: PPP over Ethernet (PPPoE)
+
+Application Layer Protocol: PPPoE Discovery
+
+Template Base: PPPoE Discovery PADG
+
+Fields To Modify: {"network_layer": ["Destination_mac_addr", "Source_mac_addr"], "transport_layer": ["SESSION_ID", "CODE", "LENGTH"], "application_layer": ["Sequence Number TLV", "Credits TLV"]}
+
+Receive Filter: CODE == 0x0B and SESSION_ID == <session_id>
+
+Success Condition: Reception of a PADC packet with the same sequence number as the PADG
+
+Failure Condition: No PADC packet received or PADC packet with a different sequence number
+
+Prerequisites: ["Established PPPoE session", "Support for credit flow control"]
+
+Confidence: High
+
+RFC Sentence: When the peer receives a PADG packet, it adds the incremental credits to its working credit count and responds with a PPPoE Active Discovery Session-Credit Response (PADC) packet, indicating the accumulation of the credits.
+
+================================================================================
+

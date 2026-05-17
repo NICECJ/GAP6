@@ -1,0 +1,77 @@
+RFC Document: RFC/rfc6971.txt
+Generated at: 2026-03-08 05:52:20
+================================================================================
+
+Analysis Summary:
+Found 2 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: IPv6
+--------------------------------------------------------------------------------
+Mechanism Name: DFF_Return_Packet
+
+Protocol: IPv6
+
+Condition: The target is a router that has previously forwarded the packet and is now receiving it back with RET=1
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: None
+
+Application Layer Protocol: None
+
+Template Base: IPv6 Hop-by-Hop Options header with DFF
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address", "Hop Limit"], "transport_layer": [], "application_layer": []}
+
+Receive Filter: IPv6 packet with DFF header (RET=0, Sequence Number matches the probe packet)
+
+Success Condition: The prober receives the packet with RET=0 and the same sequence number
+
+Failure Condition: The prober does not receive the packet or receives it with RET=1
+
+Prerequisites: ["The target router must have previously forwarded the packet"]
+
+Confidence: High
+
+RFC Sentence: Upon receiving a packet with RET = 1, and before sending it to a new candidate Next Hop, that flag MUST be set to 0, as specified in Section 9.2.
+
+================================================================================
+
+Mechanism 2: ICMPv6
+--------------------------------------------------------------------------------
+Mechanism Name: DFF_Hop_by_Hop_Option_Unrecognized
+
+Protocol: ICMPv6
+
+Condition: The target does not understand the DFF Hop-by-Hop option
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: ICMPv6
+
+Application Layer Protocol: None
+
+Template Base: IPv6 Hop-by-Hop Option Unrecognized
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address", "Next Header"], "transport_layer": [], "application_layer": []}
+
+Receive Filter: ICMPv6 Parameter Problem message with Code 2
+
+Success Condition: Receiving an ICMPv6 Parameter Problem message (Code 2) from the target
+
+Failure Condition: No response or a different type of ICMPv6 message is received
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: routers that do not understand this option on a received packet discard the packet and, only if the packet's Destination Address was not a multicast address, send an ICMP Parameter Problem (Code 2) message to the packet's Source Address, pointing to the unrecognized option type
+
+================================================================================
+

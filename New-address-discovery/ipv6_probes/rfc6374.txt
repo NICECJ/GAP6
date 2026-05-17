@@ -1,0 +1,111 @@
+RFC Document: RFC/rfc6374.txt
+Generated at: 2026-03-08 04:49:48
+================================================================================
+
+Analysis Summary:
+Found 3 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: DM Protocol
+--------------------------------------------------------------------------------
+Mechanism Name: DM_Query_Response
+
+Protocol: DM Protocol
+
+Condition: Control Code field is set to 0x0 (In-band Response Requested) or 0x1 (Out-of-band Response Requested)
+
+Packet Flow: Prober sends DM Query -> Target receives and responds with DM Response
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: DM Protocol
+
+Template Base: DM Query
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": ["Source Port", "Destination Port"], "application_layer": ["Control Code", "Session Identifier", "DS field", "Querier Timestamp Format", "Timestamp 1", "Timestamp 2", "Timestamp 3", "Timestamp 4"]}
+
+Receive Filter: DM Response with matching Session Identifier
+
+Success Condition: DM Response received with Control Code 0x1 (Success)
+
+Failure Condition: DM Response not received or Control Code indicates an error
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If the Control Code field is set to 0x0 (In-band Response Requested) or 0x1 (Out-of-band Response Requested), then an in-band or out-of-band response, respectively, SHOULD be transmitted unless this has been prevented by an administrative, security, or congestion control mechanism.
+
+================================================================================
+
+Mechanism 2: Delay Measurement
+--------------------------------------------------------------------------------
+Mechanism Name: Loopback_Request
+
+Protocol: Delay Measurement
+
+Condition: The prober includes a Loopback Request TLV object in the query message
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: Delay Measurement
+
+Template Base: Delay Measurement message
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["Control Code", "Session Identifier", "Timestamp 1", "TLV Block (Loopback Request)"]}
+
+Receive Filter: Control Code = 0x2 (Loopback Response) AND Session Identifier matches
+
+Success Condition: Response packet is received with the same Session Identifier and the Loopback Request TLV object
+
+Failure Condition: No response packet is received within the expected timeout period
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: Upon receiving the reflected query message back from the responder, the querier MUST NOT retransmit the message.
+
+================================================================================
+
+Mechanism 3: Delay Measurement
+--------------------------------------------------------------------------------
+Mechanism Name: Session_Query_Interval
+
+Protocol: Delay Measurement
+
+Condition: The prober includes an SQI object in the query message with a Value of 0
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: Delay Measurement
+
+Template Base: Delay Measurement message
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["Control Code", "Session Identifier", "Timestamp 1", "TLV Block (SQI)"]}
+
+Receive Filter: Control Code = 0x2 (Loopback Response) AND Session Identifier matches AND TLV Block contains SQI object
+
+Success Condition: Response packet is received with the same Session Identifier and the SQI TLV object indicating the responder's minimum query interval
+
+Failure Condition: No response packet is received within the expected timeout period or the SQI TLV object is missing in the response
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: When the responder receives a query that includes an SQI object with a Value of 0, the responder includes an SQI object in the response with the Value set to the minimum query interval it supports for this session.
+
+================================================================================
+

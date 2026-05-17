@@ -1,0 +1,281 @@
+RFC Document: RFC/rfc6081.txt
+Generated at: 2026-03-08 06:01:27
+================================================================================
+
+Analysis Summary:
+Found 8 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: Teredo
+--------------------------------------------------------------------------------
+Mechanism Name: Indirect Bubble to Cone or Address-Restricted NAT
+
+Protocol: Teredo
+
+Condition: Teredo client B is behind a cone or address-restricted NAT, and Teredo client A is behind a symmetric NAT
+
+Packet Flow: B -> A's Server -> A -> B
+
+Network Layer Protocol: IPv4
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: Teredo
+
+Template Base: Teredo Bubble
+
+Fields To Modify: {"network_layer": ["IPv4 Destination Address"], "transport_layer": ["UDP Destination Port"], "application_layer": ["Teredo Destination IPv6 Address"]}
+
+Receive Filter: Direct Bubble from A
+
+Success Condition: B receives a Direct Bubble from A with a different mapped address/port than the one embedded in A's Teredo IPv6 address
+
+Failure Condition: B does not receive a Direct Bubble from A
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: B sends an indirect bubble via A's server (Teredo Server 1) to A, and A responds with a direct bubble. This direct bubble reaches B, because it is positioned behind a cone or address-restricted NAT.
+
+================================================================================
+
+Mechanism 2: Teredo
+--------------------------------------------------------------------------------
+Mechanism Name: Indirect Bubble to Symmetric NAT
+
+Protocol: Teredo
+
+Condition: Teredo client A is behind a symmetric NAT, and Teredo client B is behind a cone or address-restricted NAT
+
+Packet Flow: A -> B's Server -> B -> A's Server -> A
+
+Network Layer Protocol: IPv4
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: Teredo
+
+Template Base: Teredo Bubble
+
+Fields To Modify: {"network_layer": ["IPv4 Destination Address"], "transport_layer": ["UDP Destination Port"], "application_layer": ["Teredo Destination IPv6 Address"]}
+
+Receive Filter: Indirect Bubble from B via A's Server
+
+Success Condition: A receives an Indirect Bubble from B via A's Teredo server
+
+Failure Condition: A does not receive an Indirect Bubble from B
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: A sends an indirect bubble to B via B's server (Teredo Server 2), and B responds with an indirect bubble via A's server (Teredo Server 1). Now the scenario is similar to the first case and communication will be established.
+
+================================================================================
+
+Mechanism 3: Teredo
+--------------------------------------------------------------------------------
+Mechanism Name: Server Load Reduction Extension - Direct Bubble Solicitation
+
+Protocol: Teredo
+
+Condition: Communication between a Teredo client and a Teredo peer was successfully established but has been silent for a while
+
+Packet Flow: Teredo client -> Teredo peer -> Teredo client
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: Teredo
+
+Template Base: RFC4380
+
+Fields To Modify: {"network_layer": ["IPv6 Destination Address"], "transport_layer": ["UDP Destination Port"], "application_layer": ["Neighbor Discovery Option Trailer DiscoveryType"]}
+
+Receive Filter: IPv6 Source Address == Teredo peer's address AND UDP Source Port == Teredo peer's port AND Neighbor Discovery Option Trailer DiscoveryType == 0x01
+
+Success Condition: Reception of a direct bubble with DiscoveryType set to 0x01 from the Teredo peer
+
+Failure Condition: No response received or response with DiscoveryType not set to 0x01
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: When a Teredo client receives a direct bubble that is soliciting a response, the Teredo client responds with a direct bubble.
+
+================================================================================
+
+Mechanism 4: Teredo
+--------------------------------------------------------------------------------
+Mechanism Name: Teredo_Router_Solicitation
+
+Protocol: Teredo
+
+Condition: No packet has been received from the Teredo server in the last Randomized Teredo Refresh Interval
+
+Packet Flow: Prober (Teredo client) -> Target (Teredo server) -> Prober (Teredo client)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: Teredo
+
+Template Base: ICMPv6 Router Solicitation
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": [], "application_layer": ["Teredo-specific fields"]}
+
+Receive Filter: ICMPv6 Router Advertisement
+
+Success Condition: Reception of a Router Advertisement message from the Teredo server
+
+Failure Condition: No Router Advertisement message received within a reasonable time
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If this is not the case, the client SHOULD send a router solicitation message to the server, as specified in Section 5.2.1;
+
+================================================================================
+
+Mechanism 5: Teredo
+--------------------------------------------------------------------------------
+Mechanism Name: Teredo_Direct_Bubble_with_Nonce
+
+Protocol: Teredo
+
+Condition: The Teredo client has received an indirect bubble with a Nonce Trailer from the Teredo peer
+
+Packet Flow: Prober (Teredo client) -> Target (Teredo peer) -> Prober (Teredo client)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: Teredo
+
+Template Base: Teredo Direct Bubble
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": ["Source Port", "Destination Port"], "application_layer": ["Nonce Trailer"]}
+
+Receive Filter: Direct Bubble from B's mapped address/port
+
+Success Condition: Reception of a direct bubble from B's mapped address/port with a matching nonce value
+
+Failure Condition: No direct bubble received from B's mapped address/port or nonce does not match
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: When a Teredo client sends a direct bubble to a peer after receiving an indirect bubble with a Nonce Trailer, it MUST include in the direct bubble a Nonce Trailer with the same nonce value.
+
+================================================================================
+
+Mechanism 6: Teredo
+--------------------------------------------------------------------------------
+Mechanism Name: Indirect Bubble with Neighbor Discovery Option Trailer
+
+Protocol: Teredo
+
+Condition: No data exchanged in the last 30 seconds, Count of Solicitations Transmitted < 3
+
+Packet Flow: Prober -> Teredo Server -> Target -> Teredo Server -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: Teredo
+
+Template Base: Teredo Indirect Bubble
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["Nonce", "DiscoveryType"]}
+
+Receive Filter: Direct Bubble from B's mapped address/port with Neighbor Discovery Option Trailer (DiscoveryType = TeredoDiscoveryAdvertisement)
+
+Success Condition: Response received with DiscoveryType = TeredoDiscoveryAdvertisement
+
+Failure Condition: No response received or DiscoveryType does not match
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: Upon receiving a data packet to be transmitted to the Teredo peer, the Teredo client MUST determine whether data has been exchanged between the Teredo client and peer in either direction in the last 30 seconds (using the state as specified in Section 5.2 of [RFC4380]). If not, the Teredo client MUST send a direct bubble with a Neighbor Discovery Option Trailer having the DiscoveryType field set to TeredoDiscoverySolicitation. The Count of Solicitations Transmitted field MUST be set to 1. The retransmission timer MUST be set to expire in two seconds.
+
+================================================================================
+
+Mechanism 7: Teredo
+--------------------------------------------------------------------------------
+Mechanism Name: Indirect Bubble via Teredo Server
+
+Protocol: Teredo
+
+Condition: Client A and Client B are behind different immediate NATs, and NAT E does not support hairpinning
+
+Packet Flow: A -> B's Teredo Server -> B -> A's UPnP Mapped Address/Port
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: Teredo
+
+Template Base: Teredo Bubble
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["Alternate Address Trailer"]}
+
+Receive Filter: Direct Bubble from B's UPnP Mapped Address/Port
+
+Success Condition: Reception of a direct bubble from B's UPnP Mapped Address/Port
+
+Failure Condition: No response or response is dropped
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: Because the local address/port was the first mapping in the Alternate Address Trailer, the second direct bubble (Packet 4) sent by B is destined to the local address/port. The next direct bubble (Packet 5) is sent by B destined to A's UPnP mapped address/port, which is the second mapping in the Alternate Address Trailer sent by A. The aforementioned direct bubble is received by A because A's UPnP-mapped address is reachable from B.
+
+================================================================================
+
+Mechanism 8: Teredo
+--------------------------------------------------------------------------------
+Mechanism Name: Direct Bubble with Neighbor Discovery Option
+
+Protocol: Teredo
+
+Condition: No data packets have been exchanged between A and B for more than 30 seconds
+
+Packet Flow: A -> B -> A
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: Teredo
+
+Template Base: Teredo Bubble
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["Neighbor Discovery Option Trailer", "DiscoveryType"]}
+
+Receive Filter: Direct Bubble from B with Neighbor Discovery Option Trailer (DiscoveryType = TeredoDiscoveryAdvertisement)
+
+Success Condition: Reception of a direct bubble from B with DiscoveryType set to TeredoDiscoveryAdvertisement
+
+Failure Condition: No response or response is dropped
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If the mapping on either of the NATs has not expired, the direct bubble is received by B. B parses the Neighbor Discovery Option and because the DiscoveryType was set to TeredoDiscoverySolicitation, B responds with a direct bubble (Packet 2). B's direct bubble also contains the Neighbor Discovery Option and the DiscoveryType is set to TeredoDiscoveryAdvertisement.
+
+================================================================================
+

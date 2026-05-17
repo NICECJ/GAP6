@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc4779.txt
+Generated at: 2026-03-08 05:03:06
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: DHCPv6-PD
+--------------------------------------------------------------------------------
+Mechanism Name: DHCPv6-PD_Probing
+
+Protocol: DHCPv6-PD
+
+Condition: Customer Router is configured to use DHCP-PD to acquire a prefix from the Edge Router or BRAS
+
+Packet Flow: Customer Router -> Edge Router/BRAS -> Customer Router
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: DHCPv6-PD
+
+Template Base: dhcpv6_pd_request
+
+Fields To Modify: {"network_layer": ["source_address", "destination_address"], "transport_layer": ["source_port", "destination_port"], "application_layer": ["client_id", "ia_pd_id", "prefix_options"]}
+
+Receive Filter: udp and ip6[40] == 128 and ip6[41] == 0 and udp[0:2] == 0x2000 and udp[2:2] == 0x2001
+
+Success Condition: DHCPv6-PD Reply received with a valid prefix
+
+Failure Condition: No DHCPv6-PD Reply received or Reply contains an error status
+
+Prerequisites: ["BRAS must be enabled to support DHCP-PD", "BRAS must be configured to relay DHCPv6 requests"]
+
+Confidence: High
+
+RFC Sentence: The BRAS has to be enabled to support DHCP-PD and to relay the DHCPv6 requests of the hosts on the subscriber sites.
+
+================================================================================
+

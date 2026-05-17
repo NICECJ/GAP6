@@ -1,0 +1,111 @@
+RFC Document: RFC/rfc6505.txt
+Generated at: 2026-03-08 09:47:09
+================================================================================
+
+Analysis Summary:
+Found 3 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: XML over SIP
+--------------------------------------------------------------------------------
+Mechanism Name: JoinConference
+
+Protocol: XML over SIP
+
+Condition: The participant is not already joined to the conference
+
+Packet Flow: Prober -> MS -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: XML over SIP
+
+Template Base: SIP XML Request
+
+Fields To Modify: {"network_layer": ["destination IPv6 address"], "transport_layer": ["destination port"], "application_layer": ["PARTICIPANT_ID", "CONFERENCE_ID"]}
+
+Receive Filter: XML over SIP response from [CONFERENCE_ID]
+
+Success Condition: Response status is 200
+
+Failure Condition: Response status is not 200
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If the MS can join the participant 1536067209:913cd14c to the conference conf1 with audio in both directions, then it sends a successful response.
+
+================================================================================
+
+Mechanism 2: XML over SIP
+--------------------------------------------------------------------------------
+Mechanism Name: ModifyJoinConference
+
+Protocol: XML over SIP
+
+Condition: The participant is already joined to the conference
+
+Packet Flow: Prober -> MS -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: XML over SIP
+
+Template Base: SIP XML Request
+
+Fields To Modify: {"network_layer": ["destination IPv6 address"], "transport_layer": ["destination port"], "application_layer": ["PARTICIPANT_ID", "CONFERENCE_ID"]}
+
+Receive Filter: XML over SIP response from [CONFERENCE_ID]
+
+Success Condition: Response status is 200
+
+Failure Condition: Response status is not 200
+
+Prerequisites: ["Participant must be already joined to the conference"]
+
+Confidence: High
+
+RFC Sentence: If the MS is able to execute this request, it would send a 200 response.
+
+================================================================================
+
+Mechanism 3: XML over SIP
+--------------------------------------------------------------------------------
+Mechanism Name: UnjoinConference
+
+Protocol: XML over SIP
+
+Condition: The participant is already joined to the conference
+
+Packet Flow: Prober -> MS -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: XML over SIP
+
+Template Base: SIP XML Request
+
+Fields To Modify: {"network_layer": ["destination IPv6 address"], "transport_layer": ["destination port"], "application_layer": ["PARTICIPANT_ID", "CONFERENCE_ID"]}
+
+Receive Filter: XML over SIP response from [CONFERENCE_ID]
+
+Success Condition: Response status is 200
+
+Failure Condition: Response status is not 200
+
+Prerequisites: ["Participant must be already joined to the conference"]
+
+Confidence: High
+
+RFC Sentence: If the MS can execute this request, a 200 response would be sent.
+
+================================================================================
+

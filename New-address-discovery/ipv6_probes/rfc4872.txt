@@ -1,0 +1,145 @@
+RFC Document: RFC/rfc4872.txt
+Generated at: 2026-03-08 10:22:25
+================================================================================
+
+Analysis Summary:
+Found 4 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: GMPLS
+--------------------------------------------------------------------------------
+Mechanism Name: Switchover Request
+
+Protocol: GMPLS
+
+Condition: An end-node (A or D) detects the failure of the working LSP or receives a Notify message with the error code/sub-code 'Notify Error/LSP Locally Failed'
+
+Packet Flow: A -> D (or D -> A)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: RSVP-TE
+
+Application Layer Protocol: GMPLS
+
+Template Base: RSVP-TE Notify message
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["MESSAGE_ID", "ERROR_SPEC or IF_ID ERROR_SPEC"], "application_layer": ["SESSION object"]}
+
+Receive Filter: Notify message with MESSAGE_ID_ACK
+
+Success Condition: Reception of a Notify message with MESSAGE_ID_ACK object
+
+Failure Condition: No response or a Notify message without MESSAGE_ID_ACK object
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: This node MUST reliably send a Notify message, including the MESSAGE_ID object, to the other end-node (D or A, respectively) with the new error code/sub-code 'Notify Error/LSP Failure' (Switchover Request) indicating the failure of the working LSP. This (switchover response) Notify message MUST also include a MESSAGE_ID_ACK object to acknowledge reception of the (switchover request) Notify message.
+
+================================================================================
+
+Mechanism 2: RSVP-TE
+--------------------------------------------------------------------------------
+Mechanism Name: Switchback Request
+
+Protocol: RSVP-TE
+
+Condition: The working LSP has recovered and the source node sends a Notify message to the destination node
+
+Packet Flow: Source -> Destination -> Source
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: RSVP
+
+Application Layer Protocol: RSVP-TE
+
+Template Base: RSVP Notify message
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["MESSAGE_ID object", "ACK_Desired flag"], "application_layer": ["error code/sub-code"]}
+
+Receive Filter: Notify message with MESSAGE_ID_ACK object
+
+Success Condition: Reception of Notify message with MESSAGE_ID_ACK object and ACK_Desired flag set
+
+Failure Condition: No response or response with an error code
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The destination then sends reliably a Notify message to the source confirming the completion of the operation. This message includes the MESSAGE_ID_ACK object to acknowledge reception of the received Notify message. This Notify message also includes the MESSAGE_ID object. The ACK_Desired flag MUST be set in this object to request the receiver to send an acknowledgment for the message (see [RFC2961]).
+
+================================================================================
+
+Mechanism 3: RSVP-TE
+--------------------------------------------------------------------------------
+Mechanism Name: PathErr_Response
+
+Protocol: RSVP-TE
+
+Condition: The target node receives a Path message with an ASSOCIATION object that does not meet the required conditions for LSP admission
+
+Packet Flow: Prober sends Path message -> Target node responds with PathErr message
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: RSVP
+
+Application Layer Protocol: RSVP-TE
+
+Template Base: RSVP Path message
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Session", "RSVP_HOP", "ASSOCIATION"], "application_layer": []}
+
+Receive Filter: RSVP PathErr message
+
+Success Condition: Reception of PathErr message with error code/sub-code 'LSP Admission Failure/Bad Association Type'
+
+Failure Condition: No response or response with a different error code/sub-code
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: Otherwise, this node MUST return a PathErr message with the new error code/sub-code 'LSP Admission Failure/Bad Association Type'.
+
+================================================================================
+
+Mechanism 4: RSVP-TE
+--------------------------------------------------------------------------------
+Mechanism Name: PathErr_AdmissionControlFailure
+
+Protocol: RSVP-TE
+
+Condition: The target node receives a Path message for an additional secondary protecting LSP that cannot share the outgoing link resource due to policy or availability issues
+
+Packet Flow: Prober sends Path message -> Target node responds with PathErr message
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: RSVP
+
+Application Layer Protocol: RSVP-TE
+
+Template Base: RSVP Path message
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Session", "RSVP_HOP", "PPRO"], "application_layer": []}
+
+Receive Filter: RSVP PathErr message
+
+Success Condition: Reception of PathErr message with error code/sub-code 'Admission Control Failure/LSP Admission Failure' or 'Admission Control Failure/Requested Bandwidth Unavailable'
+
+Failure Condition: No response or response with a different error code/sub-code
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: N SHOULD return a PathErr message with the new error code/sub-code 'Admission Control Failure/LSP Admission Failure'.
+
+================================================================================
+

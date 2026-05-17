@@ -1,0 +1,77 @@
+RFC Document: RFC/rfc5732.txt
+Generated at: 2026-03-08 09:10:46
+================================================================================
+
+Analysis Summary:
+Found 2 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: EPP
+--------------------------------------------------------------------------------
+Mechanism Name: EPP Check Command
+
+Protocol: EPP
+
+Condition: The host object is queried for availability
+
+Packet Flow: Client -> Server -> Client
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: EPP
+
+Template Base: EPP Check Command
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["<host:name>"]}
+
+Receive Filter: EPP <response> with <resData> and <host:chkData>
+
+Success Condition: The <host:name> element in the response has an 'avail' attribute set to '1' or 'true'
+
+Failure Condition: The <host:name> element in the response has an 'avail' attribute set to '0' or 'false', or an EPP error response is received
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: When a <check> command has been processed successfully, the EPP <resData> element MUST contain a child <host:chkData> element that identifies the host namespace. The <host:chkData> element contains one or more <host:cd> elements that contain the following child elements: A <host:name> element that contains the fully qualified name of the queried host object. This element MUST contain an 'avail' attribute whose value indicates object availability (can it be provisioned or not) at the moment the <check> command was completed. A value of '1' or 'true' means that the object can be provisioned. A value of '0' or 'false' means that the object cannot be provisioned.
+
+================================================================================
+
+Mechanism 2: EPP
+--------------------------------------------------------------------------------
+Mechanism Name: EPP Info Command
+
+Protocol: EPP
+
+Condition: The host object is queried for detailed information
+
+Packet Flow: Client -> Server -> Client
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: EPP
+
+Template Base: EPP Info Command
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["<host:name>"]}
+
+Receive Filter: EPP <response> with <resData> and <host:infData>
+
+Success Condition: The <host:infData> element in the response contains the requested host object information
+
+Failure Condition: An EPP error response is received
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: When an <info> command has been processed successfully, the EPP <resData> element MUST contain a child <host:infData> element that identifies the host namespace. The <host:infData> element contains the following child elements: A <host:name> element that contains the fully qualified name of the host object. A <host:roid> element that contains the Repository Object IDentifier assigned to the host object when the object was created. One or more <host:status> elements that describe the status of the host object. Zero or more <host:addr> elements that contain the IP addresses associated with the host object. A <host:clID> element that contains the identifier of the sponsoring client. A <host:crID> element that contains the identifier of the client that created the host object. A <host:crDate> element that contains the date and time of host-object creation. A <host:upID> element that contains the identifier of the client that last updated the host object. A <host:upDate> element that contains the date and time of the most recent host-object modification. A <host:trDate> element that contains the date and time of the most recent successful host-object transfer.
+
+================================================================================
+

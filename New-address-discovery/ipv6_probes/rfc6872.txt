@@ -1,0 +1,111 @@
+RFC Document: RFC/rfc6872.txt
+Generated at: 2026-03-08 05:44:08
+================================================================================
+
+Analysis Summary:
+Found 3 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: SIP
+--------------------------------------------------------------------------------
+Mechanism Name: SIP_INVITE_Provisional_Response
+
+Protocol: SIP
+
+Condition: The target SIP endpoint is registered and capable of receiving INVITE requests
+
+Packet Flow: UAC -> UAS
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: SIP
+
+Template Base: SIP INVITE
+
+Fields To Modify: {"network_layer": ["Destination-address"], "transport_layer": ["Destination-port"], "application_layer": ["R-URI", "To", "From", "From tag", "Call-ID"]}
+
+Receive Filter: SIP 100 Trying response
+
+Success Condition: Receives a SIP 100 Trying response
+
+Failure Condition: No response or receives a non-100 response
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: P2 forks the session invitation request to two registered endpoints corresponding to Bob's address-of-record. Both endpoints respond with provisional responses.
+
+================================================================================
+
+Mechanism 2: SIP
+--------------------------------------------------------------------------------
+Mechanism Name: SIP_INVITE_Progress_Response
+
+Protocol: SIP
+
+Condition: The target SIP endpoint is registered and capable of receiving INVITE requests
+
+Packet Flow: UAC -> UAS
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: SIP
+
+Template Base: SIP INVITE
+
+Fields To Modify: {"network_layer": ["Destination-address"], "transport_layer": ["Destination-port"], "application_layer": ["R-URI", "To", "From", "From tag", "Call-ID"]}
+
+Receive Filter: SIP 180 Ringing response
+
+Success Condition: Receives a SIP 180 Ringing response
+
+Failure Condition: No response or receives a non-180 response
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: Shortly thereafter, one of Bob's user agent instances accepts the call, causing P2 to send a CANCEL request to the second user agent. P2 does not Record-Route; therefore, the subsequent ACK request from Alice to Bob's user agent does not traverse through P2 (and is not shown below).
+
+================================================================================
+
+Mechanism 3: SIP
+--------------------------------------------------------------------------------
+Mechanism Name: SIP_INVITE_Success_Response
+
+Protocol: SIP
+
+Condition: The target SIP endpoint is registered and capable of receiving INVITE requests
+
+Packet Flow: UAC -> UAS
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: SIP
+
+Template Base: SIP INVITE
+
+Fields To Modify: {"network_layer": ["Destination-address"], "transport_layer": ["Destination-port"], "application_layer": ["R-URI", "To", "From", "From tag", "Call-ID"]}
+
+Receive Filter: SIP 200 OK response
+
+Success Condition: Receives a SIP 200 OK response
+
+Failure Condition: No response or receives a non-200 response
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: Shortly thereafter, one of Bob's user agent instances accepts the call, causing P2 to send a CANCEL request to the second user agent.
+
+================================================================================
+

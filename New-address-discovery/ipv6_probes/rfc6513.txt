@@ -1,0 +1,77 @@
+RFC Document: RFC/rfc6513.txt
+Generated at: 2026-03-08 05:55:08
+================================================================================
+
+Analysis Summary:
+Found 2 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: PIM
+--------------------------------------------------------------------------------
+Mechanism Name: PIM Peering over MI-PMSI
+
+Protocol: PIM
+
+Condition: PEs are connected via an MI-PMSI and form PIM adjacencies with each other
+
+Packet Flow: PE to PE
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: PIM
+
+Template Base: PIM Hello
+
+Fields To Modify: {"network_layer": ["Source IPv6 Address", "Destination IPv6 Address"], "transport_layer": ["Port"], "application_layer": ["PIM Version", "PIM Type", "PIM Interval"]}
+
+Receive Filter: PIM Hello message from the target PE
+
+Success Condition: Reception of a PIM Hello message from the target PE
+
+Failure Condition: No PIM Hello message received from the target PE
+
+Prerequisites: ["PEs must be configured to form PIM adjacencies over the MI-PMSI"]
+
+Confidence: High
+
+RFC Sentence: As a result, the C-Join/Prune messages that a PE receives from a CE can be multicast to all the other PEs of the MVPN. PIM "Join suppression" can be enabled and the PEs can send Asserts as needed.
+
+================================================================================
+
+Mechanism 2: BGP
+--------------------------------------------------------------------------------
+Mechanism Name: Leaf A-D Route for Explicit Tracking
+
+Protocol: BGP
+
+Condition: A PE sends an A-D route with the 'Leaf Information Required' bit set in the PMSI Tunnel attribute
+
+Packet Flow: PE (prober) -> PE (target) -> PE (prober)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: BGP
+
+Template Base: BGP A-D route
+
+Fields To Modify: {"network_layer": ["Source IPv6 Address", "Destination IPv6 Address"], "transport_layer": ["TCP Source Port", "TCP Destination Port"], "application_layer": ["PMSI Tunnel attribute", "Leaf Information Required bit"]}
+
+Receive Filter: Leaf A-D route with matching PMSI Tunnel attribute
+
+Success Condition: Reception of a Leaf A-D route from the target PE
+
+Failure Condition: No Leaf A-D route received from the target PE
+
+Prerequisites: ["PEs must be configured to use BGP for MVPN signaling", "The 'Leaf Information Required' bit must be supported and enabled"]
+
+Confidence: High
+
+RFC Sentence: A PE that installs such an A-D route MUST respond by generating a Leaf A-D route, indicating that it needs to join (or be joined to) the specified PMSI Tunnel.
+
+================================================================================
+
