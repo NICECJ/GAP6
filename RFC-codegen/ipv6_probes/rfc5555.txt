@@ -1,0 +1,111 @@
+RFC Document: RFC/rfc5555.txt
+Generated at: 2026-03-08 08:36:14
+================================================================================
+
+Analysis Summary:
+Found 3 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: Mobility Header
+--------------------------------------------------------------------------------
+Mechanism Name: NAT Detection via Binding Update
+
+Protocol: Mobility Header
+
+Condition: Mobile node is in an IPv4-only network and sends a binding update message
+
+Packet Flow: Mobile Node -> Home Agent -> Mobile Node
+
+Network Layer Protocol: IPv4
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: Mobility Header
+
+Template Base: Binding Update Message
+
+Fields To Modify: {"network_layer": ["src=V4ADDR", "dst=HA_V4ADDR"], "transport_layer": ["src_port", "dst_port"], "application_layer": ["IPv6 header (src=V6HOA, dst=HAADDR)", "Mobility header", "BU [IPv4 HAO]", "IPv4 CoA option"]}
+
+Receive Filter: IPv4 header (src=HA_V4ADDR, dst=V4ADDR) / UDP header / IPv6 header (src=HAADDR, dst=V6HOA) / Mobility header / BA ([IPv4 ACK], NAT DET)
+
+Success Condition: NAT DET option is present in the binding acknowledgement and the status field in the IPv4 ACK option indicates success (0-127)
+
+Failure Condition: NAT DET option is present in the binding acknowledgement and the status field in the IPv4 ACK option indicates failure (128-133)
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: When the home agent receives the encapsulated binding update, it compares the IPv4 address of the source address field in the IPv4 header with the IPv4 address included in the IPv4 care-of address option. If the two addresses match, no NAT device was in the path. Otherwise, a NAT was in the path and the NAT detection option is included in the binding acknowledgement.
+
+================================================================================
+
+Mechanism 2: Mobility Header
+--------------------------------------------------------------------------------
+Mechanism Name: IPv4 Binding Update with IPv4 Home Address Option
+
+Protocol: Mobility Header
+
+Condition: The mobile node sends a binding update with an IPv4 home address option to the home agent
+
+Packet Flow: Mobile Node -> Home Agent -> Mobile Node
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: Mobility Header
+
+Template Base: RFC3775
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": ["Source Port", "Destination Port"], "application_layer": ["IPv4 Home Address Option", "F Flag"]}
+
+Receive Filter: IPv6 and UDP and Mobility Header
+
+Success Condition: Reception of a Binding Acknowledgement with a valid IPv4 Address Acknowledgement Option
+
+Failure Condition: Reception of a Binding Acknowledgement with an error code in the IPv4 Address Acknowledgement Option
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If the IPv4 home address option contains a valid unicast IPv4 address, the home agent MUST check that this address is allocated to the mobile node that has the IPv6 home address included in the home address option. The same MUST be done for an IPv4 prefix.
+
+================================================================================
+
+Mechanism 3: Mobility Header
+--------------------------------------------------------------------------------
+Mechanism Name: IPv4 Binding Update with Unspecified IPv4 Address
+
+Protocol: Mobility Header
+
+Condition: The mobile node sends a binding update with an unspecified IPv4 address in the IPv4 Home Address Option to the home agent
+
+Packet Flow: Mobile Node -> Home Agent -> Mobile Node
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: Mobility Header
+
+Template Base: RFC3775
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": ["Source Port", "Destination Port"], "application_layer": ["IPv4 Home Address Option (unspecified address)"]}
+
+Receive Filter: IPv6 and UDP and Mobility Header
+
+Success Condition: Reception of a Binding Acknowledgement with a valid IPv4 Address Acknowledgement Option indicating successful allocation
+
+Failure Condition: Reception of a Binding Acknowledgement with error code 132 in the status field of the IPv4 Address Acknowledgement Option
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If the IPv4 home address option contained the unspecified IPv4 address, the home agent SHOULD dynamically allocate an IPv4 home address to the mobile node. If none is available, the home agent MUST return error code 132 in the status field of the IPv4 address acknowledgement option.
+
+================================================================================
+

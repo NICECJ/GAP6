@@ -1,0 +1,77 @@
+RFC Document: RFC/rfc4643.txt
+Generated at: 2026-03-08 05:20:51
+================================================================================
+
+Analysis Summary:
+Found 2 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: NNTP
+--------------------------------------------------------------------------------
+Mechanism Name: SASL Plain Authentication
+
+Protocol: NNTP
+
+Condition: The target supports the AUTHINFO SASL command and the PLAIN mechanism
+
+Packet Flow: Client sends AUTHINFO SASL PLAIN command with initial response, Server responds with 281 if authentication is accepted
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: NNTP
+
+Template Base: NNTP_AUTHINFO_SASL
+
+Fields To Modify: {"network_layer": ["destination_address"], "transport_layer": ["destination_port"], "application_layer": ["username", "password"]}
+
+Receive Filter: response_code == 281
+
+Success Condition: Server responds with 281
+
+Failure Condition: Server responds with 481, 482, 503, or 504
+
+Prerequisites: ["Server must support AUTHINFO SASL command", "Server must support PLAIN mechanism"]
+
+Confidence: High
+
+RFC Sentence: If the client is transmitting an initial response of zero length, it MUST instead transmit the response as a single equals sign ("="). This indicates that the response is present, but that it contains no data. If the client uses an initial-response argument to the AUTHINFO SASL command with a SASL mechanism that does not support an initial client response, the server MUST reject the AUTHINFO SASL command with a 482 reply. If the client successfully completes the exchange, the server issues either a 281 or a 283 reply. If the server is unable to authenticate the client, it MUST reject the AUTHINFO SASL command with a 481 reply. If the server cannot [BASE64] decode any client response, it MUST reject the AUTHINFO SASL command with a 504 reply.
+
+================================================================================
+
+Mechanism 2: NNTP
+--------------------------------------------------------------------------------
+Mechanism Name: SASL External Authentication
+
+Protocol: NNTP
+
+Condition: The target supports the AUTHINFO SASL command and the EXTERNAL mechanism
+
+Packet Flow: Client sends AUTHINFO SASL EXTERNAL command with zero-length initial response, Server responds with 281 if authentication is accepted
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: NNTP
+
+Template Base: NNTP_AUTHINFO_SASL
+
+Fields To Modify: {"network_layer": ["destination_address"], "transport_layer": ["destination_port"], "application_layer": []}
+
+Receive Filter: response_code == 281
+
+Success Condition: Server responds with 281
+
+Failure Condition: Server responds with 481, 482, 503, or 504
+
+Prerequisites: ["Server must support AUTHINFO SASL command", "Server must support EXTERNAL mechanism"]
+
+Confidence: High
+
+RFC Sentence: If the client is transmitting an initial response of zero length, it MUST instead transmit the response as a single equals sign ("="). This indicates that the response is present, but that it contains no data. If the client uses an initial-response argument to the AUTHINFO SASL command with a SASL mechanism that does not support an initial client response, the server MUST reject the AUTHINFO SASL command with a 482 reply. If the client successfully completes the exchange, the server issues either a 281 or a 283 reply. If the server is unable to authenticate the client, it MUST reject the AUTHINFO SASL command with a 481 reply. If the server cannot [BASE64] decode any client response, it MUST reject the AUTHINFO SASL command with a 504 reply.
+
+================================================================================
+

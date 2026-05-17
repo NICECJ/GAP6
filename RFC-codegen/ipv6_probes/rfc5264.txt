@@ -1,0 +1,77 @@
+RFC Document: RFC/rfc5264.txt
+Generated at: 2026-03-08 05:41:25
+================================================================================
+
+Analysis Summary:
+Found 2 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: SIP
+--------------------------------------------------------------------------------
+Mechanism Name: SIP_PUBLISH_Full_State
+
+Protocol: SIP
+
+Condition: The target presence agent has not yet received any presence information from the PUA.
+
+Packet Flow: PUA -> Compositor -> PUA
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: SIP
+
+Template Base: SIP_PUBLISH
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["Destination Port"], "application_layer": ["Request-URI", "Expires", "Content-Type", "Content-Length", "PIDF Document"]}
+
+Receive Filter: SIP/2.0 200 OK
+
+Success Condition: Receives a 200 OK response with a new entity-tag.
+
+Failure Condition: Receives a 400-class or 500-class response.
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The PUA uses the entity-tag in the following PUBLISH request for identifying the publication that the request is meant to refresh, modify or remove.
+
+================================================================================
+
+Mechanism 2: SIP
+--------------------------------------------------------------------------------
+Mechanism Name: SIP_PUBLISH_Modify_State
+
+Protocol: SIP
+
+Condition: The target presence agent has previously received and stored a full state presence publication from the PUA.
+
+Packet Flow: PUA -> Compositor -> PUA
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: SIP
+
+Template Base: SIP_PUBLISH
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["Destination Port"], "application_layer": ["Request-URI", "SIP-If-Match", "Expires", "Content-Type", "Content-Length", "PIDF Document"]}
+
+Receive Filter: SIP/2.0 200 OK
+
+Success Condition: Receives a 200 OK response with a new entity-tag.
+
+Failure Condition: Receives a 400-class or 500-class response.
+
+Prerequisites: ["The target presence agent has previously received and stored a full state presence publication from the PUA."]
+
+Confidence: High
+
+RFC Sentence: If the publication containing the <pidf-diff> root element is a modifying publication (i.e., contains an If-Match header field with a valid entity-tag), the compositor MUST apply the included patch operations in sequence against its locally stored presence document.
+
+================================================================================
+

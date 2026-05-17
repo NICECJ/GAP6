@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc4951.txt
+Generated at: 2026-03-08 06:26:46
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: L2TP
+--------------------------------------------------------------------------------
+Mechanism Name: FSQ_FSR_Mechanism
+
+Protocol: L2TP
+
+Condition: Control channel failure has occurred and recovery tunnel is established
+
+Packet Flow: Recovery Endpoint -> Remote Endpoint -> Recovery Endpoint
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: L2TP
+
+Template Base: L2TP Control Message
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["Destination Port"], "application_layer": ["Message Type", "Failover Session State"]}
+
+Receive Filter: L2TP control message with Message Type = 22 (FSR)
+
+Success Condition: FSR message received with valid Session ID in FSS AVP
+
+Failure Condition: FSR message received with Session ID in FSS AVP set to zero or no FSR message received
+
+Prerequisites: ["Control channel failure has occurred", "Recovery tunnel is established"]
+
+Confidence: High
+
+RFC Sentence: When an endpoint receives an FSQ message, it MUST ensure that for each FSS AVP in the FSQ message, it includes an FSS AVP in the Failover Session Response (FSR) message.
+
+================================================================================
+

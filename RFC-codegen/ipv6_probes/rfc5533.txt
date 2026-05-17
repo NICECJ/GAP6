@@ -1,0 +1,44 @@
+RFC Document: RFC/rfc5533.txt
+Generated at: 2026-03-21 20:14:53
+================================================================================
+
+Analysis Summary (Deduplicated):
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: Shim6
+Logic Fingerprint: NextHeader_59_Shim6Type68
+--------------------------------------------------------------------------------
+Mechanism Name: Shim6_Error_Message_Response
+
+Protocol: Shim6
+
+Condition: When a Shim6 node receives a Shim6 packet with critical unsupported information
+
+Packet Flow: Unidirectional request-response
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: None
+
+Application Layer Protocol: Shim6
+
+Template Base: IPv6_Shim6_Error_Trigger
+
+Fields To Modify: {"network_layer": ["Next Header=59"], "transport_layer": [], "application_layer": ["Type=68", "Error Code=1", "C=1 in critical option"]}
+
+Receive Filter: IPv6 next header=59 && Shim6 Type=68
+
+Success Condition: Received Shim6 Error message with matching context
+
+Failure Condition: No response within timeout
+
+Prerequisites: []
+
+Confidence: high
+
+RFC Sentence: If a host receives an option that it does not understand (an option that was defined in some future extension to this protocol) or that is not listed as a valid option for the different message types above, then the Critical bit in the option determines the outcome. [...] If C=1, then the host SHOULD send back a Shim6 Error message with Error Code=1, with the Pointer field referencing the first octet in the Option Type field.
+
+================================================================================
+

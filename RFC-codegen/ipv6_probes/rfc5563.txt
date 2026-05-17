@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc5563.txt
+Generated at: 2026-03-08 06:04:03
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: ICMPv6
+--------------------------------------------------------------------------------
+Mechanism Name: ICMP Echo Request for Default Gateway
+
+Protocol: ICMPv6
+
+Condition: Mobile device detects link state change
+
+Packet Flow: Mobile Device -> PMA -> Mobile Device
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: ICMPv6
+
+Application Layer Protocol: None
+
+Template Base: ICMPv6 Echo Request
+
+Fields To Modify: {"network_layer": ["Destination IP Address"], "transport_layer": ["ICMPv6 Type", "ICMPv6 Code", "Identifier", "Sequence Number"], "application_layer": []}
+
+Receive Filter: ICMPv6 Echo Reply with matching Identifier and Sequence Number
+
+Success Condition: ICMPv6 Echo Reply received from the default gateway
+
+Failure Condition: No ICMPv6 Echo Reply received within a specified timeout
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: For movement detection, certain types of network stack on the mobile device will send an ICMP request [RFCICMP] to the default gateway after detecting the link went down and up. The IP TTL in the message is set to 1 to check if the default gateway is still directly reachable on the access network. The PMA MAY send an ICMP reply when it is providing Proxy Mobile IPv4 service for the mobile device.
+
+================================================================================
+

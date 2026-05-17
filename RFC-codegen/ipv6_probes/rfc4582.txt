@@ -1,0 +1,179 @@
+RFC Document: RFC/rfc4582.txt
+Generated at: 2026-03-08 09:40:10
+================================================================================
+
+Analysis Summary:
+Found 5 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: BFCP
+--------------------------------------------------------------------------------
+Mechanism Name: HelloAck
+
+Protocol: BFCP
+
+Condition: The target is a BFCP Floor Control Server and the prober is a client with a valid Conference ID, Transaction ID, and User ID
+
+Packet Flow: Client -> Floor control server -> Client
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: BFCP
+
+Template Base: BFCP Hello
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["Conference ID", "Transaction ID", "User ID"]}
+
+Receive Filter: BFCP message with Primitive 'HelloAck'
+
+Success Condition: Reception of a HelloAck message with the same Transaction ID and User ID as the Hello message
+
+Failure Condition: No HelloAck message received or a different Transaction ID in the response, or receiving an Error message
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The 'Hello' primitive is used to establish a connection with a floor control server. The server responds with a 'HelloAck' primitive.
+
+================================================================================
+
+Mechanism 2: BFCP
+--------------------------------------------------------------------------------
+Mechanism Name: FloorRequest
+
+Protocol: BFCP
+
+Condition: The target is a floor control server and the prober is a floor participant with a valid Conference ID, Transaction ID, and User ID
+
+Packet Flow: Floor participant -> Floor control server -> Floor participant
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: BFCP
+
+Template Base: BFCP FloorRequest
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["TCP Destination Port"], "application_layer": ["Conference ID", "Transaction ID", "User ID", "FLOOR-ID"]}
+
+Receive Filter: BFCP message with matching Conference ID, Transaction ID, and User ID
+
+Success Condition: Reception of a FloorRequestStatus message with a valid Floor Request ID
+
+Failure Condition: Reception of an Error message or no response within a timeout period
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The successful processing of a FloorRequest message at the floor control server involves generating one or several FloorRequestStatus messages.
+
+================================================================================
+
+Mechanism 3: BFCP
+--------------------------------------------------------------------------------
+Mechanism Name: FloorQuery
+
+Protocol: BFCP
+
+Condition: The target is a floor control server and the prober is a client with a valid Conference ID, Transaction ID, and User ID
+
+Packet Flow: Client -> Floor control server -> Client
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: BFCP
+
+Template Base: BFCP FloorQuery
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["TCP Destination Port"], "application_layer": ["Conference ID", "Transaction ID", "User ID", "FLOOR-ID"]}
+
+Receive Filter: BFCP message with matching Conference ID, Transaction ID, and User ID
+
+Success Condition: Reception of a FloorStatus message with information about the requested floors
+
+Failure Condition: Reception of an Error message or no response within a timeout period
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The successful processing of a FloorQuery message by a floor control server involves generating one or several FloorStatus messages, the first of which SHOULD be generated as soon as possible.
+
+================================================================================
+
+Mechanism 4: BFCP
+--------------------------------------------------------------------------------
+Mechanism Name: FloorRequestQuery
+
+Protocol: BFCP
+
+Condition: The target is a floor control server and the prober is a client with a valid Conference ID, Transaction ID, User ID, and FLOOR-REQUEST-ID
+
+Packet Flow: Client -> Floor control server -> Client
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: BFCP
+
+Template Base: BFCP FloorRequestQuery
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["TCP Destination Port"], "application_layer": ["Conference ID", "Transaction ID", "User ID", "FLOOR-REQUEST-ID"]}
+
+Receive Filter: BFCP message with matching Conference ID, Transaction ID, and User ID
+
+Success Condition: Reception of a FloorRequestStatus message with information about the requested floor request
+
+Failure Condition: Reception of an Error message or no response within a timeout period
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The successful processing of a FloorRequestQuery message by a floor control server involves generating a FloorRequestStatus message, which SHOULD be generated as soon as possible.
+
+================================================================================
+
+Mechanism 5: BFCP
+--------------------------------------------------------------------------------
+Mechanism Name: UserQuery
+
+Protocol: BFCP
+
+Condition: The target is a floor control server and the prober is a client with a valid Conference ID, Transaction ID, User ID, and optionally BENEFICIARY-ID
+
+Packet Flow: Client -> Floor control server -> Client
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: BFCP
+
+Template Base: BFCP UserQuery
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["TCP Destination Port"], "application_layer": ["Conference ID", "Transaction ID", "User ID", "BENEFICIARY-ID"]}
+
+Receive Filter: BFCP message with matching Conference ID, Transaction ID, and User ID
+
+Success Condition: Reception of a UserStatus message with information about the requested user
+
+Failure Condition: Reception of an Error message or no response within a timeout period
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If the response is a UserStatus message, the client obtains information about the floor participant in a BENEFICIARY-INFORMATION grouped attribute and about the status of the floor requests associated with the floor participant in FLOOR-REQUEST-INFORMATION attributes.
+
+================================================================================
+

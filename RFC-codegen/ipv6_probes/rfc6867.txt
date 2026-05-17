@@ -1,0 +1,44 @@
+RFC Document: RFC/rfc6867.txt
+Generated at: 2026-03-08 08:59:26
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: IKEv2
+--------------------------------------------------------------------------------
+Mechanism Name: ERX_SUPPORTED_Notification
+
+Protocol: IKEv2
+
+Condition: The prober sends an IKE_SA_INIT request and the target supports ERP
+
+Packet Flow: init request --> SA, KE, Ni,
+init response <-- SA, KE, Nr, N[ERX_SUPPORTED]
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: IKEv2
+
+Template Base: IKEv2 packet template
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["IKEv2 Exchange Type", "IKEv2 Message ID", "IKEv2 Notify Payload"]}
+
+Receive Filter: IKEv2 Exchange Type == IKE_SA_INIT and IKEv2 Notify Payload Type == ERX_SUPPORTED
+
+Success Condition: Receiving an IKE_SA_INIT response with N[ERX_SUPPORTED] Notify payload
+
+Failure Condition: Not receiving an IKE_SA_INIT response with N[ERX_SUPPORTED] Notify payload
+
+Prerequisites: []
+
+Confidence: high
+
+RFC Sentence: Support needs to be indicated through a Notify payload in the IKE_SA_INIT response.
+
+================================================================================
+

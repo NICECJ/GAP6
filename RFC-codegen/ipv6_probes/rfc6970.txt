@@ -1,0 +1,77 @@
+RFC Document: RFC/rfc6970.txt
+Generated at: 2026-03-08 07:44:28
+================================================================================
+
+Analysis Summary:
+Found 2 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: PCP
+--------------------------------------------------------------------------------
+Mechanism Name: PCP_MAP_Request
+
+Protocol: PCP
+
+Condition: IGD-PCP IWF receives AddPortMapping() with a specific external port from an IGD Control Point
+
+Packet Flow: IGD Control Point -> IGD-PCP IWF -> PCP Server -> IGD-PCP IWF -> IGD Control Point
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: PCP
+
+Template Base: PCP_MAP_Request
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["Destination Port"], "application_layer": ["Suggested External Port", "PREFER_FAILURE Option"]}
+
+Receive Filter: PCP MAP Response from the PCP Server
+
+Success Condition: PCP MAP Response with a positive answer
+
+Failure Condition: PCP MAP Response with CANNOT_PROVIDE_EXTERNAL error
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If the PCP server is able to create or renew a mapping with the requested external port, it sends a positive response to the IGD-PCP IWF.  If the requested external port is not available, the PCP server will send a CANNOT_PROVIDE_EXTERNAL error response.
+
+================================================================================
+
+Mechanism 2: PCP
+--------------------------------------------------------------------------------
+Mechanism Name: PCP_MAP_Delete_Request
+
+Protocol: PCP
+
+Condition: IGD-PCP IWF receives DeletePortMapping() or DeletePortMappingRange() with a specific external port from an IGD Control Point
+
+Packet Flow: IGD Control Point -> IGD-PCP IWF -> PCP Server -> IGD-PCP IWF -> IGD Control Point
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: PCP
+
+Template Base: PCP_MAP_Delete_Request
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["Destination Port"], "application_layer": ["External Port", "Requested Lifetime"]}
+
+Receive Filter: PCP MAP SUCCESS response or PCP error message from the PCP Server
+
+Success Condition: PCP MAP SUCCESS response
+
+Failure Condition: PCP error message (e.g., CANNOT_PROVIDE_EXTERNAL)
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: Once the PCP MAP delete request is received by the PCP server, it removes the corresponding entry.  A PCP MAP SUCCESS response is sent back if the removal of the corresponding entry was successful; if not, a PCP error message containing the corresponding error cause (see Section 4.3) is sent back to the IGD-PCP IWF.
+
+================================================================================
+

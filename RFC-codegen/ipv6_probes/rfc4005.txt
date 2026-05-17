@@ -1,0 +1,111 @@
+RFC Document: RFC/rfc4005.txt
+Generated at: 2026-03-08 06:15:46
+================================================================================
+
+Analysis Summary:
+Found 3 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: Diameter
+--------------------------------------------------------------------------------
+Mechanism Name: Diameter_AAR_AAA
+
+Protocol: Diameter
+
+Condition: The target is a Network Access Server (NAS) that supports the Diameter protocol and is configured to handle AA-Request (AAR) messages
+
+Packet Flow: Prober (Diameter Client) -> NAS (Diameter Server) -> Prober (Diameter Client)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: Diameter
+
+Template Base: Diameter_AAR
+
+Fields To Modify: {"network_layer": ["Destination-IPv6-Address"], "transport_layer": ["Destination-Port"], "application_layer": ["Session-Id", "Origin-Host", "Origin-Realm", "Destination-Realm", "Auth-Request-Type", "User-Name"]}
+
+Receive Filter: Diameter message with Command-Code 265 and 'R' bit cleared
+
+Success Condition: Result-Code AVP in the AAA message indicates success (e.g., DIAMETER_SUCCESS)
+
+Failure Condition: Result-Code AVP in the AAA message indicates failure (e.g., DIAMETER_AUTHENTICATION_REJECTED, DIAMETER_UNABLE_TO_COMPLY)
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The server processes the information and responds with a Diameter AA-Answer (AAA) message that contains authorization information for the NAS, or a failure code (Result-Code AVP).
+
+================================================================================
+
+Mechanism 2: Diameter
+--------------------------------------------------------------------------------
+Mechanism Name: Diameter_RAR_RAA
+
+Protocol: Diameter
+
+Condition: The target is a Network Access Server (NAS) that supports the Diameter protocol and is configured to handle Re-Auth-Request (RAR) messages
+
+Packet Flow: Prober (Diameter Server) -> NAS (Diameter Client) -> Prober (Diameter Server)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: Diameter
+
+Template Base: Diameter_RAR
+
+Fields To Modify: {"network_layer": ["Destination-IPv6-Address"], "transport_layer": ["Destination-Port"], "application_layer": ["Session-Id", "Origin-Host", "Origin-Realm", "Destination-Realm", "Destination-Host", "Re-Auth-Request-Type"]}
+
+Receive Filter: Diameter message with Command-Code 258 and 'R' bit cleared
+
+Success Condition: Result-Code AVP in the RAA message indicates success (e.g., DIAMETER_SUCCESS)
+
+Failure Condition: Result-Code AVP in the RAA message indicates failure (e.g., DIAMETER_AUTHENTICATION_REJECTED, DIAMETER_UNABLE_TO_COMPLY)
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: Upon receipt of such a message, the NAS MUST respond to the request with a Re-Auth-Answer (RAA) message [BASE].
+
+================================================================================
+
+Mechanism 3: Diameter
+--------------------------------------------------------------------------------
+Mechanism Name: Diameter_ACR_ACA
+
+Protocol: Diameter
+
+Condition: The target Diameter server is expected to respond to an Accounting-Request (ACR) with an Accounting-Answer (ACA).
+
+Packet Flow: Prober sends ACR, Target responds with ACA
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: Diameter
+
+Template Base: Diameter_ACR
+
+Fields To Modify: {"network_layer": ["Destination-IPv6-Address"], "transport_layer": ["Destination-Port"], "application_layer": ["Session-Id", "Origin-Host", "Origin-Realm", "Destination-Realm", "Accounting-Record-Type", "Accounting-Record-Number"]}
+
+Receive Filter: Diameter ACA
+
+Success Condition: Receiving an ACA message with Result-Code set to DIAMETER_SUCCESS.
+
+Failure Condition: Receiving an ACA message with Result-Code set to DIAMETER_UNKNOWN_SESSION_ID or DIAMETER_UNABLE_TO_COMPLY, or no response received.
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The ACA message [BASE] is used to acknowledge an Accounting-Request command. The Accounting-Answer command contains the same Session-Id as the Request.
+
+================================================================================
+

@@ -1,0 +1,145 @@
+RFC Document: RFC/rfc5259.txt
+Generated at: 2026-03-08 10:12:29
+================================================================================
+
+Analysis Summary:
+Found 4 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: IMAP4rev1
+--------------------------------------------------------------------------------
+Mechanism Name: IMAP4rev1 CONVERT Command
+
+Protocol: IMAP4rev1
+
+Condition: The target server supports the CONVERT extension and is in the Authenticated or Selected state
+
+Packet Flow: Client sends CONVERT command -> Server responds with CONVERTED untagged response
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: IMAP4rev1
+
+Template Base: IMAP4rev1 command template
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["Destination Port"], "application_layer": ["Command Tag", "Sequence Set", "Conversion Parameters", "Convert Data Item Names"]}
+
+Receive Filter: IMAP4rev1 CONVERTED untagged response
+
+Success Condition: Server responds with a CONVERTED untagged response containing the requested converted data
+
+Failure Condition: Server responds with a NO or BAD response, or no response is received
+
+Prerequisites: ["Server supports the CONVERT extension", "Client is in the Authenticated or Selected state"]
+
+Confidence: High
+
+RFC Sentence: A successful CONVERT/UID CONVERT command results in one or more untagged CONVERTED responses (one per message).
+
+================================================================================
+
+Mechanism 2: IMAP
+--------------------------------------------------------------------------------
+Mechanism Name: BODYPARTSTRUCTURE CONVERT
+
+Protocol: IMAP
+
+Condition: The target server supports the CONVERT extension and the BODYPARTSTRUCTURE data item
+
+Packet Flow: Client sends a CONVERT command with BODYPARTSTRUCTURE request, server responds with the converted BODYPARTSTRUCTURE
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: IMAP
+
+Template Base: IMAP CONVERT command
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["Destination Port"], "application_layer": ["Message Sequence Number", "Conversion Parameters", "Section Part"]}
+
+Receive Filter: IMAP response containing * 2 CONVERTED (TAG "e002") (BODYPARTSTRUCTURE[2] ...)
+
+Success Condition: The server returns a BODYPARTSTRUCTURE data item with the expected MIME type and size
+
+Failure Condition: The server returns a NO response or an ERROR phrase
+
+Prerequisites: ["Server supports the CONVERT extension", "Client is in the Authenticated or Selected state"]
+
+Confidence: High
+
+RFC Sentence: The returned BODYPARTSTRUCTURE data MUST match the BINARY data returned for exactly the same conversion in the same IMAP 'session'.
+
+================================================================================
+
+Mechanism 3: IMAP
+--------------------------------------------------------------------------------
+Mechanism Name: BINARY.SIZE CONVERT
+
+Protocol: IMAP
+
+Condition: The target server supports the CONVERT extension and the BINARY.SIZE data item
+
+Packet Flow: Client sends a CONVERT command with BINARY.SIZE request, server responds with the size of the converted part
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: IMAP
+
+Template Base: IMAP CONVERT command
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["Destination Port"], "application_layer": ["Message Sequence Number", "Conversion Parameters", "Section Part"]}
+
+Receive Filter: IMAP response containing * 2 CONVERTED (TAG "b001") (BINARY.SIZE[2] ...)
+
+Success Condition: The server returns a BINARY.SIZE data item with the size of the converted part
+
+Failure Condition: The server returns a NO response or an ERROR phrase
+
+Prerequisites: ["Server supports the CONVERT extension", "Client is in the Authenticated or Selected state"]
+
+Confidence: High
+
+RFC Sentence: This item requests the converted size of the section (i.e., the size to expect in a response to the corresponding CONVERT BINARY request).
+
+================================================================================
+
+Mechanism 4: IMAP
+--------------------------------------------------------------------------------
+Mechanism Name: AVAILABLECONVERSIONS CONVERT
+
+Protocol: IMAP
+
+Condition: The target server supports the CONVERT extension and the AVAILABLECONVERSIONS data item
+
+Packet Flow: Client sends a CONVERT command with AVAILABLECONVERSIONS request, server responds with a list of available MIME types
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: IMAP
+
+Template Base: IMAP CONVERT command
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["Destination Port"], "application_layer": ["Message Sequence Number", "Section Part"]}
+
+Receive Filter: IMAP response containing * 2 CONVERTED (TAG "f001") (AVAILABLECONVERSIONS[2] ...)
+
+Success Condition: The server returns a list of available MIME types for the specified part
+
+Failure Condition: The server returns a NO response or an ERROR phrase
+
+Prerequisites: ["Server supports the CONVERT extension", "Client is in the Authenticated or Selected state"]
+
+Confidence: High
+
+RFC Sentence: This data item is only useful when the default conversion (see Section 6) is requested.
+
+================================================================================
+

@@ -1,0 +1,51 @@
+RFC Document: RFC/rfc4579.txt
+Generated at: 2026-03-21 21:00:12
+================================================================================
+
+Analysis Summary (Deduplicated):
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: SIP
+Logic Fingerprint: destination_ip_Modified_SIP200OK
+destination_port_Modified_SIP200OK
+Request-URI_Modified_SIP200OK
+Via_Modified_SIP200OK
+From_Modified_SIP200OK
+To_Modified_SIP200OK
+Call-ID_Modified_SIP200OK
+CSeq_Modified_SIP200OK
+--------------------------------------------------------------------------------
+Mechanism Name: SIP_OPTIONS_Probing
+
+Protocol: SIP
+
+Condition: When a prober wants to determine if a target URI is a conference URI and what SIP extensions it supports
+
+Packet Flow: Prober sends OPTIONS request to target, target responds with 200 OK
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: SIP
+
+Template Base: SIP_OPTIONS
+
+Fields To Modify: {"network_layer": ["destination_ip"], "transport_layer": ["destination_port"], "application_layer": ["Request-URI", "Via", "From", "To", "Call-ID", "CSeq"]}
+
+Receive Filter: SIP 200 OK response with matching Call-ID and CSeq
+
+Success Condition: Received SIP 200 OK response with 'isfocus' parameter in Contact header
+
+Failure Condition: No response or response without 'isfocus' parameter
+
+Prerequisites: []
+
+Confidence: high
+
+RFC Sentence: A UA MAY send an OPTIONS request to discover if an opaque URI is a conference URI (resolves to a focus). In addition, the reply to the OPTIONS request can also indicate support for various SIP call control extensions used in this document.
+
+================================================================================
+

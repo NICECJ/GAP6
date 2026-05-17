@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc8983.txt
+Generated at: 2026-03-07 17:20:15
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: IKEv2
+--------------------------------------------------------------------------------
+Mechanism Name: IKEv2_IP6_ALLOWED
+
+Protocol: IKEv2
+
+Condition: Initiator requests IPv6 address assignment and responder supports IPv6
+
+Packet Flow: Initiator -> Responder (Configuration Request) -> Initiator (Configuration Response with IP6_ALLOWED)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: IKEv2
+
+Template Base: IKEv2 configuration request
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": ["Source Port", "Destination Port"], "application_layer": ["Configuration Attributes (IPv6)"]}
+
+Receive Filter: IKEv2 configuration response with IP6_ALLOWED notification status type
+
+Success Condition: Response contains IP6_ALLOWED notification status type
+
+Failure Condition: Response does not contain IP6_ALLOWED notification status type or contains INTERNAL_ADDRESS_FAILURE
+
+Prerequisites: ["IKEv2 Security Association established"]
+
+Confidence: High
+
+RFC Sentence: The responder MUST include the IP6_ALLOWED and/or IP4_ALLOWED notification status type in a response to an address assignment request as indicated in Table 1.
+
+================================================================================
+

@@ -1,0 +1,247 @@
+RFC Document: RFC/rfc4601.txt
+Generated at: 2026-03-08 08:48:50
+================================================================================
+
+Analysis Summary:
+Found 7 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: PIM
+--------------------------------------------------------------------------------
+Mechanism Name: PIM Hello Message for Neighbor Reboot Detection
+
+Protocol: PIM
+
+Condition: A router detects a change in the GenID in a Hello message from an upstream neighbor
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: PIM
+
+Template Base: PIM Hello
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Source Port", "Destination Port"], "application_layer": ["GenID"]}
+
+Receive Filter: PIM Hello message with a different GenID
+
+Success Condition: Receives a PIM Hello message with a different GenID
+
+Failure Condition: Does not receive a PIM Hello message with a different GenID within a specified time
+
+Prerequisites: ["Prober and target must be PIM-SM routers on the same network segment", "Target must be an upstream neighbor"]
+
+Confidence: High
+
+RFC Sentence: Similarly, if a router detects through a changed GenID in a Hello message that the upstream neighbor towards S has rebooted, then it should re-instantiate state by sending a Join(S,G).
+
+================================================================================
+
+Mechanism 2: PIM-SM
+--------------------------------------------------------------------------------
+Mechanism Name: PIM Hello Message
+
+Protocol: PIM-SM
+
+Condition: The prober is a PIM-SM router and the target is a PIM-SM router on the same network segment
+
+Packet Flow: Prober sends a PIM Hello message to the 'ALL-PIM-ROUTERS' multicast group, and the target responds with a PIM Hello message
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: PIM-SM
+
+Template Base: PIM Hello message template
+
+Fields To Modify: {"network_layer": ["source_address", "destination_address"], "transport_layer": ["port"], "application_layer": ["Hello_Holdtime", "DR_Priority", "GenID", "LAN_Prune_Delay"]}
+
+Receive Filter: PIM Hello message from the target's primary IP address
+
+Success Condition: Reception of a PIM Hello message from the target
+
+Failure Condition: No PIM Hello message received from the target within the HoldTime period
+
+Prerequisites: ["Prober and target must be PIM-SM routers on the same network segment"]
+
+Confidence: High
+
+RFC Sentence: Hello messages MUST be sent on all active interfaces, including physical point-to-point links, and are multicast to the 'ALL-PIM-ROUTERS' group address ('ff02::d' for IPv6).
+
+================================================================================
+
+Mechanism 3: PIM-SM
+--------------------------------------------------------------------------------
+Mechanism Name: Register-Stop Response
+
+Protocol: PIM-SM
+
+Condition: The prober sends a Register message to the target with the borderbit set and the target is not the RP or the source does not match the PMBR(S,G)
+
+Packet Flow: Prober (DR) -> Target (RP) -> Prober (DR)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: PIM
+
+Application Layer Protocol: PIM-SM
+
+Template Base: PIM Register message
+
+Fields To Modify: {"network_layer": ["source address", "destination address"], "transport_layer": ["borderbit"], "application_layer": []}
+
+Receive Filter: PIM Register-Stop message with source address matching the target and destination address matching the prober's address
+
+Success Condition: Reception of a Register-Stop(S,G) message from the target
+
+Failure Condition: No Register-Stop(S,G) message received from the target
+
+Prerequisites: ["Prober must be a DR or PMBR", "Target must be the RP"]
+
+Confidence: High
+
+RFC Sentence: if ( register.borderbit == TRUE ) { if ( PMBR(S,G) == unknown ) { PMBR(S,G) = outer.src } else if ( outer.src != PMBR(S,G) ) { send Register-Stop(S,G) to outer.src drop the packet silently. } }
+
+================================================================================
+
+Mechanism 4: PIM-SM
+--------------------------------------------------------------------------------
+Mechanism Name: Register-Stop on Invalid RP
+
+Protocol: PIM-SM
+
+Condition: The prober sends a Register message to the target with an outer destination address that is not the RP's address
+
+Packet Flow: Prober (DR) -> Target (RP) -> Prober (DR)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: PIM
+
+Application Layer Protocol: PIM-SM
+
+Template Base: PIM Register message
+
+Fields To Modify: {"network_layer": ["source address", "destination address"], "transport_layer": [], "application_layer": []}
+
+Receive Filter: PIM Register-Stop message with source address matching the target and destination address matching the prober's address
+
+Success Condition: Reception of a Register-Stop(S,G) message from the target
+
+Failure Condition: No Register-Stop(S,G) message received from the target
+
+Prerequisites: ["Prober must be a DR or PMBR", "Target must be the RP"]
+
+Confidence: High
+
+RFC Sentence: if( outer.dst is not one of my addresses ) { drop the packet silently. # Note: this may be a spoofing attempt } else { send Register-Stop(S,G) to outer.src # Note (*) }
+
+================================================================================
+
+Mechanism 5: PIM-SM
+--------------------------------------------------------------------------------
+Mechanism Name: PruneEcho Response
+
+Protocol: PIM-SM
+
+Condition: The prober sends a Prune(*,*,RP) message to the target and the target transitions from Prune-Pending to NoInfo state
+
+Packet Flow: Prober (DR) -> Target (RP) -> Prober (DR)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: PIM
+
+Application Layer Protocol: PIM-SM
+
+Template Base: PIM Prune message
+
+Fields To Modify: {"network_layer": ["source address", "destination address"], "transport_layer": ["Upstream Neighbor Address"], "application_layer": []}
+
+Receive Filter: PIM PruneEcho(*,*,RP) message with source address matching the target and destination address matching the prober's address
+
+Success Condition: Reception of a PruneEcho(*,*,RP) message from the target
+
+Failure Condition: No PruneEcho(*,*,RP) message received from the target
+
+Prerequisites: ["Prober must be a DR", "Target must be the RP", "Target must be in Prune-Pending state for (*,*,RP)"]
+
+Confidence: High
+
+RFC Sentence: The Prune-Pending Timer for the (*,*,RP) downstream state machine on interface I expires. The (*,*,RP) downstream state machine on interface I transitions to the NoInfo state. A PruneEcho(*,*,RP) is sent onto the subnet connected to interface I.
+
+================================================================================
+
+Mechanism 6: PIM-Assert
+--------------------------------------------------------------------------------
+Mechanism Name: Receive Inferior Assert with RPTbit set
+
+Protocol: PIM-Assert
+
+Condition: CouldAssert(*,G,I)==TRUE and (S,G) assert state machine is in NoInfo state
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: PIM
+
+Application Layer Protocol: PIM-Assert
+
+Template Base: PIM Assert message
+
+Fields To Modify: {"network_layer": ["source address", "destination address"], "transport_layer": ["metric_preference", "route_metric", "ip_address", "RPTbit"], "application_layer": []}
+
+Receive Filter: PIM Assert message with RPTbit set
+
+Success Condition: Response Assert message has a better metric than the probe message
+
+Failure Condition: No response or response Assert message has a worse or equal metric
+
+Prerequisites: ["Prober must be a PIM router", "Target must be a PIM router", "Target must be in Prune-Pending state for (*,G)"]
+
+Confidence: High
+
+RFC Sentence: The Prune-Pending Timer for the (*,G) downstream state machine on interface I expires. The (*,G) downstream state machine on interface I transitions to the NoInfo state. A PruneEcho(*,G) is sent onto the subnet connected to interface I.
+
+================================================================================
+
+Mechanism 7: PIM
+--------------------------------------------------------------------------------
+Mechanism Name: PIM Assert Message
+
+Protocol: PIM
+
+Condition: The prober sends a PIM Assert message for a specific (S,G) or (*,G) entry to the 'ALL-PIM-ROUTERS' group
+
+Packet Flow: Prober -> 'ALL-PIM-ROUTERS' group, Target -> 'ALL-PIM-ROUTERS' group
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: PIM
+
+Application Layer Protocol: None
+
+Template Base: PIM Assert
+
+Fields To Modify: {"network_layer": ["Source Address"], "transport_layer": ["Type", "Group Address", "Source Address"], "application_layer": []}
+
+Receive Filter: PIM Assert message from the target
+
+Success Condition: Reception of a PIM Assert message from the target indicating it is the assert winner
+
+Failure Condition: No PIM Assert message received from the target or a message indicating it is not the assert winner
+
+Prerequisites: ["Prober and target must be PIM routers on the same network segment", "Target must be the assert winner for the (S,G) or (*,G) entry"]
+
+Confidence: High
+
+RFC Sentence: send Assert(S,G) on iif
+
+================================================================================
+

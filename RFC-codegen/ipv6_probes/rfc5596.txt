@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc5596.txt
+Generated at: 2026-03-08 06:48:33
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: DCCP
+--------------------------------------------------------------------------------
+Mechanism Name: DCCP-Request Probing
+
+Protocol: DCCP
+
+Condition: DCCP server is in the INVITED state and has sent a DCCP-Listen packet
+
+Packet Flow: Client (DCCP A) sends DCCP-Request -> Server (DCCP B) responds with DCCP-Response
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: DCCP
+
+Application Layer Protocol: None
+
+Template Base: DCCP-Request
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": ["Source Port", "Destination Port", "Service Code"], "application_layer": []}
+
+Receive Filter: DCCP-Response
+
+Success Condition: Reception of a DCCP-Response packet from the server
+
+Failure Condition: No DCCP-Response packet received within the expected timeout period
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If the server endpoint in the INVITED state receives a DCCP-Request that matches the set of bound ports and addresses, it transitions to the LISTEN1 state and then immediately transitions to the RESPOND state, where further processing resumes as specified in [RFC4340].
+
+================================================================================
+

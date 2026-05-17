@@ -1,0 +1,77 @@
+RFC Document: RFC/rfc4851.txt
+Generated at: 2026-03-08 07:14:28
+================================================================================
+
+Analysis Summary:
+Found 2 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: EAP-FAST
+--------------------------------------------------------------------------------
+Mechanism Name: NAK TLV Probing
+
+Protocol: EAP-FAST
+
+Condition: The prober sends a TLV that is not supported by the target
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: EAP-FAST
+
+Template Base: EAP-FAST packet with TLV
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["TLV Type", "Mandatory bit"]}
+
+Receive Filter: EAP-FAST packet with TLV Type 4 (NAK TLV)
+
+Success Condition: Receiving a NAK TLV in response
+
+Failure Condition: No response or a response without a NAK TLV
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If the peer or server does not support a TLV marked mandatory, then it MUST send a NAK TLV in the response, and all the other TLVs in the message MUST be ignored.
+
+================================================================================
+
+Mechanism 2: EAP-FAST
+--------------------------------------------------------------------------------
+Mechanism Name: Error TLV Probing
+
+Protocol: EAP-FAST
+
+Condition: The prober sends an Error TLV with a specific Error-Code
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: EAP-FAST
+
+Template Base: EAP-FAST packet with TLV
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["TLV Type", "Error-Code"]}
+
+Receive Filter: EAP-FAST packet with TLV Type 5 (Error TLV) and TLV Type 3 (Result TLV)
+
+Success Condition: Receiving a Result TLV and an Error TLV in response
+
+Failure Condition: No response or a response without a Result TLV and an Error TLV
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: A fatal Error TLV MUST be accompanied by a Result TLV indicating failure and the conversation must be terminated as described in Section 3.6.2.
+
+================================================================================
+

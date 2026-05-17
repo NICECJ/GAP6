@@ -1,0 +1,77 @@
+RFC Document: RFC/rfc4533.txt
+Generated at: 2026-03-08 09:32:05
+================================================================================
+
+Analysis Summary:
+Found 2 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: LDAP
+--------------------------------------------------------------------------------
+Mechanism Name: LDAP_Sync_Refresh_Stage
+
+Protocol: LDAP
+
+Condition: The client sends a Sync Request with mode refreshOnly or the refresh stage of refreshAndPersist
+
+Packet Flow: Client -> Server: Sync Request Message, Server -> Client: SearchResultEntry, SearchResultReference, or Sync Info Message
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: LDAP
+
+Template Base: LDAP_Sync_Request
+
+Fields To Modify: {"network_layer": ["destination IPv6 address"], "transport_layer": ["destination port"], "application_layer": ["baseObject", "scope", "derefAliases", "filter", "attributes", "control"]}
+
+Receive Filter: LDAP SearchResultEntry, SearchResultReference, or Sync Info Message
+
+Success Condition: Reception of SearchResultEntry, SearchResultReference, or Sync Info Message with refreshDone set to TRUE
+
+Failure Condition: Reception of SearchResultDone Message with a non-success resultCode, or no response
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The content refresh is provided as described in Section 3.3, except that the successful completion of content refresh is indicated by sending a Sync Info Message of refreshDelete or refreshPresent with a refreshDone value set to TRUE instead of a SearchResultDone Message with resultCode success.
+
+================================================================================
+
+Mechanism 2: LDAP
+--------------------------------------------------------------------------------
+Mechanism Name: LDAP_Sync_Persist_Stage
+
+Protocol: LDAP
+
+Condition: The client sends a Sync Request with mode refreshAndPersist and the persist stage is active
+
+Packet Flow: Client -> Server: Sync Request Message, Server -> Client: SearchResultEntry, SearchResultReference, or Sync Info Message
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: LDAP
+
+Template Base: LDAP_Sync_Request
+
+Fields To Modify: {"network_layer": ["destination IPv6 address"], "transport_layer": ["destination port"], "application_layer": ["baseObject", "scope", "derefAliases", "filter", "attributes", "control"]}
+
+Receive Filter: LDAP SearchResultEntry, SearchResultReference, or Sync Info Message
+
+Success Condition: Reception of SearchResultEntry, SearchResultReference, or Sync Info Message indicating changes to the content
+
+Failure Condition: Reception of SearchResultDone Message with a non-success resultCode, or no response
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: As updates are made to the DIT, the server notifies the client of changes to the content. DIT updates may cause entries and references to be added to the content, deleted from the content, or modified within the content.
+
+================================================================================
+

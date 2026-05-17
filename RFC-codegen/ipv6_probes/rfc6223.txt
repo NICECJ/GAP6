@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc6223.txt
+Generated at: 2026-03-08 07:47:51
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: SIP
+--------------------------------------------------------------------------------
+Mechanism Name: SIP_KeepAlive_Probing
+
+Protocol: SIP
+
+Condition: Alice sends an UPDATE request with a 'keep' parameter in the Via header field
+
+Packet Flow: Alice -> Bob
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: SIP
+
+Template Base: SIP_UPDATE
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["Via header field (add 'keep' parameter)"]}
+
+Receive Filter: SIP 200 OK response with 'keep' parameter in Via header field
+
+Success Condition: Response contains 'keep' parameter in Via header field
+
+Failure Condition: Response does not contain 'keep' parameter in Via header field
+
+Prerequisites: ["Established SIP dialog between Alice and Bob"]
+
+Confidence: High
+
+RFC Sentence: Bob supports the keep-alive mechanism, and is willing to receive keep-alives associated with the dialog from Alice, so he creates a response and adds a 'keep' parameter value, which indicates a recommended keep-alive frequency of 30 seconds, to Alice's Via header field, before he forwards the response towards Alice.
+
+================================================================================
+

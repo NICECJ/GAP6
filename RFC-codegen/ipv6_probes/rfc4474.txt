@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc4474.txt
+Generated at: 2026-03-08 10:24:59
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: SIP
+--------------------------------------------------------------------------------
+Mechanism Name: SIP_407_Authentication
+
+Protocol: SIP
+
+Condition: The prober sends an initial SIP request (INVITE or BYE) without an Authorization header
+
+Packet Flow: Prober -> Target (SIP request) -> Prober (407 response)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TLS
+
+Application Layer Protocol: SIP
+
+Template Base: SIP request template
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["Request-URI", "From", "To", "Call-ID", "CSeq", "Via"]}
+
+Receive Filter: SIP response with status code 407
+
+Success Condition: Receiving a 407 response with a WWW-Authenticate header
+
+Failure Condition: No response or a response with a different status code
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: When the authentication service receives the INVITE, it authenticates Alice by sending a 407 response.
+
+================================================================================
+

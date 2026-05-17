@@ -1,0 +1,111 @@
+RFC Document: RFC/rfc5412.txt
+Generated at: 2026-03-08 08:23:38
+================================================================================
+
+Analysis Summary:
+Found 3 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: LWAPP
+--------------------------------------------------------------------------------
+Mechanism Name: Discovery Request to Discovery Response
+
+Protocol: LWAPP
+
+Condition: WTP is in Discovery state and has not received a response from the AC
+
+Packet Flow: WTP -> AC -> WTP
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: LWAPP
+
+Template Base: LWAPP Discovery Request
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["Destination Port"], "application_layer": ["C Bit", "RID Field"]}
+
+Receive Filter: LWAPP Discovery Response
+
+Success Condition: Reception of a Discovery Response from the AC
+
+Failure Condition: No Discovery Response received within the DiscoveryInterval timer period
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The AC does not need to maintain state information for the WTP upon reception of the Discovery Request, but it MUST respond with a Discovery Response (see Section 5.2).
+
+================================================================================
+
+Mechanism 2: LWAPP
+--------------------------------------------------------------------------------
+Mechanism Name: Join Request to Join Response
+
+Protocol: LWAPP
+
+Condition: WTP has selected an AC and is in Join state
+
+Packet Flow: WTP -> AC -> WTP
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: LWAPP
+
+Template Base: LWAPP Join Request
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["Destination Port"], "application_layer": ["C Bit", "RID Field"]}
+
+Receive Filter: LWAPP Join Response
+
+Success Condition: Reception of a Join Response from the AC
+
+Failure Condition: No Join Response received within the WaitJoin timer period
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The AC enters this state for the given WTP upon reception of a Join Request. The AC processes the request and responds with a Join Response.
+
+================================================================================
+
+Mechanism 3: LWAPP
+--------------------------------------------------------------------------------
+Mechanism Name: Echo Request to Echo Response
+
+Protocol: LWAPP
+
+Condition: WTP is in Run state and the Heartbeat timer expires
+
+Packet Flow: WTP -> AC -> WTP
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: LWAPP
+
+Template Base: LWAPP Echo Request
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": [], "application_layer": []}
+
+Receive Filter: LWAPP Echo Response
+
+Success Condition: Echo Response received before NeighborDeadInterval timer expires
+
+Failure Condition: Echo Response not received before NeighborDeadInterval timer expires
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: When an AC receives an Echo Request, it responds with an Echo Response.
+
+================================================================================
+

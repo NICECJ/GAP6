@@ -1,0 +1,77 @@
+RFC Document: RFC/rfc6607.txt
+Generated at: 2026-03-08 07:50:33
+================================================================================
+
+Analysis Summary:
+Found 2 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: DHCPv6
+--------------------------------------------------------------------------------
+Mechanism Name: DHCPv6_VSS_Probing
+
+Protocol: DHCPv6
+
+Condition: The prober acts as a DHCPv6 client or relay agent and includes the VSS option in a DHCPv6 message.
+
+Packet Flow: Client/Relay Agent -> Server -> Client/Relay Agent
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: DHCPv6
+
+Template Base: DHCPv6 message template
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": ["Source Port", "Destination Port"], "application_layer": ["OPTION_VSS", "Type", "VSS Information"]}
+
+Receive Filter: DHCPv6 message with OPTION_VSS
+
+Success Condition: The DHCPv6 server responds with a message containing the VSS option.
+
+Failure Condition: The DHCPv6 server does not respond, or the response does not contain the VSS option.
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The server will use the DHCPv6 VSS option or DHCPv4 VSS sub-option to determine the VPN on which the client resides and will use that VPN information to select the address space within its configuration from which to allocate an IP address to the DHCP client.
+
+================================================================================
+
+Mechanism 2: DHCPv6
+--------------------------------------------------------------------------------
+Mechanism Name: DHCPv6_Relay_VSS_Probing
+
+Protocol: DHCPv6
+
+Condition: The DHCPv6 server includes VSS information in the Relay-reply message to the relay agent, and the relay agent is expected to place the client into the specified VPN.
+
+Packet Flow: Client -> Relay Agent -> DHCPv6 Server -> Relay Agent -> Client
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: DHCPv6
+
+Template Base: DHCPv6 Relay-forward
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["VSS Option"]}
+
+Receive Filter: DHCPv6 Relay-reply message with VSS option
+
+Success Condition: The VSS option in the Relay-reply message matches the VSS option in the Relay-forward message.
+
+Failure Condition: The VSS option in the Relay-reply message is missing or does not match the VSS option in the Relay-forward message.
+
+Prerequisites: ["Relay Agent must be configured to forward DHCPv6 messages with VSS options."]
+
+Confidence: High
+
+RFC Sentence: In the DHCPv6 case, the appearance of the option in the Relay-reply packet indicates that the DHCPv6 server understood and acted upon the contents of the VSS option in the Relay-forward packet.
+
+================================================================================
+

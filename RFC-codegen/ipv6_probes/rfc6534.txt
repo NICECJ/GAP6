@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc6534.txt
+Generated at: 2026-03-08 06:52:20
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: None (specified in P)
+--------------------------------------------------------------------------------
+Mechanism Name: Type-P-One-way-Bi-Packet-Loss-Geometric-Stream
+
+Protocol: None (specified in P)
+
+Condition: The prober sends packet pairs with a fixed time separation and a geometric distribution of launch times
+
+Packet Flow: Src -> Dst
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: Any (specified in P)
+
+Application Layer Protocol: None (specified in P)
+
+Template Base: RFC2680
+
+Fields To Modify: {"network_layer": ["Src", "Dst"], "transport_layer": ["Type-P specific fields"], "application_layer": ["Type-P specific fields"]}
+
+Receive Filter: Filter for Type-P packets from Dst
+
+Success Condition: Both packets of the pair are received at Dst
+
+Failure Condition: One or both packets of the pair are not received at Dst
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: For each i = 0, 1, ..., n-1 we form the potential measurement time Ti = T0 + i*d. With probability q, a packet pair measurement is launched at Ti, resulting in a Type-P-One-way-Bi-Packet-Loss with parameters (Src, Dst, Ti, T(i+1), Fi, P) where Fi is the restriction of the selection function F to the packet pair at times Ti, T(i+1).
+
+================================================================================
+

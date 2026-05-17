@@ -1,0 +1,77 @@
+RFC Document: RFC/rfc8985.txt
+Generated at: 2026-03-08 07:54:53
+================================================================================
+
+Analysis Summary:
+Found 2 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: TCP
+--------------------------------------------------------------------------------
+Mechanism Name: TLP Loss Probe
+
+Protocol: TCP
+
+Condition: When the PTO timer expires and there is no other previous loss probe still in flight, and the sender has obtained an RTT measurement since the last loss probe transmission or the start of the connection
+
+Packet Flow: Prober sends a loss probe segment -> Target responds with an ACK or SACK
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: None
+
+Template Base: TCP_segment
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Sequence Number", "Acknowledgment Number", "Flags (SYN, ACK, etc.)"], "application_layer": []}
+
+Receive Filter: ACK or SACK for the loss probe segment
+
+Success Condition: The target responds with an ACK or SACK that acknowledges the loss probe segment
+
+Failure Condition: No ACK or SACK is received within the RTO period
+
+Prerequisites: ["PTO timer expiration", "No other loss probe in flight", "RTT measurement since last loss probe or connection start"]
+
+Confidence: High
+
+RFC Sentence: When the PTO timer expires, the sender MUST check whether both of the following conditions are met before sending a loss probe: 1. First, there is no other previous loss probe still in flight. 2. Second, the sender has obtained an RTT measurement since the last loss probe transmission or the start of the connection, whichever was later.
+
+================================================================================
+
+Mechanism 2: TCP
+--------------------------------------------------------------------------------
+Mechanism Name: TLP Recovery Detection
+
+Protocol: TCP
+
+Condition: After a TLP retransmission, the sender checks for a duplicate ACK or DSACK indicating that both the original segment and TLP retransmission arrived at the receiver
+
+Packet Flow: Sender -> Receiver: TLP retransmission segment, Receiver -> Sender: ACK with DSACK or DupAck
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: None
+
+Template Base: TCP_segment
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Sequence Number", "Acknowledgment Number", "Flags (RST, SYN, FIN, PSH, ACK)"], "application_layer": []}
+
+Receive Filter: ACK with DSACK or DupAck
+
+Success Condition: ACK with DSACK or DupAck received, indicating both original and TLP retransmission segments arrived
+
+Failure Condition: No ACK with DSACK or DupAck received, indicating at least one segment was lost
+
+Prerequisites: ["TLP retransmission has been sent"]
+
+Confidence: High
+
+RFC Sentence: If the TLP retransmission is spurious, a receiver that uses DSACK would return an ACK that covers TLP.end_seq with a DSACK option (Case 1).  If the receiver does not support DSACK, it would return a DupAck without any SACK option (Case 2).
+
+================================================================================
+

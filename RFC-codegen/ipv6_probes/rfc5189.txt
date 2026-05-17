@@ -1,0 +1,111 @@
+RFC Document: RFC/rfc5189.txt
+Generated at: 2026-03-08 06:18:33
+================================================================================
+
+Analysis Summary:
+Found 3 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: MIDCOM
+--------------------------------------------------------------------------------
+Mechanism Name: Policy Rule Status (PRS) Transaction
+
+Protocol: MIDCOM
+
+Condition: The agent is authorized to access the policy rule
+
+Packet Flow: Agent -> Middlebox -> Agent
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: MIDCOM
+
+Template Base: MIDCOM_PRS
+
+Fields To Modify: {"network_layer": ["destination IPv6 address"], "transport_layer": ["destination port"], "application_layer": ["request identifier", "policy rule identifier"]}
+
+Receive Filter: MIDCOM_PRS_reply
+
+Success Condition: Receiving a PRS success reply message with the requested policy rule identifier
+
+Failure Condition: Receiving a PRS failure reply message or no reply within a timeout period
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The agent can use this transaction type to list all properties of a policy rule.  Usually, the agent has this information already, but in special cases (for example, after an agent fail-over) or for special agents (for example, an administrating agent that can access all policy rules) this transaction can be helpful.
+
+================================================================================
+
+Mechanism 2: MIDCOM
+--------------------------------------------------------------------------------
+Mechanism Name: Group List Transaction
+
+Protocol: MIDCOM
+
+Condition: Agent needs to explore accessible groups after session disruption or termination, or after taking over from a failed agent
+
+Packet Flow: agent -> middlebox -> agent
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: MIDCOM
+
+Template Base: GL transaction
+
+Fields To Modify: {"network_layer": ["source IPv6 address", "destination IPv6 address"], "transport_layer": ["source port", "destination port"], "application_layer": []}
+
+Receive Filter: GL response from middlebox
+
+Success Condition: Response contains a list of accessible groups
+
+Failure Condition: No response or response indicates failure
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: On this request, the middlebox returns a list of pairs, each containing an agent identifier and a group identifier (GID).
+
+================================================================================
+
+Mechanism 3: MIDCOM
+--------------------------------------------------------------------------------
+Mechanism Name: Group Status Transaction
+
+Protocol: MIDCOM
+
+Condition: Agent has a list of accessible groups and wants to know the status and members of a specific group
+
+Packet Flow: agent -> middlebox -> agent
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: MIDCOM
+
+Template Base: GS transaction
+
+Fields To Modify: {"network_layer": ["source IPv6 address", "destination IPv6 address"], "transport_layer": ["source port", "destination port"], "application_layer": ["GID"]}
+
+Receive Filter: GS response from middlebox
+
+Success Condition: Response contains the status and member list of the group
+
+Failure Condition: No response or response indicates failure
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: In reply to a Policy Rule Status (PRS) transaction, the middlebox always returns the following list of parameters: policy rule owner, group identifier, policy rule action, protocol type, port range, direction, internal IP address, internal port number, external address, external port number, middlebox inside IP address, middlebox inside port number, middlebox outside IP address, middlebox outside port number, IP address versions, middlebox service, inside and outside interface.
+
+================================================================================
+

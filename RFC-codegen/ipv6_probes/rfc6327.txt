@@ -1,0 +1,77 @@
+RFC Document: RFC/rfc6327.txt
+Generated at: 2026-03-08 04:45:34
+================================================================================
+
+Analysis Summary:
+Found 2 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: TRILL
+--------------------------------------------------------------------------------
+Mechanism Name: TRILL-Hello-Adjacency-Detection
+
+Protocol: TRILL
+
+Condition: RBridge is not in the Down state and is not the DRB
+
+Packet Flow: RBridge -> Neighbor RBridge -> RBridge
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: None
+
+Application Layer Protocol: TRILL
+
+Template Base: TRILL Hello
+
+Fields To Modify: {"network_layer": ["Source IPv6 Address", "Destination IPv6 Address"], "transport_layer": [], "application_layer": ["Source MAC (SNPA) Address", "Port ID", "System ID", "Holding Time", "Priority", "Desired Designated VLAN"]}
+
+Receive Filter: TRILL Hello on the Designated VLAN with a TRILL Neighbor TLV that explicitly lists the receiver's (SNPA) address
+
+Success Condition: Neighbor RBridge's TRILL Hello explicitly lists the receiver's (SNPA) address
+
+Failure Condition: Neighbor RBridge's TRILL Hello does not list the receiver's (SNPA) address or is not received within the holding timer period
+
+Prerequisites: ["RBridge is not in the Down state", "RBridge is not the DRB"]
+
+Confidence: High
+
+RFC Sentence: A1. Receive a TRILL Hello (other than an A0 event) on the Designated VLAN with a TRILL Neighbor TLV that explicitly lists the receiver's (SNPA) address.
+
+================================================================================
+
+Mechanism 2: TRILL IS-IS
+--------------------------------------------------------------------------------
+Mechanism Name: MTU_Probe
+
+Protocol: TRILL IS-IS
+
+Condition: The prober RBridge has determined the desired campus MTU and wishes to test the MTU size to a specific target RBridge
+
+Packet Flow: Prober sends MTU-probe PDU to target, target responds with MTU-ack PDU
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: None
+
+Application Layer Protocol: TRILL IS-IS
+
+Template Base: TRILL MTU-probe PDU
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": [], "application_layer": ["MTU size in the MTU-probe PDU"]}
+
+Receive Filter: MTU-ack PDU from the target RBridge
+
+Success Condition: The MTU-ack PDU indicates that the target RBridge can handle the desired MTU size
+
+Failure Condition: The MTU-ack PDU indicates that the target RBridge cannot handle the desired MTU size, or no response is received within the expected time
+
+Prerequisites: ["Prober RBridge has determined the desired campus MTU"]
+
+Confidence: High
+
+RFC Sentence: Although MTU testing is optional, it is mandatory for an RBridge to respond to an MTU-probe PDU with an MTU-ack PDU [RFC6325] [RFC6326].
+
+================================================================================
+

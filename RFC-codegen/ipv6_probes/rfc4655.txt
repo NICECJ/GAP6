@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc4655.txt
+Generated at: 2026-03-08 06:25:52
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: PCEP (Path Computation Element Communication Protocol)
+--------------------------------------------------------------------------------
+Mechanism Name: PCEP Request-Response
+
+Protocol: PCEP (Path Computation Element Communication Protocol)
+
+Condition: A PCE or PCC sends a path computation request to a PCE
+
+Packet Flow: Sender -> PCE -> Sender
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP/UDP
+
+Application Layer Protocol: PCEP (Path Computation Element Communication Protocol)
+
+Template Base: PCEP request
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Port"], "application_layer": ["Request Type", "Source and Destination of the Path", "Bandwidth and QoS Parameters", "Constraints"]}
+
+Receive Filter: PCEP response from the same PCE
+
+Success Condition: PCE returns a computed path
+
+Failure Condition: PCE returns an error message or no response is received
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: A request/response protocol is also required for a PCE to communicate path computation requests to another PCE and for the PCE to return the path computation response. In case of a positive response from the PCE, one or more paths would be returned to the requesting node. In the event of a failure to compute the desired path(s), an error is returned together with as much information as possible about the reasons for the failure, and potentially advice about which constraints might be relaxed so that a positive result is more likely.
+
+================================================================================
+

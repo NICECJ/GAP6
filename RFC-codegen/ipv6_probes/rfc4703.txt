@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc4703.txt
+Generated at: 2026-03-08 09:20:14
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: DNS
+--------------------------------------------------------------------------------
+Mechanism Name: DHCID_RR_Conflict_Resolution
+
+Protocol: DNS
+
+Condition: The FQDN is in use and the DHCID RR does not match the client's identity
+
+Packet Flow: Prober sends DNS UPDATE request -> Target responds with DNS UPDATE response
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: DNS
+
+Template Base: DNS_UPDATE_REQUEST
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["Destination Port"], "application_layer": ["FQDN", "DHCID RR Data"]}
+
+Receive Filter: DNS_UPDATE_RESPONSE with RCODE NXRRSET
+
+Success Condition: The target FQDN is in use by another client or not associated with any client
+
+Failure Condition: The target FQDN is not in use or the DHCID RR matches the client's identity
+
+Prerequisites: ["FQDN exists", "DHCID RR matches the client's identity"]
+
+Confidence: High
+
+RFC Sentence: If the response to the UPDATE request returns NXRRSET, there are two possibilities: there are no DHCID RRs for the FQDN, or the DHCID RR does not match. In either case, the updater proceeds to Section 5.3.3.
+
+================================================================================
+

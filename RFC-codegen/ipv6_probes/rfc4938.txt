@@ -1,0 +1,77 @@
+RFC Document: RFC/rfc4938.txt
+Generated at: 2026-03-08 07:15:39
+================================================================================
+
+Analysis Summary:
+Found 2 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: PPPoE
+--------------------------------------------------------------------------------
+Mechanism Name: PPPoE Active Discovery Session-Grant (PADG)
+
+Protocol: PPPoE
+
+Condition: After the PADR/PADS exchange, when the prober (Access Concentrator or Host) needs to grant additional credits to the peer
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: Ethernet
+
+Application Layer Protocol: PPPoE
+
+Template Base: PPPoE Discovery Stage
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["CODE", "SESSION_ID", "Sequence Number Tag TLV"], "application_layer": ["Credit Tag TLV (FCN, BCN)"]}
+
+Receive Filter: CODE == 0x0B and SESSION_ID matches the probed session
+
+Success Condition: PADC packet received with the same sequence number as the PADG
+
+Failure Condition: No PADC packet received within the specified time or PADC with a different sequence number
+
+Prerequisites: ["PADR/PADS exchange completed", "Session established"]
+
+Confidence: High
+
+RFC Sentence: When the peer receives a PADG packet, it adds the incremental credits to its working credit count and responds with a PPPoE Active Discovery Session-Credit (PADC) packet indicating the accumulated credits.
+
+================================================================================
+
+Mechanism 2: PPPoE
+--------------------------------------------------------------------------------
+Mechanism Name: PPPoE Active Discovery Quality (PADQ)
+
+Protocol: PPPoE
+
+Condition: At any time, when the prober (Access Concentrator or Host) wants to query or report link quality metrics
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: Ethernet
+
+Application Layer Protocol: PPPoE
+
+Template Base: PPPoE Discovery Stage
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["CODE", "SESSION_ID"], "application_layer": ["Metric Tag TLV (Receive only, Maximum data rate, Current data rate, Latency, Resources, RLQ)"]}
+
+Receive Filter: CODE == 0x0C and SESSION_ID matches the probed session
+
+Success Condition: PADQ packet received with metrics
+
+Failure Condition: No PADQ packet received within the specified time or PADQ with no metrics
+
+Prerequisites: ["Session established"]
+
+Confidence: High
+
+RFC Sentence: The PPPoE Active Discovery Quality (PADQ) packet can be used to query link metrics by setting the PADQ Metric Tag Length to zero.
+
+================================================================================
+

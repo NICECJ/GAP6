@@ -1,0 +1,111 @@
+RFC Document: RFC/rfc6458.txt
+Generated at: 2026-03-08 10:39:54
+================================================================================
+
+Analysis Summary:
+Found 3 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: SCTP
+--------------------------------------------------------------------------------
+Mechanism Name: SCTP_ASSOC_CHANGE
+
+Protocol: SCTP
+
+Condition: The prober sends a packet to a target IPv6 address using sendmsg() or sendto() without an existing association
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: SCTP
+
+Application Layer Protocol: None
+
+Template Base: SCTP INIT chunk
+
+Fields To Modify: {"network_layer": ["destination IPv6 address"], "transport_layer": ["source and destination port", "initiate tag", "advertised receiver window credit", "number of outbound streams", "number of inbound streams", "initial TSN"], "application_layer": []}
+
+Receive Filter: SCTP packet with INIT ACK chunk
+
+Success Condition: Reception of an INIT ACK chunk from the target
+
+Failure Condition: No response or reception of an ABORT chunk
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The success or failure of sending the data message (with possible SCTP_INITMSG ancillary data) will be signaled by the SCTP_ASSOC_CHANGE event with SCTP_COMM_UP or SCTP_CANT_START_ASSOC.
+
+================================================================================
+
+Mechanism 2: SCTP
+--------------------------------------------------------------------------------
+Mechanism Name: SCTP_REMOTE_ERROR
+
+Protocol: SCTP
+
+Condition: When an SCTP endpoint encounters an operational error
+
+Packet Flow: Prober sends a chunk -> Target responds with ERROR chunk
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: SCTP
+
+Application Layer Protocol: None
+
+Template Base: SCTP chunk that triggers an error
+
+Fields To Modify: {"network_layer": ["destination IPv6 address"], "transport_layer": ["source and destination port", "chunk type"], "application_layer": []}
+
+Receive Filter: SCTP packet with ERROR chunk
+
+Success Condition: Reception of an ERROR chunk from the target
+
+Failure Condition: No response or reception of an ABORT chunk
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: A remote peer may send an Operation Error message to its peer. This message indicates a variety of error conditions on an association.
+
+================================================================================
+
+Mechanism 3: SCTP
+--------------------------------------------------------------------------------
+Mechanism Name: SCTP_PEER_ADDR_PARAMS
+
+Protocol: SCTP
+
+Condition: The target address is part of an SCTP association and the prober has the ability to send a heartbeat request
+
+Packet Flow: Prober sends SCTP HEARTBEAT request to target -> Target responds with SCTP HEARTBEAT ACK
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: SCTP
+
+Application Layer Protocol: None
+
+Template Base: sctp_paddrparams
+
+Fields To Modify: {"network_layer": ["spp_address"], "transport_layer": ["spp_assoc_id", "spp_flags"], "application_layer": []}
+
+Receive Filter: SCTP packet with HEARTBEAT ACK chunk
+
+Success Condition: Reception of SCTP HEARTBEAT ACK chunk from the target address
+
+Failure Condition: No SCTP HEARTBEAT ACK chunk received from the target address within a reasonable time
+
+Prerequisites: ["An SCTP association must be established"]
+
+Confidence: High
+
+RFC Sentence: SPP_HB_DEMAND:  This field requests that a user-initiated heartbeat be made immediately.
+
+================================================================================
+

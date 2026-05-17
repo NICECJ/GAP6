@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc6069.txt
+Generated at: 2026-03-08 05:46:35
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: TCP
+--------------------------------------------------------------------------------
+Mechanism Name: TCP-LCD ICMP Unreachable Message Handling
+
+Protocol: TCP
+
+Condition: TCP sender is in timeout-based loss recovery and has not received an acceptable ACK
+
+Packet Flow: TCP segment -> Intermediate Router -> ICMPv6 Destination Unreachable message
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: None
+
+Template Base: TCP segment retransmission
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Sequence Number"], "application_layer": []}
+
+Receive Filter: ICMPv6 Destination Unreachable message with code 0
+
+Success Condition: ICMPv6 Destination Unreachable message is received and contains the sequence number of the retransmitted TCP segment (SND.UNA)
+
+Failure Condition: No ICMPv6 Destination Unreachable message is received, or the received message does not contain the sequence number of the retransmitted TCP segment (SND.UNA)
+
+Prerequisites: ["TCP connection in timeout-based loss recovery", "No acceptable ACK received"]
+
+Confidence: High
+
+RFC Sentence: When the ICMP unreachable message 'ICMP_DU' arrives, proceed to step (4).
+
+================================================================================
+

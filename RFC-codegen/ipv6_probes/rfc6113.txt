@@ -1,0 +1,111 @@
+RFC Document: RFC/rfc6113.txt
+Generated at: 2026-03-08 07:10:34
+================================================================================
+
+Analysis Summary:
+Found 3 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: Kerberos
+--------------------------------------------------------------------------------
+Mechanism Name: KDC_ERR_MORE_PREAUTH_DATA_REQUIRED
+
+Protocol: Kerberos
+
+Condition: Client sends an AS-REQ message and the KDC requires more pre-authentication data
+
+Packet Flow: Client -> KDC: AS-REQ, KDC -> Client: KRB-ERROR
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: Kerberos
+
+Template Base: Kerberos AS-REQ
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["padata"]}
+
+Receive Filter: KRB-ERROR with KDC_ERR_MORE_PREAUTH_DATA_REQUIRED
+
+Success Condition: KRB-ERROR message with KDC_ERR_MORE_PREAUTH_DATA_REQUIRED is received
+
+Failure Condition: No response or a different error code is received
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If at least one more message for a mechanism or a mechanism set is expected by the KDC, the KDC returns a KDC_ERR_MORE_PREAUTH_DATA_REQUIRED error with a PA-FX-COOKIE to identify the conversation with the client, according to Section 2.2.
+
+================================================================================
+
+Mechanism 2: Kerberos
+--------------------------------------------------------------------------------
+Mechanism Name: Kerberos FAST Probing
+
+Protocol: Kerberos
+
+Condition: The KDC supports FAST and receives a valid PA-FX-FAST request
+
+Packet Flow: Client -> KDC: PA-FX-FAST-REQUEST, KDC -> Client: PA-FX-FAST-REPLY
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: Kerberos
+
+Template Base: Kerberos FAST Request
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["armor", "req-checksum", "enc-fast-req"]}
+
+Receive Filter: Kerberos PA-FX-FAST-REPLY
+
+Success Condition: Reception of a PA-FX-FAST-REPLY with a valid nonce and armor key
+
+Failure Condition: No response or an error response (e.g., KDC_ERR_UNKNOWN_CRITICAL_FAST_OPTIONS)
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The KDC that supports the PA-FX-FAST padata MUST include a PA-FX-FAST padata element in the KDC reply.
+
+================================================================================
+
+Mechanism 3: Kerberos
+--------------------------------------------------------------------------------
+Mechanism Name: Encrypted Challenge FAST Factor
+
+Protocol: Kerberos
+
+Condition: The KDC is configured to accept and process FAST requests with PA-ENCRYPTED-CHALLENGE padata
+
+Packet Flow: Client -> KDC (AS-REQ) -> Client (AS-REP)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: Kerberos
+
+Template Base: Kerberos AS-REQ
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["PA-ENCRYPTED-CHALLENGE padata-value"]}
+
+Receive Filter: Kerberos AS-REP with PA-ENCRYPTED-CHALLENGE padata
+
+Success Condition: The AS-REP contains a PA-ENCRYPTED-CHALLENGE padata with a decrypted timestamp within the acceptable clock skew
+
+Failure Condition: The AS-REP does not contain a PA-ENCRYPTED-CHALLENGE padata or the decryption fails
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If the KDC accepts the encrypted challenge, it MUST include a padata element of type PA-ENCRYPTED-CHALLENGE. The KDC encrypts its current time in the challenge key.
+
+================================================================================
+

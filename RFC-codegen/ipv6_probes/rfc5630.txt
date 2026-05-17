@@ -1,0 +1,179 @@
+RFC Document: RFC/rfc5630.txt
+Generated at: 2026-03-08 05:07:58
+================================================================================
+
+Analysis Summary:
+Found 5 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: SIP
+--------------------------------------------------------------------------------
+Mechanism Name: SIP_Registration_Probe
+
+Protocol: SIP
+
+Condition: The target device supports SIP and is capable of sending a REGISTER request
+
+Packet Flow: Bob's PC Client -> Edge Proxy B -> Registrar/Authoritative Proxy B -> Edge Proxy B -> Bob's PC Client
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: SIP
+
+Template Base: SIP_REGISTER
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["To", "From", "Call-ID", "CSeq", "Contact"]}
+
+Receive Filter: SIP/2.0 200 OK
+
+Success Condition: Receives a 200 OK response
+
+Failure Condition: Receives a non-200 response or no response
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: When a redirect server receives a request with a SIP Request-URI, the redirect server MAY redirect with a 3XX response to either a SIP or a SIPS Contact header field.
+
+================================================================================
+
+Mechanism 2: SIP
+--------------------------------------------------------------------------------
+Mechanism Name: SIPS_Registration_Probe
+
+Protocol: SIP
+
+Condition: The target device supports SIPS and is capable of sending a REGISTER request
+
+Packet Flow: Bob's Phone -> Edge Proxy B -> Registrar/Authoritative Proxy B -> Edge Proxy B -> Bob's Phone
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TLS
+
+Application Layer Protocol: SIP
+
+Template Base: SIP_REGISTER
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["To", "From", "Call-ID", "CSeq", "Contact"]}
+
+Receive Filter: SIP/2.0 200 OK
+
+Success Condition: Receives a 200 OK response
+
+Failure Condition: Receives a non-200 response or no response
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: When a redirect server receives a request with a SIPS Request-URI, the redirect server MAY redirect with a 3XX response to a SIP or a SIPS Contact header field.
+
+================================================================================
+
+Mechanism 3: SIP
+--------------------------------------------------------------------------------
+Mechanism Name: SIP_INVITE_Ringing_Response
+
+Protocol: SIP
+
+Condition: The target SIP endpoint is registered and can receive SIP INVITE messages
+
+Packet Flow: Alice -> Edge Proxy B -> Bob's Phone -> Edge Proxy B -> Alice
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TLS
+
+Application Layer Protocol: SIP
+
+Template Base: SIP_INVITE
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["Destination Port"], "application_layer": ["To", "From", "Call-ID", "CSeq", "Contact", "Via"]}
+
+Receive Filter: SIP/2.0 180 Ringing
+
+Success Condition: Receiving a 180 Ringing response from the target
+
+Failure Condition: No response or receiving a 404 Not Found or 480 Temporarily Unavailable response
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: Bob's Phone sends a 180 Ringing response to the Edge Proxy B, which is then forwarded to Alice.
+
+================================================================================
+
+Mechanism 4: SIP
+--------------------------------------------------------------------------------
+Mechanism Name: SIP_INVITE_OK_Response
+
+Protocol: SIP
+
+Condition: The target SIP endpoint is registered and can receive SIP INVITE messages
+
+Packet Flow: Alice -> Edge Proxy B -> Bob's Phone -> Edge Proxy B -> Alice
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TLS
+
+Application Layer Protocol: SIP
+
+Template Base: SIP_INVITE
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["Destination Port"], "application_layer": ["To", "From", "Call-ID", "CSeq", "Contact", "Via"]}
+
+Receive Filter: SIP/2.0 200 OK
+
+Success Condition: Receiving a 200 OK response from the target
+
+Failure Condition: No response or receiving a 404 Not Found or 480 Temporarily Unavailable response
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: Bob's Phone sends a 200 OK response to the Edge Proxy B, which is then forwarded to Alice.
+
+================================================================================
+
+Mechanism 5: SIP
+--------------------------------------------------------------------------------
+Mechanism Name: SIP_INVITE_Probing
+
+Protocol: SIP
+
+Condition: The target SIP endpoint is registered and capable of receiving SIP INVITE requests
+
+Packet Flow: Alice -> Edge Proxy B -> Bob's PC Client
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: SIP
+
+Template Base: SIP_INVITE
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["Request-URI", "Via", "Max-Forwards", "To", "From", "Call-ID", "CSeq"]}
+
+Receive Filter: SIP/2.0 180 Ringing
+
+Success Condition: Receives a 180 Ringing response
+
+Failure Condition: No response or receives a 487 Request Terminated response
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: Bob's phone's policy is to accept calls to SIP and SIPS (i.e., "best effort"), so both his PC client and his SIP phone ring simultaneously.
+
+================================================================================
+

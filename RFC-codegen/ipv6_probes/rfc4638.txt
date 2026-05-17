@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc4638.txt
+Generated at: 2026-03-08 09:16:46
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: PPPoE
+--------------------------------------------------------------------------------
+Mechanism Name: PPPoE_MRU_Echo_Request
+
+Protocol: PPPoE
+
+Condition: MRU is negotiated to a value larger than 1492 octets
+
+Packet Flow: PPPoE client -> PPPoE server -> PPPoE client
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: PPP
+
+Application Layer Protocol: PPPoE
+
+Template Base: PPPoE_Echo_Request
+
+Fields To Modify: {"network_layer": [], "transport_layer": [], "application_layer": ["PPP-Max-Payload"]}
+
+Receive Filter: PPP packet with Echo-Reply
+
+Success Condition: Echo-Reply received with the same payload size as the Echo-Request
+
+Failure Condition: No Echo-Reply received or Echo-Reply received with a smaller payload size
+
+Prerequisites: ["PPPoE session is established", "MRU is negotiated and set"]
+
+Confidence: High
+
+RFC Sentence: If the MRU is negotiated to a value larger than 1492 octets, the sending side SHOULD have the option of sending one or more MRU-sized Echo-Request packets once the session is opened. If no Echo-Replies are received, the sending side MAY choose to repeat the test with 1492 octets Echo-Request packets. If these packets receive replies, the sending side MUST not send packets bigger than 1492 octets for this session.
+
+================================================================================
+

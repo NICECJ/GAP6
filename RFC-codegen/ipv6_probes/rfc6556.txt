@@ -1,0 +1,79 @@
+RFC Document: RFC/rfc6556.txt
+Generated at: 2026-03-08 06:44:20
+================================================================================
+
+Analysis Summary:
+Found 2 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: TCP
+--------------------------------------------------------------------------------
+Mechanism Name: TCP SYN to IPv6 Address
+
+Protocol: TCP
+
+Condition: Alice attempts to establish a TCP session with Bob using an IPv6 address
+
+Packet Flow: Alice -> Bob: TCP SYN, IPv6
+Bob -> Alice: TCP RST, IPv6
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: None
+
+Template Base: TCP SYN
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Source Port", "Destination Port", "Sequence Number"], "application_layer": []}
+
+Receive Filter: TCP RST, IPv6
+
+Success Condition: Receives a TCP RST packet from Bob
+
+Failure Condition: No response or a different response is received
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If Bob has a total of N addresses, we run the measurement at least N times, permitting exactly one of the addresses to enjoy end-to-end communication each time.
+
+================================================================================
+
+Mechanism 2: UDP
+--------------------------------------------------------------------------------
+Mechanism Name: UDP Request to IPv6 Address
+
+Protocol: UDP
+
+Condition: Alice attempts to send a UDP request to Bob using an IPv6 address
+
+Packet Flow: Alice -> Bob: UDP Request, IPv6
+Bob -> Alice: UDP Response, IPv6
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: None
+
+Template Base: UDP Request
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Source Port", "Destination Port"], "application_layer": []}
+
+Receive Filter: UDP Response, IPv6
+
+Success Condition: Receives a UDP Response packet from Bob
+
+Failure Condition: No response or a different response is received
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: In a UDP-based application (Figure 3), that would be from the DNS request (line 1) through one or more UDP Requests (lines 6-10) until a UDP Response is seen (line 11).
+
+================================================================================
+

@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc5338.txt
+Generated at: 2026-03-08 07:55:29
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: HIP
+--------------------------------------------------------------------------------
+Mechanism Name: Opportunistic HIP Initiation
+
+Protocol: HIP
+
+Condition: The prober has no pre-existing HIT for the target and wants to initiate HIP
+
+Packet Flow: Prober sends I1 -> Target responds with R1
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: HIP
+
+Template Base: HIP base exchange
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Source Port", "Destination Port"], "application_layer": ["Responder HIT (set to empty)"]}
+
+Receive Filter: Filter for R1 packet
+
+Success Condition: Reception of R1 packet from the target
+
+Failure Condition: No R1 packet received within a timeout period
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The system could send an I1 to the Responder with an empty value for Responder HIT.
+
+================================================================================
+

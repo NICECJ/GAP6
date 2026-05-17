@@ -1,0 +1,145 @@
+RFC Document: RFC/rfc4324.txt
+Generated at: 2026-03-08 08:33:02
+================================================================================
+
+Analysis Summary:
+Found 4 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: iCalendar
+--------------------------------------------------------------------------------
+Mechanism Name: GET-CAPABILITY
+
+Protocol: iCalendar
+
+Condition: The target is a CS or CUA that supports the GET-CAPABILITY command
+
+Packet Flow: CUA -> CS -> CUA
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: iCalendar
+
+Template Base: iCalendar GET-CAPABILITY command
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["Destination Port"], "application_layer": ["CMD;ID"]}
+
+Receive Filter: CMD;ID=unique-per-cua-125:REPLY
+
+Success Condition: REPLY packet with capability information and REQUEST-STATUS:2.0 is received
+
+Failure Condition: No REPLY packet is received or REQUEST-STATUS indicates an error
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The 'GET-CAPABILITY' command and reply MUST be implemented by all CSs and CUAs.
+
+================================================================================
+
+Mechanism 2: iCalendar
+--------------------------------------------------------------------------------
+Mechanism Name: CREATE
+
+Protocol: iCalendar
+
+Condition: The target calendar server (CS) receives a CREATE command to create new iCalendar objects.
+
+Packet Flow: CUA -> CS -> CUA
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: iCalendar
+
+Template Base: iCalendar CREATE command
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["Destination Port"], "application_layer": ["PRODID", "CMD;ID", "TARGET", "VAGENDA.CALID", "VAGENDA.NAME", "VAGENDA.OWNER", "VAGENDA.CALMASTER", "VAGENDA.TZID"]}
+
+Receive Filter: Content-Type: text/calendar
+
+Success Condition: Receives a VCALENDAR object with a CMD property set to REPLY and VREPLY components for each created object.
+
+Failure Condition: No response or a response with an error status.
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: To create a new component in multiple containers, simply name all of the containers in the "TARGET" in the create command.
+
+================================================================================
+
+Mechanism 3: iCalendar
+--------------------------------------------------------------------------------
+Mechanism Name: DELETE
+
+Protocol: iCalendar
+
+Condition: The target has a calendar component that can be deleted
+
+Packet Flow: CUA -> CS -> CUA
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: iCalendar
+
+Template Base: iCalendar DELETE command
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["Destination Port"], "application_layer": ["TARGET", "CMD;ID", "VQUERY;QUERY"]}
+
+Receive Filter: CMD;ID=unique-per-cua-124:REPLY
+
+Success Condition: REPLY packet with REQUEST-STATUS:3.0 is received
+
+Failure Condition: No REPLY packet is received or REQUEST-STATUS indicates an error
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: When components are deleted, only the top-most component 'REQUEST-STATUS' properties are returned.  No 'REQUEST-STATUS' properties are returned for components inside of the selected components.  There MUST be one 'VREPLY' component returned for each object that is deleted or marked for delete.
+
+================================================================================
+
+Mechanism 4: iCalendar
+--------------------------------------------------------------------------------
+Mechanism Name: GENERATE-UID
+
+Protocol: iCalendar
+
+Condition: The target is a CS that supports the GENERATE-UID command
+
+Packet Flow: CUA -> CS -> CUA
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: iCalendar
+
+Template Base: iCalendar GENERATE-UID command
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["Destination Port"], "application_layer": ["CMD;ID", "OPTIONS"]}
+
+Receive Filter: CMD;ID=unique-per-cua-124:REPLY
+
+Success Condition: REPLY packet with multiple UID values and REQUEST-STATUS:2.0 is received
+
+Failure Condition: No REPLY packet is received or REQUEST-STATUS indicates an error
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The 'GENERATE-UID' command returns one or more unique identifiers that MUST be globally unique.
+
+================================================================================
+

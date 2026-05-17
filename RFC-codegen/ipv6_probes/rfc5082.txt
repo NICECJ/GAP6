@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc5082.txt
+Generated at: 2026-03-08 06:46:51
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: ICMPv6
+--------------------------------------------------------------------------------
+Mechanism Name: GTSM_Hop_Limit_Probing
+
+Protocol: ICMPv6
+
+Condition: GTSM is enabled for the protocol session and the target is expected to be directly connected
+
+Packet Flow: Prober sends an ICMPv6 Echo Request to the target, and the target responds with an ICMPv6 Echo Reply if it is directly connected and active
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: ICMPv6
+
+Application Layer Protocol: None
+
+Template Base: ICMPv6 Echo Request
+
+Fields To Modify: {"network_layer": ["Hop Limit"], "transport_layer": ["Type", "Code", "Checksum", "Identifier", "Sequence Number"], "application_layer": []}
+
+Receive Filter: ICMPv6 Echo Reply with Hop Limit 255
+
+Success Condition: Receiving an ICMPv6 Echo Reply with Hop Limit 255
+
+Failure Condition: Not receiving an ICMPv6 Echo Reply or receiving a reply with a Hop Limit other than 255
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The TTL field in all IP packets used for transmission of messages associated with GTSM-enabled protocol sessions MUST be set to 255. This also applies to the related ICMP error handling messages.
+
+================================================================================
+

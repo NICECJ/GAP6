@@ -1,0 +1,145 @@
+RFC Document: RFC/rfc6763.txt
+Generated at: 2026-03-08 05:36:01
+================================================================================
+
+Analysis Summary:
+Found 4 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: DNS
+--------------------------------------------------------------------------------
+Mechanism Name: Service Instance Resolution
+
+Protocol: DNS
+
+Condition: A client has a Service Instance Name and needs to contact the service
+
+Packet Flow: Client sends DNS query -> DNS server responds with SRV and TXT records
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: DNS
+
+Template Base: DNS query template
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["Query Name", "Query Type (SRV and TXT)"]}
+
+Receive Filter: DNS response with SRV and TXT records for the queried Service Instance Name
+
+Success Condition: DNS response contains SRV and TXT records with valid target host and port number
+
+Failure Condition: DNS response contains no SRV or TXT records, or the records are invalid
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: When a client needs to contact a particular service, identified by a Service Instance Name, previously discovered via Service Instance Enumeration (browsing), it queries for the SRV and TXT records of that name.
+
+================================================================================
+
+Mechanism 2: DNS
+--------------------------------------------------------------------------------
+Mechanism Name: Service Instance Enumeration
+
+Protocol: DNS
+
+Condition: The prober wants to discover instances of a specific service type in a domain
+
+Packet Flow: Prober sends DNS query -> Target responds with DNS response
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: DNS
+
+Template Base: DNS query template
+
+Fields To Modify: {"network_layer": ["destination IPv6 address"], "transport_layer": ["destination port"], "application_layer": ["query name", "query type"]}
+
+Receive Filter: DNS response with matching query ID and containing PTR records
+
+Success Condition: Receiving a DNS response with at least one PTR record
+
+Failure Condition: Receiving a DNS response with no PTR records or no response
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: A DNS query for PTR records with the name <sn>._tcp.<servicedomain>.<parentdomain>. yields a set of PTR records, where the rdata of each PTR record is the two-label <Service> name, plus the same domain, e.g., _http._tcp.<Domain>.
+
+================================================================================
+
+Mechanism 3: DNS
+--------------------------------------------------------------------------------
+Mechanism Name: Service Type Enumeration
+
+Protocol: DNS
+
+Condition: The prober wants to discover the list of service types available in a domain
+
+Packet Flow: Prober sends DNS query -> Target responds with DNS response
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: DNS
+
+Template Base: DNS query template
+
+Fields To Modify: {"network_layer": ["destination IPv6 address"], "transport_layer": ["destination port"], "application_layer": ["query name", "query type"]}
+
+Receive Filter: DNS response with matching query ID and containing PTR records
+
+Success Condition: Receiving a DNS response with at least one PTR record
+
+Failure Condition: Receiving a DNS response with no PTR records or no response
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: A DNS query for PTR records with the name _services._dns-sd._udp.<Domain> yields a set of PTR records, where the rdata of each PTR record is the two-label <Service> name, plus the same domain, e.g., _http._tcp.<Domain>.
+
+================================================================================
+
+Mechanism 4: DNS
+--------------------------------------------------------------------------------
+Mechanism Name: Domain Enumeration
+
+Protocol: DNS
+
+Condition: The prober wants to discover the list of recommended domains for browsing and registration
+
+Packet Flow: Prober sends DNS query -> Target responds with DNS response
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: DNS
+
+Template Base: DNS query template
+
+Fields To Modify: {"network_layer": ["destination IPv6 address"], "transport_layer": ["destination port"], "application_layer": ["query name", "query type"]}
+
+Receive Filter: DNS response with matching query ID and containing PTR records
+
+Success Condition: Receiving a DNS response with at least one PTR record
+
+Failure Condition: Receiving a DNS response with no PTR records or no response
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: By performing PTR queries for these names, a client can learn, respectively: A list of domains recommended for browsing, a single recommended default domain for browsing, a list of domains recommended for registering services using Dynamic Update, a single recommended default domain for registering services, and the 'legacy browsing' or 'automatic browsing' domain(s).
+
+================================================================================
+

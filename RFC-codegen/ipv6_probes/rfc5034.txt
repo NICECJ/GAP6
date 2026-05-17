@@ -1,0 +1,77 @@
+RFC Document: RFC/rfc5034.txt
+Generated at: 2026-03-08 06:09:56
+================================================================================
+
+Analysis Summary:
+Found 2 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: POP3
+--------------------------------------------------------------------------------
+Mechanism Name: AUTH_PLAIN
+
+Protocol: POP3
+
+Condition: Server supports the AUTH command and PLAIN mechanism, and TLS is established
+
+Packet Flow: Client sends AUTH PLAIN command with Base64 encoded credentials, Server responds with +OK indicating successful authentication
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: POP3
+
+Template Base: POP3_AUTH
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["credentials"]}
+
+Receive Filter: POP3 +OK response
+
+Success Condition: Server responds with +OK
+
+Failure Condition: Server responds with -ERR
+
+Prerequisites: ["TLS established", "Server supports AUTH command and PLAIN mechanism"]
+
+Confidence: High
+
+RFC Sentence: If the client needs to send a zero-length initial response, it MUST transmit the response as a single equals sign ("=").  This indicates that the response is present, but contains no data.
+
+================================================================================
+
+Mechanism 2: POP3
+--------------------------------------------------------------------------------
+Mechanism Name: AUTH_Digest_MD5
+
+Protocol: POP3
+
+Condition: Server supports the AUTH command and DIGEST-MD5 mechanism, and TLS is established
+
+Packet Flow: Client sends AUTH DIGEST-MD5 command, Server responds with a Base64 encoded challenge
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: POP3
+
+Template Base: POP3_AUTH
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["mechanism"]}
+
+Receive Filter: POP3 + response with Base64 encoded challenge
+
+Success Condition: Server responds with a + and a Base64 encoded challenge
+
+Failure Condition: Server responds with -ERR
+
+Prerequisites: ["TLS established", "Server supports AUTH command and DIGEST-MD5 mechanism"]
+
+Confidence: High
+
+RFC Sentence: If the requested authentication mechanism is not supported, the server rejects the AUTH command with an -ERR reply.
+
+================================================================================
+

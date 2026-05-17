@@ -1,0 +1,2 @@
+graph_enhanced.pkl  # 忽略大文件
+*.pkl  # 可选：忽略所有.pkl文件

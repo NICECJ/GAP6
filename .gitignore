@@ -1,0 +1,43 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Logs and outputs
+*.log
+output/
+outputs/
+results/
+logs/
+
+# Large generated files
+*.pkl
+*.pt
+*.pth
+*.npy
+*.npz
+*.pcap
+*.zip
+*.tar
+*.tar.gz
+*.rar
+
+# Old or unused modules
+DINT/
+DINT2/
+6Genos_original/
+New-address-discovery/

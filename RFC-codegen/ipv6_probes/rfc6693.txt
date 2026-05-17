@@ -1,0 +1,281 @@
+RFC Document: RFC/rfc6693.txt
+Generated at: 2026-03-08 09:52:19
+================================================================================
+
+Analysis Summary:
+Found 8 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: PRoPHET
+--------------------------------------------------------------------------------
+Mechanism Name: RIBD_Error_Response
+
+Protocol: PRoPHET
+
+Condition: A node receives a RIB Dictionary TLV containing an identifier that is already in use with a different EID
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: PRoPHET
+
+Template Base: RIBD_TLV
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["EID Identifier", "EID Value"]}
+
+Receive Filter: PRoPHET TLV with error flag set
+
+Success Condition: Error response TLV is received with the correct error flag set
+
+Failure Condition: No error response TLV is received or the error flag is not set
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If a node receives a RIB Dictionary TLV containing an identifier that is already in use, the node MUST confirm that the EID referred to is identical to the EID in the existing entry. Otherwise, the node must send an error response to the message with the TLV containing the error and ignore the TLV containing the error.
+
+================================================================================
+
+Mechanism 2: PRoPHET
+--------------------------------------------------------------------------------
+Mechanism Name: RIB_TLV_Error_Response
+
+Protocol: PRoPHET
+
+Condition: A node receives a RIB, Bundle Offer, or Bundle Response TLV that uses an identifier not in its dictionary
+
+Packet Flow: Prober -> Target -> Prober
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: PRoPHET
+
+Template Base: RIB_TLV
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["EID Identifier"]}
+
+Receive Filter: PRoPHET TLV with error flag set
+
+Success Condition: Error response TLV is received with the correct error flag set
+
+Failure Condition: No error response TLV is received or the error flag is not set
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If a node receives a RIB, Bundle Offer, or Bundle Response TLV that uses an identifier that is not in its dictionary, the node MUST send an error response and ignore the TLV containing the error.
+
+================================================================================
+
+Mechanism 3: PRoPHET
+--------------------------------------------------------------------------------
+Mechanism Name: PRoPHET_Hello_SYN
+
+Protocol: PRoPHET
+
+Condition: When a PRoPHET node encounters a new node
+
+Packet Flow: Prober -> Target (SYN), Target -> Prober (SYNACK)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: PRoPHET
+
+Template Base: PRoPHET Hello SYN
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": ["Source Port", "Destination Port"], "application_layer": ["Sender Instance", "Receiver Instance", "Transaction Identifier"]}
+
+Receive Filter: PRoPHET Hello SYNACK
+
+Success Condition: Reception of Hello SYNACK message with matching Transaction Identifier
+
+Failure Condition: No response or reception of Hello SYNACK message with different Transaction Identifier
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: For messages during the Hello phase with the Hello SYN, Hello SYNACK, and Hello ACK functions, it is the sender's instance number for the link. It is used to detect when the link comes back up after going down or when the identity of the entity at the other end of the link changes.
+
+================================================================================
+
+Mechanism 4: PRoPHET
+--------------------------------------------------------------------------------
+Mechanism Name: PRoPHET_Hello_SYNACK
+
+Protocol: PRoPHET
+
+Condition: When a node B receives a Hello SYN message from node A
+
+Packet Flow: B -> A (SYNACK), A -> B (ACK)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: PRoPHET
+
+Template Base: PRoPHET Hello SYNACK
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": ["Source Port", "Destination Port"], "application_layer": ["Sender Instance", "Receiver Instance", "Transaction Identifier"]}
+
+Receive Filter: PRoPHET Hello ACK
+
+Success Condition: Reception of Hello ACK message with matching Transaction Identifier
+
+Failure Condition: No response or reception of Hello ACK message with different Transaction Identifier
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: For the RSTACK function (also explained in detail in Section 5.2), the Receiver Instance field is set to the value of the Sender Instance field from the incoming message that caused the RSTACK function to be generated.
+
+================================================================================
+
+Mechanism 5: PRoPHET
+--------------------------------------------------------------------------------
+Mechanism Name: PRoPHET_Hello_ACK
+
+Protocol: PRoPHET
+
+Condition: When a node A receives a Hello SYNACK message from node B
+
+Packet Flow: A -> B (ACK), B -> A (RSTACK)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: PRoPHET
+
+Template Base: PRoPHET Hello ACK
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": ["Source Port", "Destination Port"], "application_layer": ["Sender Instance", "Receiver Instance", "Transaction Identifier"]}
+
+Receive Filter: PRoPHET RSTACK
+
+Success Condition: Reception of RSTACK message with matching Transaction Identifier
+
+Failure Condition: No response or reception of RSTACK message with different Transaction Identifier
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: For the RSTACK message, the Receiver Instance field is set to the value of the Sender Instance field from the incoming message that caused the RSTACK message to be generated.
+
+================================================================================
+
+Mechanism 6: PRoPHET
+--------------------------------------------------------------------------------
+Mechanism Name: Error_TLV_Response_to_Dictionary_Conflict
+
+Protocol: PRoPHET
+
+Condition: The prober sends a RIB Dictionary TLV and the peer node responds with an Error TLV if a conflict is detected
+
+Packet Flow: Prober -> Peer (RIB Dictionary TLV), Peer -> Prober (Error TLV)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: PRoPHET
+
+Template Base: RIB Dictionary TLV template
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["Sequence Number"], "application_layer": ["RIB Dictionary Entries", "Sent by Listener flag"]}
+
+Receive Filter: Error TLV (Dictionary Conflict or Bad String ID)
+
+Success Condition: Reception of an Error TLV indicating a Dictionary Conflict or Bad String ID
+
+Failure Condition: No response or reception of a valid RIB Dictionary TLV
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If an Error TLV indicating a Dictionary Conflict or Bad String ID is received during or after sending the RIB Dictionary TLVs and/or the RIB TLVs, abort any in-progress Initiator or Listener process, and terminate the connection to the peer.
+
+================================================================================
+
+Mechanism 7: PRoPHET
+--------------------------------------------------------------------------------
+Mechanism Name: Bundle_Offer_Response
+
+Protocol: PRoPHET
+
+Condition: The prober sends a RIB TLV and the peer node responds with a Bundle Offer TLV
+
+Packet Flow: Prober -> Peer (RIB TLV), Peer -> Prober (Bundle Offer TLV)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: PRoPHET
+
+Template Base: RIB TLV template
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["Sequence Number"], "application_layer": ["RIB Entries", "More RIB TLVs flag"]}
+
+Receive Filter: Bundle Offer TLV
+
+Success Condition: Reception of a Bundle Offer TLV from the peer
+
+Failure Condition: No response or reception of an Error TLV
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If a message with a Bundle Offer TLV is received, restart the Timer(info) if the 'More Offer/Response TLVs Following' flag is set in the TLV; otherwise, stop the Timer(info).
+
+================================================================================
+
+Mechanism 8: PRoPHET
+--------------------------------------------------------------------------------
+Mechanism Name: Bundle_Response_to_Offer
+
+Protocol: PRoPHET
+
+Condition: The prober sends a Bundle Response TLV and the peer node responds with the requested bundles
+
+Packet Flow: Prober -> Peer (Bundle Response TLV), Peer -> Prober (Bundles)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: PRoPHET
+
+Template Base: Bundle Response TLV template
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["Sequence Number"], "application_layer": ["Bundle Offer Count", "Bundle Offers", "More Offer/Response TLVs Following flag"]}
+
+Receive Filter: Bundles
+
+Success Condition: Reception of the requested bundles from the peer
+
+Failure Condition: No response or reception of an Error TLV
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: Format one or more Bundle Response TLVs flagging the accepted offers and send them to the peer.
+
+================================================================================
+

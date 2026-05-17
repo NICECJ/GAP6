@@ -1,0 +1,77 @@
+RFC Document: RFC/rfc5157.txt
+Generated at: 2026-03-08 07:41:02
+================================================================================
+
+Analysis Summary:
+Found 2 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: ICMPv6
+--------------------------------------------------------------------------------
+Mechanism Name: Multicast Probing
+
+Protocol: ICMPv6
+
+Condition: The prober has access to the local subnet
+
+Packet Flow: Prober sends an IPv6 packet to FF02::1, and active hosts respond with NA or ICMPv6 Echo Reply
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: ICMPv6
+
+Application Layer Protocol: None
+
+Template Base: ICMPv6 Echo Request
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Type (128 for Echo Request)"], "application_layer": []}
+
+Receive Filter: ICMPv6 Type 136 (Neighbor Advertisement) or Type 129 (Echo Reply)
+
+Success Condition: Reception of a Neighbor Advertisement or ICMPv6 Echo Reply from the target address
+
+Failure Condition: No response received within a specified timeout period
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: An attacker may choose to probe the 'all hosts' link-local multicast address to discover active nodes on the subnet.
+
+================================================================================
+
+Mechanism 2: ICMPv6
+--------------------------------------------------------------------------------
+Mechanism Name: Solicited Node Multicast Probing
+
+Protocol: ICMPv6
+
+Condition: The prober has a potential target IPv6 address or a part of it
+
+Packet Flow: Prober sends an IPv6 packet to the solicited node multicast address, and the target host responds with a Neighbor Advertisement
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: ICMPv6
+
+Application Layer Protocol: None
+
+Template Base: ICMPv6 Neighbor Solicitation
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Type (135 for Neighbor Solicitation)", "Target Address"], "application_layer": []}
+
+Receive Filter: ICMPv6 Type 136 (Neighbor Advertisement)
+
+Success Condition: Reception of a Neighbor Advertisement from the target address
+
+Failure Condition: No response received within a specified timeout period
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: An attacker may choose to probe the solicited node multicast address of a potential target host.
+
+================================================================================
+

@@ -1,0 +1,111 @@
+RFC Document: RFC/rfc6372.txt
+Generated at: 2026-03-08 07:12:31
+================================================================================
+
+Analysis Summary:
+Found 3 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: MPLS-TP OAM
+--------------------------------------------------------------------------------
+Mechanism Name: Continuity Check (CC)
+
+Protocol: MPLS-TP OAM
+
+Condition: Proactive fault management in MPLS-TP
+
+Packet Flow: MEP to MEP
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: MPLS
+
+Application Layer Protocol: MPLS-TP OAM
+
+Template Base: MPLS-TP OAM Continuity Check
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["MPLS Label"], "application_layer": ["ME Identifier", "Sequence Number"]}
+
+Receive Filter: CC-V message with matching ME Identifier and Sequence Number
+
+Success Condition: Reception of three consecutive CC-V messages
+
+Failure Condition: Absence of three consecutive CC-V messages
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: In the absence of three consecutive CC-V messages, loss of continuity is declared and is notified locally to the edge of the recovery domain in order to trigger a recovery action.
+
+================================================================================
+
+Mechanism 2: MPLS-TP OAM
+--------------------------------------------------------------------------------
+Mechanism Name: Connectivity Verification (CV)
+
+Protocol: MPLS-TP OAM
+
+Condition: Proactive fault management in MPLS-TP
+
+Packet Flow: MEP to MEP
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: MPLS
+
+Application Layer Protocol: MPLS-TP OAM
+
+Template Base: MPLS-TP OAM Connectivity Verification
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["MPLS Label"], "application_layer": ["ME Identifier"]}
+
+Receive Filter: CV message with matching ME Identifier
+
+Success Condition: Reception of CV message with correct ME Identifier
+
+Failure Condition: Reception of CV message with incorrect ME Identifier
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The proactive Connectivity Verification (CV) allows a sink MEP to detect a misconnectivity defect (e.g., mismerge or misconnection) with its peer source MEP when the received packet carries an incorrect ME identifier.
+
+================================================================================
+
+Mechanism 3: LMP
+--------------------------------------------------------------------------------
+Mechanism Name: LMP Test Message
+
+Protocol: LMP
+
+Condition: Control-plane testing in MPLS-TP
+
+Packet Flow: Link end to link end
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: MPLS
+
+Application Layer Protocol: LMP
+
+Template Base: LMP Test Message
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": ["MPLS Label"], "application_layer": ["Test Identifier"]}
+
+Receive Filter: LMP Test message with matching Test Identifier
+
+Success Condition: Reception of LMP Test message with correct Test Identifier
+
+Failure Condition: Reception of LMP Test message with incorrect Test Identifier or no response
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The test mechanism for an MPLS packet link relies on the LMP Test message inserted into the data stream at one end of the link and extracted at the other end of the link.
+
+================================================================================
+

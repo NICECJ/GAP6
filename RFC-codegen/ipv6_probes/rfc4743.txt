@@ -1,0 +1,147 @@
+RFC Document: RFC/rfc4743.txt
+Generated at: 2026-03-08 10:27:33
+================================================================================
+
+Analysis Summary:
+Found 4 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: HTTP/1.1, SOAP, NETCONF
+--------------------------------------------------------------------------------
+Mechanism Name: NETCONF_Hello_Exchange
+
+Protocol: HTTP/1.1, SOAP, NETCONF
+
+Condition: The prober (manager) initiates a connection to the target (agent) and sends a <hello> message.
+
+Packet Flow: C: POST /netconf HTTP/1.1
+S: HTTP/1.1 200 OK
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: HTTP/1.1, SOAP, NETCONF
+
+Template Base: HTTP/1.1 POST request with SOAP envelope containing NETCONF <hello> message
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["Host", "Content-Length", "SOAP Envelope Body"]}
+
+Receive Filter: HTTP/1.1 200 OK
+
+Success Condition: Receiving a 200 OK response with a <hello> message containing capabilities and a session-id
+
+Failure Condition: Receiving any HTTP status code other than 200 OK, or a response without a <hello> message or session-id
+
+Prerequisites: ["Target must support NETCONF over HTTP"]
+
+Confidence: High
+
+RFC Sentence: For HTTP, a NETCONF session is established once a SOAP message is POSTed to the NETCONF web application URI. The HTTP client MUST send the first <hello> message.
+
+================================================================================
+
+Mechanism 2: HTTP/1.1, SOAP, NETCONF
+--------------------------------------------------------------------------------
+Mechanism Name: NETCONF_RPC_Request
+
+Protocol: HTTP/1.1, SOAP, NETCONF
+
+Condition: The prober (manager) sends a specific NETCONF <rpc> request to the target (agent).
+
+Packet Flow: C: POST /netconf HTTP/1.1
+S: HTTP/1.1 200 OK
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: HTTP/1.1, SOAP, NETCONF
+
+Template Base: HTTP/1.1 POST request with SOAP envelope containing NETCONF <rpc> message
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["Host", "Content-Length", "SOAP Envelope Body"]}
+
+Receive Filter: HTTP/1.1 200 OK
+
+Success Condition: Receiving a 200 OK response with a <rpc-reply> message containing the requested data
+
+Failure Condition: Receiving any HTTP status code other than 200 OK, or a response without a <rpc-reply> message or the requested data
+
+Prerequisites: ["NETCONF session must be established", "Target must support the requested operation"]
+
+Confidence: High
+
+RFC Sentence: An example for BEEP would be similar. The HTTP/1.1 response is also straightforward.
+
+================================================================================
+
+Mechanism 3: SOAP
+--------------------------------------------------------------------------------
+Mechanism Name: NETCONF_SOAP_Hello
+
+Protocol: SOAP
+
+Condition: The target supports NETCONF over SOAP and is configured to respond to 'hello' requests
+
+Packet Flow: Prober sends SOAP request -> Target sends SOAP response
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: SOAP
+
+Template Base: SOAP
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["SOAP Body (hello message)"]}
+
+Receive Filter: SOAP response with 'hello' message
+
+Success Condition: Receiving a SOAP response containing a 'hello' message
+
+Failure Condition: No response or an error message is received
+
+Prerequisites: ["Target must support NETCONF over SOAP"]
+
+Confidence: High
+
+RFC Sentence: <operation name="hello"><input message="tns:helloRequest"/><output message="tns:helloResponse"/></operation>
+
+================================================================================
+
+Mechanism 4: SOAP
+--------------------------------------------------------------------------------
+Mechanism Name: NETCONF_SOAP_RPC
+
+Protocol: SOAP
+
+Condition: The target supports NETCONF over SOAP and is configured to respond to 'rpc' requests
+
+Packet Flow: Prober sends SOAP request -> Target sends SOAP response
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: TCP
+
+Application Layer Protocol: SOAP
+
+Template Base: SOAP
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Destination Port"], "application_layer": ["SOAP Body (rpc message)"]}
+
+Receive Filter: SOAP response with 'rpc-reply' message
+
+Success Condition: Receiving a SOAP response containing an 'rpc-reply' message
+
+Failure Condition: No response or an error message is received
+
+Prerequisites: ["NETCONF session must be established", "Target must support the requested operation"]
+
+Confidence: High
+
+RFC Sentence: <operation name="rpc"><input message="tns:rpcRequest"/><output message="tns:rpcResponse"/>
+
+================================================================================
+

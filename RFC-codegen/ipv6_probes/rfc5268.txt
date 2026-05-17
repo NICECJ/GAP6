@@ -1,0 +1,213 @@
+RFC Document: RFC/rfc5268.txt
+Generated at: 2026-03-08 08:56:52
+================================================================================
+
+Analysis Summary:
+Found 6 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: Mobile IPv6 Fast Handovers
+--------------------------------------------------------------------------------
+Mechanism Name: RtSolPr-PrRtAdv
+
+Protocol: Mobile IPv6 Fast Handovers
+
+Condition: MN is connected to PAR and has discovered available APs
+
+Packet Flow: MN -> PAR -> MN
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: ICMPv6
+
+Application Layer Protocol: Mobile IPv6 Fast Handovers
+
+Template Base: ICMPv6 Router Solicitation
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Type (133 for Router Solicitation)"], "application_layer": ["Access Point Identifier (AP-ID)"]}
+
+Receive Filter: ICMPv6 Type 134 (Router Advertisement) with [AP-ID, AR-Info] tuple
+
+Success Condition: Reception of PrRtAdv with valid [AP-ID, AR-Info] tuple
+
+Failure Condition: No PrRtAdv received or PrRtAdv with invalid [AP-ID, AR-Info] tuple
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: In response, the access router (e.g., PAR in Figure 1) sends a PrRtAdv message containing one or more [AP-ID, AR-Info] tuples.
+
+================================================================================
+
+Mechanism 2: Mobile IPv6 Fast Handovers
+--------------------------------------------------------------------------------
+Mechanism Name: FBU-FBack
+
+Protocol: Mobile IPv6 Fast Handovers
+
+Condition: MN has formulated a prospective NCoA and is connected to PAR
+
+Packet Flow: MN -> PAR -> MN
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: ICMPv6
+
+Application Layer Protocol: Mobile IPv6 Fast Handovers
+
+Template Base: ICMPv6 Fast Binding Update
+
+Fields To Modify: {"network_layer": ["Source Address (PCoA)", "Destination Address (PAR's address)"], "transport_layer": ["Type (135 for Binding Update)"], "application_layer": ["Binding Authorization Data for FMIPv6 (BADF) option", "NCoA"]}
+
+Receive Filter: ICMPv6 Type 136 (Binding Acknowledgment) with BADF option
+
+Success Condition: Reception of FBack with BADF option indicating successful binding
+
+Failure Condition: No FBack received or FBack with BADF option indicating failure
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The MN formulates a prospective NCoA and sends an FBU message to the PAR. The FBU message MUST contain the BADF option to secure the message.
+
+================================================================================
+
+Mechanism 3: Neighbor Discovery Protocol
+--------------------------------------------------------------------------------
+Mechanism Name: UNA-Neighbor Discovery
+
+Protocol: Neighbor Discovery Protocol
+
+Condition: MN has attached to NAR and needs to announce its presence
+
+Packet Flow: MN -> NAR -> MN
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: ICMPv6
+
+Application Layer Protocol: Neighbor Discovery Protocol
+
+Template Base: ICMPv6 Unsolicited Neighbor Advertisement
+
+Fields To Modify: {"network_layer": ["Source Address (NCoA)", "Destination Address (NAR's address)"], "transport_layer": ["Type (136 for Neighbor Advertisement)"], "application_layer": ["Target Address (NCoA)", "Override (O) bit set to 0"]}
+
+Receive Filter: ICMPv6 Type 136 (Neighbor Advertisement) with Target Address (NCoA)
+
+Success Condition: Reception of Neighbor Advertisement from NAR confirming NCoA
+
+Failure Condition: No Neighbor Advertisement received or Neighbor Advertisement with different Target Address
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The MN SHOULD send the UNA immediately after attaching to the NAR, so that arriving as well as buffered packets can be forwarded to the MN right away.
+
+================================================================================
+
+Mechanism 4: ICMPv6
+--------------------------------------------------------------------------------
+Mechanism Name: Router Solicitation for Proxy Advertisement
+
+Protocol: ICMPv6
+
+Condition: Mobile Node sends RtSolPr to an access router or all routers multicast address
+
+Packet Flow: MN -> AR or all routers multicast -> MN
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: ICMPv6
+
+Application Layer Protocol: None
+
+Template Base: ICMPv6 Router Solicitation for Proxy Advertisement
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": ["Identifier"], "application_layer": []}
+
+Receive Filter: ICMPv6 Type 154, Subtype 3
+
+Success Condition: Receives a Proxy Router Advertisement (PrRtAdv) message within a specified time period
+
+Failure Condition: No Proxy Router Advertisement (PrRtAdv) message received within a specified time period
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: A Proxy Router Advertisement (PrRtAdv) message should be received by the MN in response to an RtSolPr.
+
+================================================================================
+
+Mechanism 5: ICMPv6
+--------------------------------------------------------------------------------
+Mechanism Name: Handover Initiate (HI) to Handover Acknowledge (HAck)
+
+Protocol: ICMPv6
+
+Condition: PAR sends HI to NAR
+
+Packet Flow: PAR -> NAR -> PAR
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: ICMPv6
+
+Application Layer Protocol: None
+
+Template Base: ICMPv6 Handover Initiate
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": ["Identifier", "Code", "S flag", "U flag"], "application_layer": []}
+
+Receive Filter: ICMPv6 Type 154, Subtype 5
+
+Success Condition: Receives a Handover Acknowledge (HAck) message within a specified time period
+
+Failure Condition: No Handover Acknowledge (HAck) message received within a specified time period
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: Upon receiving an HI message, the NAR MUST respond with a Handover Acknowledge message.
+
+================================================================================
+
+Mechanism 6: Mobility Header
+--------------------------------------------------------------------------------
+Mechanism Name: Fast Binding Update (FBU) to Fast Binding Acknowledgment (FBack)
+
+Protocol: Mobility Header
+
+Condition: MN sends FBU to PAR after receiving PrRtAdv or configuring NCoA
+
+Packet Flow: MN -> PAR -> MN
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: None
+
+Application Layer Protocol: Mobility Header
+
+Template Base: Mobility Header Fast Binding Update
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": [], "application_layer": ["Sequence Number", "Home Address Option", "Alternate CoA Option"]}
+
+Receive Filter: Mobility Header Type 9
+
+Success Condition: Receives a Fast Binding Acknowledgment (FBack) message with a status less than 128
+
+Failure Condition: Receives a Fast Binding Acknowledgment (FBack) message with a status 128 or higher, or no FBack message received within a specified time period
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: The PAR MUST process the FBU even though the address in the alternate CoA option is different from that in the source IP address, and ensure that the address in the alternate CoA option is used in the New CoA option in the HI message to the NAR.
+
+================================================================================
+

@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc5666.txt
+Generated at: 2026-03-08 07:36:54
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: RPC
+--------------------------------------------------------------------------------
+Mechanism Name: RDMA_ERROR Response
+
+Protocol: RPC
+
+Condition: The prober sends an RPC-over-RDMA message with an unsupported version or invalid chunk format
+
+Packet Flow: Client sends an invalid RDMA-over-RPC message, Server responds with RDMA_ERROR
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: RDMA
+
+Application Layer Protocol: RPC
+
+Template Base: RDMA-over-RPC Header
+
+Fields To Modify: {"network_layer": ["Destination IPv6 Address"], "transport_layer": [], "application_layer": ["rdma_vers", "rdma_reads", "rdma_writes", "rdma_reply"]}
+
+Receive Filter: Message type is RDMA_ERROR
+
+Success Condition: Receives an RDMA_ERROR message with a valid error code
+
+Failure Condition: No response or a response with an unexpected message type
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: When a peer receives an RPC RDMA message, it MUST perform the following basic validity checks on the header and chunk contents. If such errors are detected in the request, an RDMA_ERROR reply MUST be generated.
+
+================================================================================
+

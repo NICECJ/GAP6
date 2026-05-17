@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc5225.txt
+Generated at: 2026-03-08 08:39:51
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: ROHCv2
+--------------------------------------------------------------------------------
+Mechanism Name: ROHCv2 Feedback
+
+Protocol: ROHCv2
+
+Condition: The target decompressor has received a compressed header (CO) with a 7-bit CRC or an IR header with an 8-bit CRC and context damage is assumed
+
+Packet Flow: Prober (Compressor) -> Target (Decompressor) -> Prober (Compressor)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: ROHCv2
+
+Template Base: ROHCv2 CO or IR packet
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Port"], "application_layer": ["CID", "CRC-7 or CRC-8"]}
+
+Receive Filter: NACK or STATIC-NACK from the target decompressor
+
+Success Condition: Reception of a NACK or STATIC-NACK packet
+
+Failure Condition: No response or silent discard of the probe packet
+
+Prerequisites: ["Target decompressor must be in a state where it can assume context damage"]
+
+Confidence: High
+
+RFC Sentence: The decompressor should send a NACK when CRC-8 validation or CRC verification of any header type fails and if context damage is assumed, or it should send a STATIC-NACK if static context damage is assumed; this is subject to the feedback rate limitation described in Section 5.2.3.
+
+================================================================================
+

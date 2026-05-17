@@ -1,0 +1,77 @@
+RFC Document: RFC/rfc5881.txt
+Generated at: 2026-03-08 07:27:05
+================================================================================
+
+Analysis Summary:
+Found 2 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: BFD
+--------------------------------------------------------------------------------
+Mechanism Name: BFD_Control_Packet_Probing
+
+Protocol: BFD
+
+Condition: BFD session is established and active
+
+Packet Flow: Prober sends BFD Control packet to target, target responds with BFD Control packet
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: BFD
+
+Template Base: BFD Control packet template
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": ["Source Port", "Destination Port"], "application_layer": ["Your Discriminator", "State", "Diag", "Detect Mult", "Desired Min TX Interval", "Required Min RX Interval", "Required Min Echo RX Interval"]}
+
+Receive Filter: UDP destination port 3784
+
+Success Condition: BFD Control packet received with matching Your Discriminator and TTL/Hop Limit of 255
+
+Failure Condition: No BFD Control packet received within the expected interval or received packet has incorrect TTL/Hop Limit
+
+Prerequisites: ["BFD session must be established and active"]
+
+Confidence: High
+
+RFC Sentence: BFD Control packets MUST be transmitted in UDP packets with destination port 3784, within an IPv6 packet. The source port MUST be in the range 49152 through 65535. All received BFD Control packets that are demultiplexed to the session MUST be discarded if the received TTL or Hop Limit is not equal to 255.
+
+================================================================================
+
+Mechanism 2: BFD
+--------------------------------------------------------------------------------
+Mechanism Name: BFD_Echo_Packet_Probing
+
+Protocol: BFD
+
+Condition: BFD session is established and Echo function is active
+
+Packet Flow: Prober sends BFD Echo packet to target, target immediately responds with BFD Echo packet
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: BFD
+
+Template Base: BFD Echo packet template
+
+Fields To Modify: {"network_layer": ["Source Address", "Destination Address"], "transport_layer": ["Source Port", "Destination Port"], "application_layer": ["Identifier"]}
+
+Receive Filter: UDP destination port 3785
+
+Success Condition: BFD Echo packet received with matching Identifier
+
+Failure Condition: No BFD Echo packet received within the expected interval
+
+Prerequisites: ["BFD session must be established and active", "Echo function must be active"]
+
+Confidence: High
+
+RFC Sentence: BFD Echo packets MUST be transmitted in UDP packets with destination UDP port 3785 in an IPv6 packet. The destination address MUST be chosen in such a way as to cause the remote system to forward the packet back to the local system.
+
+================================================================================
+

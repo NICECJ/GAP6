@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc5318.txt
+Generated at: 2026-03-08 04:47:41
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: SIP
+--------------------------------------------------------------------------------
+Mechanism Name: P-Refused-URI-List Probing
+
+Protocol: SIP
+
+Condition: The target URI-list server receives an INVITE request with a URI list containing entries that are URI lists themselves and cannot handle the request.
+
+Packet Flow: Client sends INVITE -> URI-list server responds with 403 Forbidden and P-Refused-URI-List
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: UDP
+
+Application Layer Protocol: SIP
+
+Template Base: SIP INVITE request
+
+Fields To Modify: {"network_layer": [], "transport_layer": [], "application_layer": ["From", "To", "Call-ID", "CSeq", "Content-Type", "Content-Length", "body (URI list with embedded URI lists)"]}
+
+Receive Filter: SIP 403 Forbidden response with P-Refused-URI-List P-Header
+
+Success Condition: Receiving a 403 Forbidden response with a P-Refused-URI-List P-Header containing the members of the refused URI lists.
+
+Failure Condition: Receiving no response or a response other than 403 Forbidden with P-Refused-URI-List P-Header.
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: When a URI-list server receives an INVITE request with a URI list containing entries that are URI lists themselves, and the server cannot handle the request, it returns a 403 (Forbidden) response with a P-Refused-URI-List P-Header, as shown in Figure 3. The P-Refused-URI-List P-Header contains one or more URIs, which were present in the URI list in the incoming request and could not be handled by the server. Additionally, the P-Refused-URI-List can optionally carry some or all of the members of the URI lists identified by those URIs.
+
+================================================================================
+

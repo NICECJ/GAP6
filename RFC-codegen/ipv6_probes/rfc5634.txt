@@ -1,0 +1,43 @@
+RFC Document: RFC/rfc5634.txt
+Generated at: 2026-03-08 06:51:01
+================================================================================
+
+Analysis Summary:
+Found 1 usable IPv6 probing behavior(s)
+
+================================================================================
+
+Mechanism 1: DCCP
+--------------------------------------------------------------------------------
+Mechanism Name: Quick-Start Response
+
+Protocol: DCCP
+
+Condition: The target is willing to permit the Quick-Start Request
+
+Packet Flow: Prober -> Target (Quick-Start Request), Target -> Prober (DCCP-ACK with Quick-Start Response)
+
+Network Layer Protocol: IPv6
+
+Transport Layer Protocol: DCCP
+
+Application Layer Protocol: None
+
+Template Base: DCCP packet template
+
+Fields To Modify: {"network_layer": ["Destination Address"], "transport_layer": ["Quick-Start Request option"], "application_layer": []}
+
+Receive Filter: DCCP-ACK with Quick-Start Response option
+
+Success Condition: Receipt of a DCCP-ACK packet with Quick-Start Response option indicating an approved rate
+
+Failure Condition: No DCCP-ACK packet with Quick-Start Response option received within a reasonable time or a DCCP-Reset received in response to the Quick-Start Request
+
+Prerequisites: []
+
+Confidence: High
+
+RFC Sentence: If the receiving host is willing to permit the Quick-Start Request, it SHOULD respond immediately by sending a packet that carries the Quick-Start Response option in the DCCP header of the corresponding feedback packet (e.g., using a DCCP-Ack packet or in a DCCP-DataAck packet).
+
+================================================================================
+
