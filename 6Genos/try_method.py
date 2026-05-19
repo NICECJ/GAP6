@@ -20,7 +20,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 # =========================
 # External probe backend config
 # =========================
-PROBE_BACKEND_DIR = "/home/chenjing/New-address-discovery"
+PROBE_BACKEND_DIR = "/home/chenjing/GAP6/New-address-discovery"
 PROBE_PROTOCOL = "ack_rst"   # 可改成别的协议
 PROBE_TIMEOUT = 600
 PROBE_VERBOSE = True
