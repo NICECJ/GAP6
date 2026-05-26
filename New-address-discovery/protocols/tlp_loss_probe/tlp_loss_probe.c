@@ -1,72 +1,54 @@
 #include "tlp_loss_probe.h"
-#include "../../include/config.h"
-#include "../../include/hash.h"
-#include "../../include/construct.h"
+#include "../probe_common/probe_common.h"
 #include "../../include/protocol.h"
 
-#include <string.h>
-#include <arpa/inet.h>
-#include <netinet/if_ether.h>
-#include <netinet/ip6.h>
 #include <netinet/tcp.h>
-#include <linux/if_ether.h>
+#include <string.h>
 
 int tlp_loss_probe_build_probe(struct ethhdr *eth,
-                              struct ip6_hdr *ip6,
-                              struct tcphdr *tcp,
-                              int index) {
-    constructTCPv6Packet(eth, ip6, tcp, index);
-    return 0;
+                       struct ip6_hdr *ip6,
+                       void *l4,
+                       int index) {
+    /* The framework has no TCP payload buffer, so this is a minimal header-only TLP-style probe. */
+    return probe_build_tcp_probe(eth,
+                                 ip6,
+                                 (struct tcphdr *)l4,
+                                 index,
+                                 443,
+                                 PROBE_TCP_ACK | PROBE_TCP_PSH,
+                                 64,
+                                 1);
 }
 
-int tlp_loss_probe_parse_response(const uint8_t *buffer,
-                                 ssize_t received_bytes,
-                                 struct in6_addr *target_ip,
-                                 uint64_t *prefix_index) {
-    (void)received_bytes;
+int tlp_loss_probe_parse_response(uint8_t *buffer,
+                          ssize_t received_bytes,
+                          struct in6_addr *target_ip,
+                          uint64_t *prefix_index) {
+    struct ip6_hdr ip6;
+    const uint8_t *payload;
+    size_t payload_len;
+    struct tcphdr tcp;
 
-    struct ethhdr* eth_hdr = (struct ethhdr*)buffer;
-    if (ntohs(eth_hdr->h_proto) != ETH_P_IPV6)
+    if (!probe_read_ipv6_packet(buffer, received_bytes, &ip6,
+                                &payload, &payload_len)) {
         return 0;
+    }
 
-    struct ip6_hdr* ip6_hdr =
-        (struct ip6_hdr*)(buffer + sizeof(struct ethhdr));
-
-    if (ip6_hdr->ip6_nxt != IPPROTO_TCP)
+    if (ip6.ip6_nxt != IPPROTO_TCP || payload_len < sizeof(tcp)) {
         return 0;
+    }
 
-    struct tcphdr* tcp_hdr =
-        (struct tcphdr*)(buffer + sizeof(struct ethhdr) + sizeof(struct ip6_hdr));
-
-    if (!(tcp_hdr->ack))
+    memcpy(&tcp, payload, sizeof(tcp));
+    if (!tcp.ack && !tcp.rst) {
         return 0;
+    }
 
-    *target_ip = ip6_hdr->ip6_src;
-
-    uint32_t embedded_checksum;
-    memcpy(&embedded_checksum, target_ip->s6_addr + 12, sizeof(uint32_t));
-    embedded_checksum = ntohl(embedded_checksum);
-
-    uint32_t computed_checksum =
-        murmur3(target_ip->s6_addr, 12, 0x11112222);
-
-    if (embedded_checksum != computed_checksum)
-        return 0;
-
-    uint32_t ack = ntohl(tcp_hdr->ack_seq);
-    *prefix_index = ack >> 8;
-
-    uint32_t bloom_index_1 = murmur3(target_ip->s6_addr, 16, 0x12345678);
-    uint32_t bloom_index_2 = murmur3(target_ip->s6_addr, 16, 0x87654321);
-
-    if ((bloom_filter[bloom_index_1 / 8] & (1 << (bloom_index_1 % 8))) &&
-        (bloom_filter[bloom_index_2 / 8] & (1 << (bloom_index_2 % 8))))
-        return 0;
-
-    bloom_filter[bloom_index_1 / 8] |= (1 << (bloom_index_1 % 8));
-    bloom_filter[bloom_index_2 / 8] |= (1 << (bloom_index_2 % 8));
-
-    return 1;
+    uint64_t decoded_index = prefix_table_size;
+    probe_extract_tcp_index(&tcp, &decoded_index);
+    return probe_accept_indexed_target(&ip6.ip6_src,
+                                       decoded_index,
+                                       target_ip,
+                                       prefix_index);
 }
 
 protocol_t tlp_loss_probe_protocol = {
@@ -75,9 +57,7 @@ protocol_t tlp_loss_probe_protocol = {
     .parse_response = tlp_loss_probe_parse_response
 };
 
-/* automatic registration */
 __attribute__((constructor))
-static void register_tlp_loss_probe()
-{
+static void register_tlp_loss_probe(void) {
     register_protocol(&tlp_loss_probe_protocol);
 }

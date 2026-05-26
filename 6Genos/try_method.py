@@ -1657,8 +1657,9 @@ def run_probe_backend(bgp):
             os.remove(output_file)
 
         # 4. 调用你的统一探测后端
+        sudo_password = os.environ.get("SUDO_PASSWORD")
         command = [
-            'sudo', './run.sh',
+            'sudo', '-S', '-p', '', './run.sh',
             PROBE_PROTOCOL,
             os.path.abspath(input_file),
             os.path.abspath(output_file)
@@ -1669,6 +1670,7 @@ def run_probe_backend(bgp):
             cwd=PROBE_BACKEND_DIR,
             capture_output=True,
             text=True,
+            input=f"{sudo_password}\n" if sudo_password else None,
             timeout=PROBE_TIMEOUT
         )
 
@@ -1688,6 +1690,23 @@ def run_probe_backend(bgp):
         if not os.path.exists(output_file):
             print(f"探测输出文件未生成: {output_file}")
             return False
+
+        if sudo_password:
+            chown_result = subprocess.run(
+                [
+                    'sudo', '-S', '-p', '',
+                    'chown',
+                    f'{os.getuid()}:{os.getgid()}',
+                    os.path.abspath(output_file),
+                ],
+                capture_output=True,
+                text=True,
+                input=f"{sudo_password}\n",
+                timeout=30
+            )
+            if chown_result.returncode != 0:
+                print(f"探测输出文件权限修正失败: {chown_result.stderr}")
+                return False
 
         return True
 
@@ -1739,17 +1758,22 @@ def scan_addresses(bgp, addresses, all_scanned):
     if not ok:
         print(f"探测失败: {bgp1}")
     
-    # 读取结果，跳过标题行
+    # 读取结果：smap 可能带表头，New-address-discovery 不带表头。
+    # 这里只接受合法 IPv6 地址，避免误跳过第一条真实命中。
     result_file = f'./res0/{bgp1}.txt'
     scanned_ips = []
     
     try:
         with open(result_file, 'r') as f:
-            for i, line in enumerate(f):
-                if i > 0:  # 跳过标题行
-                    ip = line.strip()
-                    if ip:  # 确保不是空行
-                        scanned_ips.append(ip)
+            for line in f:
+                ip = line.strip()
+                if not ip:
+                    continue
+                try:
+                    ipaddress.IPv6Address(ip)
+                except ValueError:
+                    continue
+                scanned_ips.append(ip)
     except FileNotFoundError:
         print(f"警告: 扫描结果文件 {result_file} 不存在")
     except Exception as e:

@@ -2,8 +2,10 @@
 #define PROTOCOL_H
 
 #include <stdint.h>
+#include <sys/types.h>
 #include <netinet/if_ether.h>
 #include <netinet/ip6.h>
+#include <netinet/in.h>
 
 typedef struct protocol {
 
@@ -33,5 +35,6 @@ extern protocol_t *current_protocol;
 /* registry functions */
 void register_protocol(protocol_t *p);
 protocol_t *find_protocol(const char *name);
+void load_protocol(const char *name);
 
 #endif

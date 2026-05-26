@@ -14,6 +14,7 @@
 
 #define bloom_filter_SIZE (1 << 30)
 #define MAX_PREFIX_TABLE_SIZE (1 << 20)
+#define MAX_HOPLIMIT_VALUES 256
 
 #ifndef htonll
 #define htonll(x) (((uint64_t)ntohl((x) & 0xFFFFFFFF) << 32) | ntohl((x) >> 32))
@@ -32,12 +33,12 @@ typedef struct {
     double ema_success_ratio;
 
     double weight;
-    double alpha_param[255];
-    double beta_param[255];
+    double alpha_param[MAX_HOPLIMIT_VALUES];
+    double beta_param[MAX_HOPLIMIT_VALUES];
 
-    uint8_t hop_candidates[255];
-    uint8_t hop_candidate_flags[255];
-    uint8_t hop_candidate_count;
+    uint8_t hop_candidates[MAX_HOPLIMIT_VALUES];
+    uint8_t hop_candidate_flags[MAX_HOPLIMIT_VALUES];
+    uint16_t hop_candidate_count;
 } PrefixInfo;
 
 

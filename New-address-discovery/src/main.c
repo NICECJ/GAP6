@@ -35,6 +35,88 @@
  */
 static volatile int receiver_running = 1;
 
+
+typedef struct {
+    struct in6_addr addr;
+    uint8_t used;
+} UniqueAddrEntry;
+
+static UniqueAddrEntry *unique_addr_table = NULL;
+static size_t unique_addr_capacity = 0;
+static size_t unique_addr_count = 0;
+
+static uint64_t hash_in6_addr(const struct in6_addr *addr) {
+    const uint8_t *bytes = addr->s6_addr;
+    uint64_t hash = 1469598103934665603ULL;
+
+    for (size_t i = 0; i < 16; i++) {
+        hash ^= bytes[i];
+        hash *= 1099511628211ULL;
+    }
+
+    return hash;
+}
+
+static int unique_addr_insert_no_resize(UniqueAddrEntry *table,
+                                        size_t capacity,
+                                        const struct in6_addr *addr) {
+    size_t mask = capacity - 1;
+    size_t pos = hash_in6_addr(addr) & mask;
+
+    while (table[pos].used) {
+        if (memcmp(&table[pos].addr, addr, sizeof(struct in6_addr)) == 0) {
+            return 0;
+        }
+        pos = (pos + 1) & mask;
+    }
+
+    table[pos].addr = *addr;
+    table[pos].used = 1;
+    return 1;
+}
+
+static int unique_addr_resize(size_t new_capacity) {
+    UniqueAddrEntry *new_table = calloc(new_capacity, sizeof(UniqueAddrEntry));
+    if (!new_table) {
+        return -1;
+    }
+
+    for (size_t i = 0; i < unique_addr_capacity; i++) {
+        if (unique_addr_table[i].used) {
+            unique_addr_insert_no_resize(new_table, new_capacity,
+                                         &unique_addr_table[i].addr);
+        }
+    }
+
+    free(unique_addr_table);
+    unique_addr_table = new_table;
+    unique_addr_capacity = new_capacity;
+    return 0;
+}
+
+static int unique_addr_mark_seen(const struct in6_addr *addr) {
+    if (unique_addr_capacity == 0) {
+        if (unique_addr_resize(1024) != 0) {
+            return -1;
+        }
+    }
+
+    if ((unique_addr_count + 1) * 2 >= unique_addr_capacity) {
+        if (unique_addr_resize(unique_addr_capacity * 2) != 0) {
+            return -1;
+        }
+    }
+
+    int inserted = unique_addr_insert_no_resize(unique_addr_table,
+                                                unique_addr_capacity,
+                                                addr);
+    if (inserted > 0) {
+        unique_addr_count++;
+    }
+
+    return inserted;
+}
+
 /*
  * 判断当前输入是否全是 exact address。
  *
@@ -179,6 +261,16 @@ void* Recv(void* arg) {
         }
 
         if (prefix_index >= prefix_table_size) {
+            continue;
+        }
+
+        int unique_status = unique_addr_mark_seen(&target_ip);
+        if (unique_status < 0) {
+            fprintf(stderr, "Failed to allocate unique IPv6 address table\n");
+            receiver_running = 0;
+            break;
+        }
+        if (unique_status == 0) {
             continue;
         }
 
@@ -480,8 +572,15 @@ int main(int argc, char *argv[]) {
     receiver_running = 0;
     pthread_join(recv_thread, NULL);
 
+    printf("[probe_result] output_file: %s\n", output_filename);
+    printf("[probe_result] unique_addresses: %" PRIu64 "\n", total_hits);
+
     close(fd);
     free(bloom_filter);
+    free(unique_addr_table);
+    unique_addr_table = NULL;
+    unique_addr_capacity = 0;
+    unique_addr_count = 0;
 
     clock_gettime(CLOCK_MONOTONIC, &end_time);
 
